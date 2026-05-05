@@ -4,8 +4,23 @@ export default function HomePage() {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-16">
-      <h1 className="text-3xl font-bold mb-2">Upwork AI Job Assistant</h1>
+      <h1 className="text-3xl font-bold mb-2">AI Career Hub</h1>
       <p className="text-green-600 font-medium mb-10">Status: App is running</p>
+
+      <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4 mb-8">
+        <h2 className="text-lg font-semibold">Pages</h2>
+        <div className="flex flex-col gap-3">
+          <a href="/resume" className="inline-block bg-gray-900 hover:bg-gray-700 text-white font-medium px-6 py-3 rounded-lg transition-colors">
+            /resume — SAP Architect Profile
+          </a>
+          <a href="/ai" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors">
+            /ai — AI Engineering Portfolio
+          </a>
+          <a href="/dashboard" className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-colors">
+            /dashboard — Job Feed &amp; AI Tools
+          </a>
+        </div>
+      </section>
 
       <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
         <div>
