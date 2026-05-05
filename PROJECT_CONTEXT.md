@@ -269,19 +269,28 @@ The long-term goal is ONE unified Next.js app (`upwork-sepia.vercel.app`) that:
 7. Skill gap analyzer, interview prep, weekly digest email
 
 ### Planned Routes (unified app)
-| Route | Purpose |
-|---|---|
-| `/resume` | Public-facing resume (replaces GitHub Pages) |
-| `/dashboard` | Private — job feed, AI tools, admin |
-| `/admin` | Agent pipeline observability — runs, tokens, cost, Langfuse links |
-| `/api/chat` | Claude RAG chatbot (replaces Cloudflare Worker) |
-| `/api/resume/update` | AI-assisted resume update (human-in-the-loop) |
+| Route | Audience | Purpose |
+|---|---|---|
+| `/resume` | SAP clients, SAP recruiters | Full SAP architect profile — all experience, projects, skills, certs, blogs, achievements |
+| `/ai` | AI engineering recruiters, tech companies | AI portfolio — AI projects, AI certs, AI blogs, this app as live demo, learning roadmap |
+| `/dashboard` | You only | Job feed, AI tools, admin |
+| `/admin` | You only | Agent pipeline observability — runs, tokens, cost, Langfuse links |
+| `/api/chat` | Public | Claude RAG chatbot (replaces Cloudflare Worker) |
+| `/api/resume/update` | You only | AI-assisted resume update (human-in-the-loop) |
 
-### Key Principles
-- **Public resume** at `/resume` — no auth needed, Schema.org JSON-LD preserved for SEO
-- **Private dashboard** at `/dashboard` — job feed, AI tools
-- **Human review always required** before any resume write or Upwork API action
-- **Cloudflare Worker chatbot** to be retired once Claude RAG is live
+### `/ai` Page Content Plan
+| Section | Content |
+|---|---|
+| Hero | "AI Engineer in transition — 19 years of enterprise SAP, now building AI systems" |
+| AI Projects | MCP server, data scrambling automation, ML at SAP Labs (Mohawk/Mosaic), this job assistant app |
+| AI Certifications | SAP BTP Solution Architect, CAP, HANA Cloud — framed as AI-adjacent credentials |
+| AI Blogs | Agentic AI + Kyma, Integration Suite + OpenAI, Job Screening + ChatGPT, IRPA + CAP series, etc. |
+| Currently Building | This app — RAG, agents, embeddings, MCP, LangGraph — live GitHub link and feature list |
+| Learning Roadmap | The 7 AI engineering phases — shows intentional, structured progression into the field |
+| Connect | Email, LinkedIn, GitHub, SAP Community |
+
+### Key Design Principle: SAP + AI is not split — it's tagged
+Projects and blogs that are both SAP and AI (MCP server, event-driven AI, ML at SAP Labs) appear on BOTH `/resume` and `/ai` — framed differently for each audience. No duplication problem because the angle changes: `/resume` frames it as SAP delivery, `/ai` frames it as AI engineering work.
 
 ---
 
@@ -309,12 +318,13 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 3. Migrate `profile.json`, `projects.json`, `certifications.json` into Supabase tables
 4. Fix resume data gaps: add experience role descriptions, fill missing cert codes/PDF links
 
-### Phase 1 — Public Resume Page
-5. Build `/resume` page rendering from Supabase (replaces GitHub Pages)
-6. Add Schema.org JSON-LD for SEO
-7. Style with Tailwind to match/improve current site
-8. AI-generated executive summaries per project (Claude, approved once, stored)
-9. Profile completeness score widget
+### Phase 1 — Public Resume + AI Pages
+5. Build `/resume` page in Next.js rendering from Supabase (replaces GitHub Pages)
+6. Build `/ai` page — AI portfolio: AI projects, AI certs, AI blogs, this app as live demo, learning roadmap
+7. Add Schema.org JSON-LD for SEO on `/resume`
+8. Style both pages with Tailwind
+9. AI-generated executive summaries per project (Claude, approved once, stored)
+10. Profile completeness score widget on dashboard
 
 ### Phase 2 — RAG Chatbot
 10. Chunk resume data into optimal pieces
