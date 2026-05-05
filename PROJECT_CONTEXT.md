@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-05
+Last updated: 2026-05-05 (session 2)
 
 ---
 
@@ -46,9 +46,12 @@ This project has two goals:
 
 ## 4. Repository & URLs
 
-- **GitHub:** https://github.com/shahidla/upwork
-- **Local path:** `C:/Dev/upwork`
+- **GitHub (job assistant):** https://github.com/shahidla/upwork
+- **GitHub (resume):** https://github.com/shahidla/Resume
+- **Local path (job assistant):** `C:/Dev/upwork`
+- **Local path (resume):** `C:/Dev/Resume`
 - **Production URL:** https://upwork-sepia.vercel.app
+- **Resume (current, to be replaced):** https://shahidla.github.io/Resume/
 - **Vercel dashboard:** https://vercel.com/shahidmsyed-projects/upwork/deployments
 
 ---
@@ -232,6 +235,53 @@ Fetch Upwork profile → OpenAI suggests improvements → human review → push 
 | `/api/ai/analyze` | POST | OpenAI analysis → suggestions |
 
 Fields: Title, Overview/Bio, Skills, Hourly rate.
+
+---
+
+## 15. Unified Platform Vision — AI Career Hub
+
+The long-term goal is ONE unified Next.js app (`upwork-sepia.vercel.app`) that:
+- **Replaces** the static GitHub Pages resume (`shahidla.github.io/Resume/`)
+- **Runs** the job assistant and AI features
+- **Uses resume data as single source of truth** — all AI features read from it
+
+### Resume App (current state — C:/Dev/Resume/)
+- **Repo:** https://github.com/shahidla/Resume
+- **Live:** https://shahidla.github.io/Resume/
+- **Stack:** Pure vanilla HTML/CSS/JS, GitHub Pages hosted
+- **Chatbot:** Cloudflare Worker at `resume-chatbot.shahid-la.workers.dev/chat` — thin fetch wrapper, no streaming, no memory
+- **Data files** (structured JSON, ready to migrate to Supabase):
+  - `data/profile.json` — name, headline, 19 years exp, positioning, education, contact, proof points
+  - `data/projects.json` — 6 projects with name, type, impact, URL
+  - `data/certifications.json` — 9 SAP certs, all with Credly URLs (some missing `code` field)
+- **Known gaps to fix:**
+  - Certification PDFs / additional cert links to add
+  - Experience timeline has no role descriptions (just company, date, location)
+  - JSON data files and HTML are NOT connected — HTML is hardcoded, JSON is used by chatbot backend only
+
+### Planned Migration (build order)
+1. Migrate resume JSON data to Supabase — single source of truth
+2. Build `/resume` public page in Next.js (replaces GitHub Pages)
+3. Replace Cloudflare chatbot with Claude RAG (`/api/chat` route + pgvector)
+4. Job aggregator scoring against live profile data
+5. AI resume editor (plain English → structured update → diff view → approve → write to Supabase → re-embed)
+6. Cover letter / proposal generator (RAG + tool use + human review)
+7. Skill gap analyzer, interview prep, weekly digest email
+
+### Planned Routes (unified app)
+| Route | Purpose |
+|---|---|
+| `/resume` | Public-facing resume (replaces GitHub Pages) |
+| `/dashboard` | Private — job feed, AI tools, admin |
+| `/admin` | Agent pipeline observability — runs, tokens, cost, Langfuse links |
+| `/api/chat` | Claude RAG chatbot (replaces Cloudflare Worker) |
+| `/api/resume/update` | AI-assisted resume update (human-in-the-loop) |
+
+### Key Principles
+- **Public resume** at `/resume` — no auth needed, Schema.org JSON-LD preserved for SEO
+- **Private dashboard** at `/dashboard` — job feed, AI tools
+- **Human review always required** before any resume write or Upwork API action
+- **Cloudflare Worker chatbot** to be retired once Claude RAG is live
 
 ---
 
