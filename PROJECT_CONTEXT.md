@@ -24,11 +24,12 @@ A production-ready web app that integrates with the Upwork API to help the user 
 
 ---
 
-## Repository
+## Repository & URLs
 
 - **GitHub:** https://github.com/shahidla/upwork
 - **Local path (main dev machine):** `C:/Dev/upwork`
-- **Vercel URL:** https://upwork-5j8apg26s-shahidmsyed-projects.vercel.app
+- **Production URL:** https://upwork-sepia.vercel.app
+- **Vercel project:** https://vercel.com/shahidmsyed-projects/upwork/deployments
 
 ---
 
@@ -37,7 +38,7 @@ A production-ready web app that integrates with the Upwork API to help the user 
 - **GitHub username:** shahidla
 - **GitHub email:** shahid.la@gmail.com
 - **Vercel account:** shahidmsyed-projects
-- **Vercel connected to GitHub:** Yes (auto-deploys on push to `main`)
+- **Vercel connected to GitHub:** Yes — auto-deploys on every push to `main`
 
 ---
 
@@ -45,12 +46,12 @@ A production-ready web app that integrates with the Upwork API to help the user 
 
 Defined in `.env.example`. Must be set in Vercel project settings and `.env.local` for local dev.
 
-| Variable | Description |
+| Variable | Value / Description |
 |---|---|
-| `UPWORK_CLIENT_ID` | Upwork app client ID (pending — waiting for Upwork developer keys) |
-| `UPWORK_CLIENT_SECRET` | Upwork app client secret (pending) |
-| `UPWORK_REDIRECT_URI` | `https://upwork-5j8apg26s-shahidmsyed-projects.vercel.app/api/auth/upwork/callback` |
-| `OPENAI_API_KEY` | OpenAI API key (not yet added) |
+| `UPWORK_CLIENT_ID` | Pending — waiting for Upwork developer keys |
+| `UPWORK_CLIENT_SECRET` | Pending — waiting for Upwork developer keys |
+| `UPWORK_REDIRECT_URI` | `https://upwork-sepia.vercel.app/api/auth/upwork/callback` |
+| `OPENAI_API_KEY` | Not yet added |
 
 ---
 
@@ -58,23 +59,21 @@ Defined in `.env.example`. Must be set in Vercel project settings and `.env.loca
 
 ### Done
 - [x] Next.js 14 app scaffolded with TypeScript + Tailwind
-- [x] Home page at `/` showing app name, status, and callback URLs
-- [x] API route `/api/auth/upwork/login` — redirects user to Upwork OAuth with CSRF state
+- [x] Home page at `/` showing app name, status, Connect Upwork button, and callback URLs
+- [x] API route `/api/auth/upwork/login` — redirects user to Upwork OAuth with CSRF state cookie
 - [x] API route `/api/auth/upwork/callback` — receives OAuth code, exchanges for access token, stores in httpOnly cookie
 - [x] API route `/api/health` — returns `{ ok: true, app: "upwork-ai-job-assistant" }`
 - [x] `.env.example` created
-- [x] Deployed to Vercel
-- [x] GitHub connected to Vercel for auto-deploy
-- [x] `.npmrc` added with `registry=https://registry.npmjs.org/` to fix Vercel build (corporate Artifactory was blocking installs)
-- [x] Personal images accidentally uploaded to GitHub purged from entire git history using `git filter-branch`
-
-### In Progress
-- [ ] Vercel build still failing — `package-lock.json` was generated against corporate Artifactory registry, needs to be regenerated using public registry and pushed
-- [ ] Waiting for Upwork developer keys to arrive (applied on Upwork developer portal)
+- [x] Deployed to Vercel — production URL: https://upwork-sepia.vercel.app
+- [x] GitHub connected to Vercel for auto-deploy on push to `main`
+- [x] Personal images accidentally uploaded purged from entire git history using `git filter-branch`
 
 ### Pending
-- [ ] Add `UPWORK_CLIENT_ID`, `UPWORK_CLIENT_SECRET`, `UPWORK_REDIRECT_URI` to Vercel environment variables once keys arrive
-- [ ] Test full OAuth flow end-to-end
+- [ ] Upwork developer keys not yet received — apply at https://www.upwork.com/developer/keys
+- [ ] Once keys arrive: add `UPWORK_CLIENT_ID`, `UPWORK_CLIENT_SECRET`, `UPWORK_REDIRECT_URI` to Vercel environment variables
+- [ ] Register callback URL on Upwork developer portal: `https://upwork-sepia.vercel.app/api/auth/upwork/callback`
+- [ ] Test full OAuth flow end-to-end by clicking "Connect Upwork"
+- [ ] Add `OPENAI_API_KEY` to Vercel env vars
 - [ ] Build AI Profile Optimizer feature (see below)
 
 ---
@@ -86,7 +85,7 @@ C:/Dev/upwork/
 ├── src/
 │   └── app/
 │       ├── layout.tsx
-│       ├── page.tsx                          # Home page
+│       ├── page.tsx                          # Home page with Connect Upwork button
 │       ├── globals.css
 │       └── api/
 │           ├── health/
@@ -97,7 +96,8 @@ C:/Dev/upwork/
 │                   │   └── route.ts          # GET /api/auth/upwork/login
 │                   └── callback/
 │                       └── route.ts          # GET /api/auth/upwork/callback
-├── .npmrc                                    # Forces public npm registry for Vercel
+├── .npmrc                                    # registry=https://registry.npmjs.org/
+├── vercel.json                               # installCommand: npm install --legacy-peer-deps
 ├── .env.example
 ├── next.config.js
 ├── tailwind.config.ts
@@ -109,10 +109,10 @@ C:/Dev/upwork/
 
 ## Known Issues & Fixes
 
-### Corporate npm registry
-- The dev machine uses a corporate Artifactory registry (`artifactory.internal.cba:443`)
-- Vercel cannot reach this registry — `.npmrc` overrides it to `https://registry.npmjs.org/`
-- `package-lock.json` needs to be regenerated using public registry before Vercel build will succeed
+### Corporate npm registry on dev machine
+- Dev machine uses corporate Artifactory registry (`artifactory.internal.cba:443`)
+- Vercel cannot reach this — `.npmrc` overrides to `https://registry.npmjs.org/`
+- Vercel also had an npm `Exit handler never called` bug — fixed by adding `vercel.json` with `installCommand: npm install --legacy-peer-deps`
 
 ### Git history cleanup
 - Two personal photos (`20260505_115505.jpg`, `Screenshot_20260505_123240_Canon PRINT.jpg`) were accidentally uploaded via GitHub browser UI
@@ -155,7 +155,7 @@ npm install
 npm run dev
 # App runs at http://localhost:3000
 
-# Deploy (auto on git push — manual trigger if needed)
+# Push to deploy (auto-deploys to Vercel)
 git push origin main
 ```
 
@@ -166,5 +166,6 @@ git push origin main
 - Always use `https://registry.npmjs.org/` for npm installs — corporate registry won't work outside the dev machine
 - Never commit `.env.local` — it is gitignored
 - All Upwork API interactions must show changes to the user for review before applying
-- The Vercel project is named `upwork` under team `shahidmsyed-projects`
-- After pushing to GitHub, Vercel auto-deploys — check dashboard at https://vercel.com/shahidmsyed-projects/upwork/deployments
+- The production domain is `upwork-sepia.vercel.app` — use this for all callback URLs
+- After pushing to GitHub, Vercel auto-deploys — check https://vercel.com/shahidmsyed-projects/upwork/deployments
+- `vercel.json` overrides the install command — do not remove it
