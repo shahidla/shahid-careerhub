@@ -411,6 +411,7 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 | Vercel npm `Exit handler never called` bug | `vercel.json` sets `installCommand: npm install --legacy-peer-deps` |
 | Personal photos accidentally uploaded to GitHub | Removed via `git filter-branch --force`, force-pushed |
 | Two Vercel URLs live simultaneously | Old URL (`upwork-5j8apg26s...`) still live — use `upwork-sepia.vercel.app` |
+| `package-lock.json` generated with Node 25 breaks Vercel | Deleted lock file from repo — Vercel regenerates it cleanly. Never commit `package-lock.json` from this machine (Node 25). |
 
 ---
 
