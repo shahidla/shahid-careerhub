@@ -1,6 +1,6 @@
 export default function HomePage() {
   const callbackPath = '/api/auth/upwork/callback'
-  const productionCallbackUrl = `https://upwork-5j8apg26s-shahidmsyed-projects.vercel.app${callbackPath}`
+  const productionCallbackUrl = `https://upwork-sepia.vercel.app${callbackPath}`
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-16">
