@@ -4,7 +4,7 @@ const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 async function query<T>(table: string, params = ''): Promise<T[]> {
   const res = await fetch(`${URL}/rest/v1/${table}?${params}`, {
     headers: { apikey: KEY, Authorization: `Bearer ${KEY}` },
-    next: { revalidate: 3600 },
+    next: { revalidate: 0 },
   })
   if (!res.ok) throw new Error(`Failed to fetch ${table}: ${await res.text()}`)
   return res.json()
