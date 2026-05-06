@@ -1,0 +1,129 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+async function seed() {
+  const { error } = await supabase.from('projects').upsert([
+    {
+      name: 'CBA TRBK HANA Modernisation',
+      type: 'S/4HANA modernisation, performance, AI-assisted automation',
+      client: 'Commonwealth Bank',
+      impact: 'Reduced data scrambling runtime from 240 hours to 6 hours (97% improvement). Built Node.js MCP server for controlled SAP RAP OData execution.',
+      description: 'Supported CommBank SAP Transactional Banking HANA modernisation. Contributed to code remediation, DB2-to-HANA query translation, and performance optimisation. Built MCP server exposing RAP OData services as AI-controlled tools.',
+      technologies: ['ABAP', 'CDS', 'AMDP', 'RAP', 'OData', 'Node.js', 'MCP', 'S/4HANA'],
+      tags: ['S/4HANA', 'AI', 'MCP', 'Performance'],
+      url: 'projects/cba-trbk-hana.html',
+      is_ai: true, sort_order: 1
+    },
+    {
+      name: 'Woolworths SAP CAR UDF High-Volume Processing',
+      type: 'High-volume forecasting and machine-learning reporting',
+      client: 'Woolworths',
+      impact: 'Processed more than 40 billion records across partitioned tables.',
+      description: 'Led SAP CAR UDF custom developments for forecast calculations and ML reporting. Built high-volume AMDP, CDS, and ABAP objects with performance optimisation via SQL Trace, AMDP Trace, and PlanViz.',
+      technologies: ['AMDP', 'CDS', 'ABAP', 'SAP CAR', 'SQL Trace', 'PlanViz'],
+      tags: ['Performance', 'High-volume', 'S/4HANA'],
+      url: 'projects/woolworths-car-udf.html',
+      is_ai: false, sort_order: 2
+    },
+    {
+      name: 'Services Australia Financial Instruction Processing',
+      type: 'S/4HANA financial instruction processing and real-time payments',
+      client: 'Services Australia',
+      impact: 'Processed large volumes of financial instruction documents with real-time payment extensions and ML anomaly detection.',
+      description: 'Designed and built solution using CDS-based BOPF, AMDP code pushdown, Gateway/OData/CDS APIs, and ABAP RESTful apps. Extended to process Real Time Payments with ML anomaly detection.',
+      technologies: ['CDS', 'BOPF', 'AMDP', 'OData', 'Gateway', 'S/4HANA', 'Machine Learning'],
+      tags: ['S/4HANA', 'Finance', 'AI'],
+      url: 'projects/services-australia-payments.html',
+      is_ai: true, sort_order: 3
+    },
+    {
+      name: 'Stockland S/4HANA Planning and Analytics',
+      type: 'S/4HANA, REFX, PPM, BW-IP, SAP UI5',
+      client: 'Stockland',
+      impact: 'Delivered full BW-IP planning and analytics stack with Fiori applications and Analysis for Office integration.',
+      description: 'Built ABAP/HANA BW-IP Planning functions, ADSO write-back flows, Analysis for Office integration, SAP UI5 applications, OData services, CDS, AMDP, and Fiori analytical annotations.',
+      technologies: ['BW-IP', 'AMDP', 'CDS', 'SAP UI5', 'OData', 'Fiori', 'REFX', 'PPM'],
+      tags: ['S/4HANA', 'Analytics', 'Planning'],
+      url: 'projects/stockland-planning.html',
+      is_ai: false, sort_order: 4
+    },
+    {
+      name: 'AI-assisted SAP RAP Execution with MCP',
+      type: 'Governed AI-assisted SAP automation',
+      client: 'Commonwealth Bank',
+      impact: 'Exposed SAP RAP OData services as controlled tools through MCP, enabling AI-assisted business task execution.',
+      description: 'Built a Node.js MCP server implementing Anthropic Model Context Protocol to expose SAP RAP OData services as governed tools. Enables AI assistants to execute SAP business tasks without direct GUI interaction.',
+      technologies: ['Node.js', 'MCP', 'RAP', 'OData', 'TypeScript', 'Anthropic'],
+      tags: ['AI', 'MCP', 'Automation', 'SAP'],
+      url: 'projects/mcp-rap-ai-automation.html',
+      is_ai: true, sort_order: 5
+    },
+    {
+      name: 'SAP Labs Machine Learning and HANA Engineering',
+      type: 'Predictive analytics, HANA native development',
+      client: 'Mohawk, Mosaic, BMW, BHP',
+      impact: 'Built PAL/APL/R ML models for quality prediction, HANA native minefield visualisations, BMW SRM procurement add-ons, and BHP UI Logging extensions.',
+      description: 'Mohawk: ML models using PAL, APL, R for carpet quality prediction (CRISP-DM). Mosaic: HANA native minefield borehole visualisation system. BMW: Custom SRM indirect procurement add-on. BHP: Custom UI Logging solution on LOGWIN.',
+      technologies: ['SAP HANA', 'PAL', 'APL', 'R', 'XSJS', 'XSODATA', 'SAP UI5', 'Web Dynpro ABAP'],
+      tags: ['AI', 'Machine Learning', 'HANA', 'Analytics'],
+      url: 'projects/sap-labs-product-engineering.html',
+      is_ai: true, sort_order: 6
+    },
+    {
+      name: 'Queensland Health Digital Passport',
+      type: 'SAP BTP CAP application',
+      client: 'Queensland Health',
+      impact: 'Consolidated employee information from SAP ECC and QHealth Platform into a unified BTP service layer.',
+      description: 'Contributed to development of Digital Passport Application built using SAP BTP CAP model, consolidating employee information from multiple source systems.',
+      technologies: ['SAP BTP', 'CAP', 'SAP ECC', 'Node.js'],
+      tags: ['BTP', 'CAP'],
+      url: '',
+      is_ai: false, sort_order: 7
+    },
+    {
+      name: 'Department of Corrections NZ — Procurement and Fiori',
+      type: 'S/4HANA upgrade readiness, Fiori, clean core',
+      client: 'Department of Corrections NZ',
+      impact: 'Delivered custom Fiori apps, clean-core remediation, and upgrade readiness artefacts.',
+      description: 'Built custom analytical Fiori apps, activated standard apps, applied Adapt UI extensibility. Used SCMON, SUSG, and Custom Code Migration App for clean-core scoping and remediation.',
+      technologies: ['SAP Fiori', 'ABAP', 'SCMON', 'SUSG', 'Adapt UI', 'Custom Code Migration'],
+      tags: ['S/4HANA', 'Clean Core', 'Fiori'],
+      url: '',
+      is_ai: false, sort_order: 8
+    },
+    {
+      name: 'DyFlex — Roy Hill and Syntax S/4HANA Transformation',
+      type: 'S/4HANA custom code remediation and migration',
+      client: 'Roy Hill, Syntax',
+      impact: 'Remediated custom code for S/4HANA compatibility across cloud and clean-core standards.',
+      description: 'Remediated custom code, replaced obsolete objects, adapted enhancements for clean-core and cloud standards, and developed migration support artefacts.',
+      technologies: ['ABAP', 'S/4HANA', 'Clean Core', 'ATC', 'Custom Code Migration'],
+      tags: ['S/4HANA', 'Clean Core'],
+      url: '',
+      is_ai: false, sort_order: 9
+    },
+    {
+      name: 'Real-Time Speech and Predictive Analytics — Patent US10304013B2',
+      type: 'Hackathon — accessibility and AI',
+      client: 'SAP Labs',
+      impact: 'Finalist SAP What the Hack 2.0. Granted US patent US10304013B2.',
+      description: 'Designed and built a click-free Real Time Speech and Predictive Analytics application for differently enabled people using SAP HANA. Patent granted: US10304013B2.',
+      technologies: ['SAP HANA', 'Speech Recognition', 'Predictive Analytics'],
+      tags: ['AI', 'Patent', 'Accessibility'],
+      url: 'https://patents.google.com/patent/US10304013B2/en',
+      is_ai: true, sort_order: 10
+    }
+  ])
+
+  if (error) {
+    console.error('Error seeding projects:', error)
+  } else {
+    console.log('Projects seeded successfully')
+  }
+}
+
+seed()
