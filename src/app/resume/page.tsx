@@ -31,6 +31,13 @@ export default async function ResumePage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
 
+      {/* Nav */}
+      <nav className="flex gap-4 text-sm border-b border-gray-200 pb-4">
+        <a href="/" className="text-gray-500 hover:text-gray-900">Home</a>
+        <span className="text-gray-900 font-medium">SAP Profile</span>
+        <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio →</a>
+      </nav>
+
       {/* Header */}
       <section>
         <h1 className="text-4xl font-bold tracking-tight">{profile.name}</h1>
@@ -119,18 +126,7 @@ export default async function ResumePage() {
             <div key={p.id} className="border-l-2 border-gray-200 pl-4">
               <div className="flex flex-wrap justify-between gap-1">
                 <div>
-                  {p.url ? (
-                    <a
-                      href={p.url.startsWith('http') ? p.url : `/${p.url}`}
-                      target={p.url.startsWith('http') ? '_blank' : undefined}
-                      rel="noopener noreferrer"
-                      className="font-semibold text-blue-700 hover:underline"
-                    >
-                      {p.name}
-                    </a>
-                  ) : (
-                    <span className="font-semibold text-gray-900">{p.name}</span>
-                  )}
+                  <span className="font-semibold text-gray-900">{p.name}</span>
                   <span className="text-gray-500 text-sm"> · {p.client}</span>
                 </div>
                 <div className="flex flex-wrap gap-1">
@@ -141,10 +137,16 @@ export default async function ResumePage() {
               </div>
               <p className="mt-1 text-sm font-medium text-blue-800">{p.impact}</p>
               <p className="mt-1 text-sm text-gray-700 leading-relaxed">{p.description}</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
                 {p.technologies.map((t) => (
                   <span key={t} className="tag-sm">{t}</span>
                 ))}
+                {p.url && (
+                  <a href={p.url} target="_blank" rel="noopener noreferrer"
+                    className="ml-auto text-xs text-blue-600 hover:underline shrink-0">
+                    Case study →
+                  </a>
+                )}
               </div>
             </div>
           ))}

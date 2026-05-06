@@ -36,6 +36,13 @@ export default async function AiPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
 
+      {/* Nav */}
+      <nav className="flex gap-4 text-sm border-b border-purple-200 pb-4">
+        <a href="/" className="text-gray-500 hover:text-gray-900">Home</a>
+        <a href="/resume" className="text-blue-600 hover:text-blue-800">SAP Profile →</a>
+        <span className="text-purple-700 font-medium">AI Portfolio</span>
+      </nav>
+
       {/* Hero */}
       <section>
         <p className="text-sm font-semibold text-purple-600 uppercase tracking-widest mb-2">AI Engineering Portfolio</p>
