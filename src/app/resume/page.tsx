@@ -20,6 +20,7 @@ const NAV = [
   { id: 'profile',        label: 'Profile' },
   { id: 'experience',     label: 'Experience' },
   { id: 'projects',       label: 'Projects' },
+  { id: 'ai-work',        label: 'AI Work' },
   { id: 'certifications', label: 'Certifications' },
   { id: 'blogs',          label: 'Blogs' },
   { id: 'patent',         label: 'Patent' },
@@ -39,20 +40,27 @@ export default async function ResumePage() {
       getAchievements(),
     ])
 
-  const patent = achievements.find((a) => a.title.includes('Patent') || a.description.includes('US10304013B2'))
-  const awards = achievements.filter((a) => !a.title.includes('Patent') && !a.description.includes('US10304013B2'))
+  const patent = achievements.find((a) => a.description.includes('US10304013B2'))
+  const awards = achievements.filter((a) => !a.description.includes('US10304013B2'))
+  const aiProjects = projects.filter((p) => p.is_ai)
+  const aiBlogs = blogs.filter((b) => b.is_ai)
 
   return (
     <div className="min-h-screen bg-white">
 
       {/* Top bar */}
-      <header className="border-b border-gray-200 px-6 py-3 flex gap-6 text-sm sticky top-0 bg-white z-20">
+      <header className="border-b border-gray-200 px-6 py-3 flex items-center gap-6 text-sm sticky top-0 bg-white z-20">
         <a href="/" className="text-gray-400 hover:text-gray-700">Home</a>
         <span className="text-gray-900 font-medium">SAP Profile</span>
-        <a href="/ai" className="text-purple-600 hover:text-purple-800 ml-auto">AI Portfolio →</a>
+        <div className="ml-auto flex items-center gap-4">
+          <a href="/chat" className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-1.5 rounded-full transition-colors">
+            Chat with my resume
+          </a>
+          <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio →</a>
+        </div>
       </header>
 
-      <div className="max-w-6xl mx-auto flex gap-0">
+      <div className="max-w-6xl mx-auto flex">
 
         {/* Sticky side nav */}
         <aside className="hidden lg:block w-48 shrink-0">
@@ -62,26 +70,23 @@ export default async function ResumePage() {
                 <li key={item.id}>
                   <a
                     href={`#${item.id}`}
-                    className="block text-sm text-gray-500 hover:text-gray-900 py-1 pl-3 border-l-2 border-transparent hover:border-blue-500 transition-colors"
+                    className={`block text-sm py-1 pl-3 border-l-2 border-transparent hover:border-blue-500 transition-colors ${item.id === 'ai-work' ? 'text-purple-600 hover:text-purple-900' : 'text-gray-500 hover:text-gray-900'}`}
                   >
                     {item.label}
                   </a>
                 </li>
               ))}
             </ul>
-            <div className="mt-8 pt-6 border-t border-gray-100 space-y-1">
+            <div className="mt-8 pt-6 border-t border-gray-100 space-y-2">
+              <a href="/chat" className="block text-xs font-medium text-blue-600 hover:text-blue-800">
+                Chat with my resume
+              </a>
               <a href={`mailto:${profile.contact.email}`} className="block text-xs text-gray-400 hover:text-gray-700 truncate">
                 {profile.contact.email}
               </a>
-              <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-400 hover:text-gray-700">
-                LinkedIn
-              </a>
-              <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-400 hover:text-gray-700">
-                GitHub
-              </a>
-              <a href={profile.contact.sapCommunity} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-400 hover:text-gray-700">
-                SAP Community
-              </a>
+              <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-400 hover:text-gray-700">LinkedIn</a>
+              <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-400 hover:text-gray-700">GitHub</a>
+              <a href={profile.contact.sapCommunity} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-400 hover:text-gray-700">SAP Community</a>
             </div>
           </nav>
         </aside>
@@ -94,12 +99,25 @@ export default async function ResumePage() {
             <h1 className="text-3xl font-bold tracking-tight">{profile.name}</h1>
             <p className="mt-2 text-base text-gray-600">{profile.headline}</p>
 
-            {/* Contact — mobile only */}
-            <div className="mt-3 flex flex-wrap gap-3 text-sm text-gray-500 lg:hidden">
+            {/* Contact */}
+            <div className="mt-3 flex flex-wrap gap-3 text-sm text-gray-500">
               <a href={`mailto:${profile.contact.email}`} className="hover:text-gray-900">{profile.contact.email}</a>
               <span>{profile.contact.phone}</span>
               <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900">LinkedIn</a>
               <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900">GitHub</a>
+              <a href={profile.contact.sapCommunity} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900">SAP Community</a>
+            </div>
+
+            {/* D — Prominent chat CTA */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href="/chat"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                <span>💬</span> Ask about my experience
+              </a>
+              <a href="/chat"
+                className="inline-flex items-center gap-2 border border-blue-200 text-blue-700 hover:bg-blue-50 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                <span>📋</span> Paste a job — get match score
+              </a>
             </div>
 
             {/* Proof points */}
@@ -143,6 +161,30 @@ export default async function ResumePage() {
 
           <hr className="border-gray-100" />
 
+          {/* A — AI highlight banner */}
+          <section className="rounded-xl border border-purple-200 bg-purple-50 p-6">
+            <div className="flex flex-wrap justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold text-purple-500 uppercase tracking-widest mb-1">Also an AI Engineer</p>
+                <h2 className="text-lg font-bold text-gray-900">SAP + AI — real delivery, not just theory</h2>
+                <p className="mt-2 text-sm text-gray-600 max-w-xl">
+                  MCP server for AI-assisted SAP execution · ML models at SAP Labs · anomaly detection in production ·
+                  7 published AI blogs · building RAG pipelines, embeddings, and agents hands-on right now.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 shrink-0 justify-center">
+                <a href="/ai" className="inline-block bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg text-center transition-colors">
+                  View AI Portfolio →
+                </a>
+                <a href="/chat" className="inline-block border border-purple-300 text-purple-700 hover:bg-purple-100 text-sm font-medium px-4 py-2 rounded-lg text-center transition-colors">
+                  Chat with my resume
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <hr className="border-gray-100" />
+
           {/* Experience */}
           <section id="experience">
             <h2 className="section-heading">Experience</h2>
@@ -170,32 +212,73 @@ export default async function ResumePage() {
 
           <hr className="border-gray-100" />
 
-          {/* Projects */}
+          {/* Projects — B: AI projects visually distinct */}
           <section id="projects">
             <h2 className="section-heading">Key Projects</h2>
-            <div className="mt-6 space-y-8">
+            <div className="mt-6 space-y-6">
               {projects.map((p) => (
-                <div key={p.id} className="border-l-2 border-gray-100 pl-5">
+                <div key={p.id}
+                  className={`border-l-2 pl-5 ${p.is_ai ? 'border-purple-300' : 'border-gray-100'}`}>
                   <div className="flex flex-wrap justify-between gap-2">
-                    <div>
+                    <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-900">{p.name}</span>
-                      <span className="text-gray-500 text-sm"> · {p.client}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {p.tags.map((t) => (
-                        <span key={t} className={`tag-sm ${p.is_ai ? 'bg-purple-100 text-purple-700' : ''}`}>{t}</span>
-                      ))}
+                      {p.is_ai && (
+                        <span className="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">AI</span>
+                      )}
+                      <span className="text-gray-500 text-sm">· {p.client}</span>
                     </div>
                   </div>
                   <p className="mt-1 text-sm font-medium text-blue-700">{p.impact}</p>
                   <p className="mt-1 text-sm text-gray-700 leading-relaxed">{p.description}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {p.technologies.map((t) => (
-                      <span key={t} className="tag-sm">{t}</span>
+                      <span key={t} className={`tag-sm ${p.is_ai ? 'bg-purple-50 text-purple-700' : ''}`}>{t}</span>
                     ))}
                   </div>
                 </div>
               ))}
+            </div>
+          </section>
+
+          <hr className="border-gray-100" />
+
+          {/* C — AI Work section */}
+          <section id="ai-work">
+            <div className="flex items-center gap-3 border-b border-gray-200 pb-2">
+              <h2 className="text-xl font-bold text-gray-900">AI Work</h2>
+              <span className="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">SAP + AI</span>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">AI delivery within SAP, exploration through prototypes, and published thought leadership.</p>
+
+            <div className="mt-6 space-y-4">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">AI Projects</h3>
+              {aiProjects.map((p) => (
+                <div key={p.id} className="border-l-2 border-purple-200 pl-5">
+                  <span className="font-semibold text-gray-900 text-sm">{p.name}</span>
+                  <span className="text-gray-500 text-sm"> · {p.client}</span>
+                  <p className="mt-0.5 text-sm text-purple-700 font-medium">{p.impact}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 space-y-4">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">AI Blogs — SAP Community</h3>
+              <ul className="space-y-3">
+                {aiBlogs.map((b) => (
+                  <li key={b.id} className="border-l-2 border-purple-200 pl-5">
+                    <a href={b.url} target="_blank" rel="noopener noreferrer"
+                      className="text-sm text-purple-700 hover:underline font-medium">
+                      {b.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-8">
+              <a href="/ai" className="inline-block bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                Full AI Portfolio →
+              </a>
             </div>
           </section>
 
@@ -229,11 +312,12 @@ export default async function ResumePage() {
             <p className="mt-2 text-sm text-gray-500">Thought leadership on SAP BTP, event-driven architecture, AI-assisted workflows, and integration patterns.</p>
             <ul className="mt-5 space-y-4">
               {blogs.map((b) => (
-                <li key={b.id} className="border-l-2 border-gray-100 pl-5">
+                <li key={b.id} className={`border-l-2 pl-5 ${b.is_ai ? 'border-purple-200' : 'border-gray-100'}`}>
                   <a href={b.url} target="_blank" rel="noopener noreferrer"
-                    className="text-sm font-medium text-blue-700 hover:underline">
+                    className={`text-sm font-medium hover:underline ${b.is_ai ? 'text-purple-700' : 'text-blue-700'}`}>
                     {b.title}
                   </a>
+                  {b.is_ai && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {b.tags.map((t) => (
                       <span key={t} className="tag-sm">{t}</span>
