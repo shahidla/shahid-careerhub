@@ -1,8 +1,16 @@
--- Enable pgvector extension for embeddings
 create extension if not exists vector;
 
--- Profile (single row — your personal info)
-create table if not exists profile (
+drop table if exists resume_chunks;
+drop table if exists jobs;
+drop table if exists achievements;
+drop table if exists blogs;
+drop table if exists skills;
+drop table if exists certifications;
+drop table if exists projects;
+drop table if exists experience;
+drop table if exists profile;
+
+create table profile (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   headline text,
@@ -14,8 +22,7 @@ create table if not exists profile (
   updated_at timestamptz default now()
 );
 
--- Experience (one row per role)
-create table if not exists experience (
+create table experience (
   id uuid primary key default gen_random_uuid(),
   company text not null,
   client text,
@@ -29,8 +36,7 @@ create table if not exists experience (
   updated_at timestamptz default now()
 );
 
--- Projects (one row per project)
-create table if not exists projects (
+create table projects (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   type text,
@@ -45,20 +51,19 @@ create table if not exists projects (
   updated_at timestamptz default now()
 );
 
--- Certifications
-create table if not exists certifications (
+create table certifications (
   id uuid primary key default gen_random_uuid(),
-  name text not null,
+  title text not null,
   code text,
-  credly_url text,
-  pdf_url text,
+  issuer text,
+  year text,
+  credential_url text,
   is_ai boolean default false,
   sort_order integer,
   updated_at timestamptz default now()
 );
 
--- Skills
-create table if not exists skills (
+create table skills (
   id uuid primary key default gen_random_uuid(),
   category text not null,
   items text[],
@@ -67,20 +72,17 @@ create table if not exists skills (
   updated_at timestamptz default now()
 );
 
--- Blogs
-create table if not exists blogs (
+create table blogs (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   url text,
-  summary text,
   tags text[],
   is_ai boolean default false,
-  published_at text,
+  sort_order integer,
   updated_at timestamptz default now()
 );
 
--- Achievements
-create table if not exists achievements (
+create table achievements (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   description text,
@@ -89,8 +91,7 @@ create table if not exists achievements (
   updated_at timestamptz default now()
 );
 
--- Jobs (aggregated + manual)
-create table if not exists jobs (
+create table jobs (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   company text,
@@ -106,8 +107,7 @@ create table if not exists jobs (
   updated_at timestamptz default now()
 );
 
--- Resume chunks for RAG (embeddings)
-create table if not exists resume_chunks (
+create table resume_chunks (
   id uuid primary key default gen_random_uuid(),
   content text not null,
   source_table text,
@@ -116,7 +116,6 @@ create table if not exists resume_chunks (
   updated_at timestamptz default now()
 );
 
--- Index for fast vector similarity search
 create index if not exists resume_chunks_embedding_idx
   on resume_chunks using ivfflat (embedding vector_cosine_ops)
   with (lists = 100);

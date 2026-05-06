@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-05 (session 2)
+Last updated: 2026-05-06 (session 3)
 
 ---
 
@@ -71,6 +71,9 @@ Set in Vercel project settings AND `.env.local` for local dev. Never commit `.en
 
 | Variable | Value / Status |
 |---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://nlklhnptshxtywojmsed.supabase.co` — set in `.env.local` and Vercel |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Set in `.env.local` and Vercel |
+| `SUPABASE_SERVICE_ROLE_KEY` | Set in `.env.local` and Vercel |
 | `UPWORK_CLIENT_ID` | Pending — waiting for Upwork developer keys |
 | `UPWORK_CLIENT_SECRET` | Pending — waiting for Upwork developer keys |
 | `UPWORK_REDIRECT_URI` | `https://upwork-5j8apg26s-shahidmsyed-projects.vercel.app/api/auth/upwork/callback` (registered with Upwork) |
@@ -84,17 +87,31 @@ Set in Vercel project settings AND `.env.local` for local dev. Never commit `.en
 
 ```
 C:/Dev/upwork/
-├── src/app/
-│   ├── layout.tsx
-│   ├── page.tsx                          # Home page — Connect Upwork button + callback URLs
-│   ├── globals.css
-│   └── api/
-│       ├── health/route.ts               # GET /api/health → { ok: true }
-│       └── auth/upwork/
-│           ├── login/route.ts            # GET /api/auth/upwork/login → redirects to Upwork OAuth
-│           └── callback/route.ts         # GET /api/auth/upwork/callback → exchanges code for token
-├── .npmrc                                # registry=https://registry.npmjs.org/
-├── vercel.json                           # installCommand: npm install --legacy-peer-deps
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx                          # Home page — Connect Upwork button + callback URLs
+│   │   ├── globals.css
+│   │   └── api/
+│   │       ├── health/route.ts               # GET /api/health → { ok: true }
+│   │       └── auth/upwork/
+│   │           ├── login/route.ts            # GET /api/auth/upwork/login → redirects to Upwork OAuth
+│   │           └── callback/route.ts         # GET /api/auth/upwork/callback → exchanges code for token
+│   └── lib/
+│       └── supabase.ts                       # supabase (anon) + supabaseAdmin (service role) clients
+├── supabase/
+│   ├── schema.sql                            # DROP + CREATE all 9 tables — run first in SQL Editor
+│   ├── seed-1-profile.sql                    # 1 row — name, headline, contact, proof points
+│   ├── seed-2-certifications.sql             # 9 certifications
+│   ├── seed-3-skills.sql                     # 5 skill categories
+│   ├── seed-4-blogs.sql                      # 7 SAP Community blogs
+│   ├── seed-5-achievements.sql               # 8 achievements/awards
+│   ├── seed-6-experience.sql                 # 9 experience roles
+│   └── seed-7-projects.sql                   # 10 key projects
+├── docs/
+│   └── resume.pdf                            # Reference copy of PDF resume
+├── .npmrc                                    # registry=https://registry.npmjs.org/
+├── vercel.json                               # installCommand: npm install --legacy-peer-deps
 ├── .env.example
 ├── next.config.js
 ├── tailwind.config.ts
@@ -117,6 +134,29 @@ C:/Dev/upwork/
 - [x] GitHub → Vercel auto-deploy connected
 - [x] Personal images purged from git history (`git filter-branch`)
 - [x] `.npmrc` + `vercel.json` fixes applied for Vercel build
+- [x] Supabase project created — `https://nlklhnptshxtywojmsed.supabase.co`
+- [x] `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` added to `.env.local` and Vercel
+- [x] `schema.sql` written and run in Supabase SQL Editor — all 9 tables created with correct columns
+- [x] `src/lib/supabase.ts` created — `supabase` (anon) and `supabaseAdmin` (service role) clients
+- [x] 7 SQL seed files created in `supabase/` — ready to run in Supabase SQL Editor one at a time:
+  - `seed-1-profile.sql` — profile (1 row)
+  - `seed-2-certifications.sql` — 9 SAP + AI certifications
+  - `seed-3-skills.sql` — 5 skill categories
+  - `seed-4-blogs.sql` — 7 SAP Community blogs
+  - `seed-5-achievements.sql` — 8 awards and recognitions
+  - `seed-6-experience.sql` — 9 roles from 2007 to present
+  - `seed-7-projects.sql` — 10 key projects
+- [x] PDF resume saved to `docs/resume.pdf` for reference
+
+### Pending — Run seed files in Supabase SQL Editor
+Run these in order at https://supabase.com/dashboard/project/nlklhnptshxtywojmsed/sql/new :
+1. `supabase/seed-1-profile.sql`
+2. `supabase/seed-2-certifications.sql`
+3. `supabase/seed-3-skills.sql`
+4. `supabase/seed-4-blogs.sql`
+5. `supabase/seed-5-achievements.sql`
+6. `supabase/seed-6-experience.sql`
+7. `supabase/seed-7-projects.sql`
 
 ### Pending — Phase 1 (Upwork OAuth)
 - [ ] Receive Upwork developer keys
@@ -412,6 +452,9 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 | Personal photos accidentally uploaded to GitHub | Removed via `git filter-branch --force`, force-pushed |
 | Two Vercel URLs live simultaneously | Old URL (`upwork-5j8apg26s...`) still live — use `upwork-sepia.vercel.app` |
 | `package-lock.json` generated with Node 25 breaks Vercel | Deleted lock file from repo — Vercel regenerates it cleanly. Never commit `package-lock.json` from this machine (Node 25). |
+| `supabase-js` v2.105.3 broken — missing `iceberg-js` peer dep | Do NOT use `createClient` from supabase-js in seed scripts. Use plain `fetch` against `/rest/v1/<table>` with `apikey` + `Authorization: Bearer` headers. |
+| Corporate proxy blocks outbound HTTPS to supabase.co | Cannot run seed scripts locally. Use Supabase SQL Editor in browser to run `.sql` files. |
+| `tsx` not available globally — `npx` blocked by proxy | Use tsx from trbk-mcp project: `/c/Dev/trbk-mcp/node_modules/.bin/tsx` (only works when proxy not blocking supabase) |
 
 ---
 
