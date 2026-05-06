@@ -13,7 +13,7 @@ const STARTERS = [
   "What makes Shahid different from other SAP architects?",
 ]
 
-const ACCESS_PASSWORD = 'CHAT_PASSWORD_REMOVED'
+const ACCESS_PASSWORD = process.env.NEXT_PUBLIC_CHAT_PASSWORD ?? 'CHAT_PASSWORD_REMOVED'
 
 export default function ChatPage() {
   const [unlocked, setUnlocked] = useState(false)
