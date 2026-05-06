@@ -13,7 +13,13 @@ const STARTERS = [
   "What makes Shahid different from other SAP architects?",
 ]
 
+const ACCESS_PASSWORD = 'CHAT_PASSWORD_REMOVED'
+
 export default function ChatPage() {
+  const [unlocked, setUnlocked] = useState(false)
+  const [passwordInput, setPasswordInput] = useState('')
+  const [passwordError, setPasswordError] = useState(false)
+
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,6 +29,15 @@ export default function ChatPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  function unlock() {
+    if (passwordInput === ACCESS_PASSWORD) {
+      setUnlocked(true)
+      setPasswordError(false)
+    } else {
+      setPasswordError(true)
+    }
+  }
 
   async function send(text: string) {
     if (!text.trim() || loading) return
@@ -52,6 +67,41 @@ export default function ChatPage() {
       e.preventDefault()
       send(input)
     }
+  }
+
+  if (!unlocked) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
+        <div className="w-full max-w-sm space-y-5">
+          <div className="text-center">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Resume Chat</p>
+            <h1 className="text-xl font-bold text-gray-900">Shahid M Syed</h1>
+            <p className="text-sm text-gray-500 mt-1">SAP Development Architect + AI Engineer</p>
+          </div>
+          <div className="space-y-3">
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false) }}
+              onKeyDown={(e) => e.key === 'Enter' && unlock()}
+              placeholder="Enter access code"
+              className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${passwordError ? 'border-red-300' : 'border-gray-200'}`}
+              autoFocus
+            />
+            {passwordError && <p className="text-xs text-red-500">Incorrect access code.</p>}
+            <button
+              onClick={unlock}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-3 rounded-xl transition-colors"
+            >
+              Enter
+            </button>
+          </div>
+          <p className="text-xs text-gray-400 text-center">
+            Contact <a href="mailto:shahid.la@gmail.com" className="hover:underline">shahid.la@gmail.com</a> for access
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
