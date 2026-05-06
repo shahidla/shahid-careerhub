@@ -1,28 +1,32 @@
-import { createClient } from '@supabase/supabase-js'
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
-async function seed() {
-  const { error } = await supabase.from('certifications').upsert([
-    { name: 'SAP Certified Professional - Solution Architect - SAP BTP', code: 'P_BTPA_2408', credly_url: 'https://www.credly.com/badges/8c21e6e3-b9fa-4c00-8728-f6297b770d23/public_url', is_ai: true, sort_order: 1 },
-    { name: 'SAP Certified Development Associate - SAP HANA Cloud 1.0', code: 'C_HCDEV_05', credly_url: 'https://www.credly.com/badges/c570bada-159d-4ca0-bf68-8e7bee505b01/public_url', is_ai: false, sort_order: 2 },
-    { name: 'SAP Certified Associate - Backend Developer - SAP Cloud Application Programming Model', code: '', credly_url: 'https://www.credly.com/badges/9f70d269-781c-4949-bc4d-b8571faf328c/public_url', is_ai: true, sort_order: 3 },
-    { name: 'SAP Certified Development Associate - SAP BTP Extensions with SAP Cloud Application Programming Model', code: 'C_CPE_14', credly_url: 'https://www.credly.com/badges/d7951a8e-123e-4b7e-9c11-e2768e4b5db4/public_url', is_ai: false, sort_order: 4 },
-    { name: 'SAP Certified Associate - Integration Developer', code: 'C_CPI_2404', credly_url: 'https://www.credly.com/badges/81b8caba-b8ab-4697-bef2-07202718e10f/public_url', is_ai: false, sort_order: 5 },
-    { name: 'SAP Certified Associate - SAP Fiori Application Developer', code: 'C_FIORD', credly_url: 'https://www.credly.com/badges/17111628-1cf3-4590-bff4-6bdec88d58a2/public_url', is_ai: false, sort_order: 6 },
-    { name: 'SAP Certified Associate - SAP Build Developer', code: 'C_LCNC_2406', credly_url: 'https://www.credly.com/earner/earned/badge/4e91341f-8c8d-4a5d-a025-7a2d228ec96e', is_ai: false, sort_order: 7 },
-    { name: 'SAP Certified Development Associate - SAP HANA 2.0', code: 'C_HANADEV_13', credly_url: 'https://www.credly.com/badges/7db66b04-736e-4453-b4ee-4284df03f334/public_url', is_ai: false, sort_order: 8 },
-    { name: 'SAP Certified Development Specialist - ABAP for SAP HANA 2.0', code: 'E_HANAAW_18', credly_url: 'https://www.credly.com/badges/0a7276d8-d49a-4109-af75-eea0d2b5fa88/public_url', is_ai: false, sort_order: 9 }
-  ])
-
-  if (error) {
-    console.error('Error seeding certifications:', error)
+async function upsert(table: string, data: object[]) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': KEY,
+      'Authorization': `Bearer ${KEY}`,
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify(data)
+  })
+  if (!res.ok) {
+    console.error(`Error seeding ${table}:`, await res.text())
   } else {
-    console.log('Certifications seeded successfully')
+    console.log(`${table} seeded successfully`)
   }
 }
 
-seed()
+upsert('certifications', [
+  { title: 'SAP Certified Associate – Back-End Developer – ABAP Cloud', code: 'C_ABAPD_2309', issuer: 'SAP', year: '2024', credential_url: 'https://www.credly.com/badges/13d2fd08-e3bb-4d4b-aff2-2b7d15ca4e96', is_ai: false, sort_order: 1 },
+  { title: 'SAP Certified Associate – SAP BTP Solution Architect', code: 'C_BTPSA_2408', issuer: 'SAP', year: '2024', credential_url: 'https://www.credly.com/badges/a0f8baaa-5b9f-4b47-af51-f6c8d5db499f', is_ai: false, sort_order: 2 },
+  { title: 'Microsoft Certified: Azure AI Fundamentals', code: 'AI-900', issuer: 'Microsoft', year: '2024', credential_url: 'https://www.credly.com/badges/7cfd2e94-d0ee-49bf-a7e5-6bd58f3f62d1', is_ai: true, sort_order: 3 },
+  { title: 'SAP Certified Associate – SAP S/4HANA Cloud Private Edition, ABAP Programming', code: 'C_S4HDEV_2411', issuer: 'SAP', year: '2024', credential_url: 'https://www.credly.com/badges/6ca1fc42-5024-499b-b18e-81dce3a6c52f', is_ai: false, sort_order: 4 },
+  { title: 'Developing AI Applications with Python and Flask', code: '', issuer: 'IBM / Coursera', year: '2024', credential_url: 'https://www.coursera.org/account/accomplishments/verify/SDLQPRNXK4ME', is_ai: true, sort_order: 5 },
+  { title: 'SAP Certified Associate – Integration Developer', code: 'C_CPI_15', issuer: 'SAP', year: '2023', credential_url: 'https://www.credly.com/badges/9c32bc2e-0fe7-4ee7-8e17-a1d1ce09d0c5', is_ai: false, sort_order: 6 },
+  { title: 'SAP Certified Application Associate – SAP HANA 2.0 (SPS05)', code: 'C_HANATEC_17', issuer: 'SAP', year: '2021', credential_url: 'https://www.credly.com/badges/0c1cba7b-e9af-44b3-b03e-c04823b3a6fa', is_ai: false, sort_order: 7 },
+  { title: 'SAP Certified Development Associate – ABAP with SAP NetWeaver 7.50', code: 'C_TAW12_750', issuer: 'SAP', year: '2016', credential_url: '', is_ai: false, sort_order: 8 },
+  { title: 'SAP Certified Development Specialist – ABAP for SAP HANA 2.0', code: 'E_HANAAW_17', issuer: 'SAP', year: '2018', credential_url: '', is_ai: false, sort_order: 9 }
+])
