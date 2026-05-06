@@ -1,3 +1,5 @@
+DELETE FROM achievements;
+
 INSERT INTO achievements (title, description, year, sort_order) VALUES
   ('Winner — Google TensorFlow IoT Challenge', 'Built a machine learning image classification application using Python and Google TensorFlow at SAP Labs.', '2017', 1),
   ('Finalist — SAP What the Hack 2.0', 'Designed and built a click-free Real Time Speech and Predictive Analytics application for differently enabled people using SAP HANA. Granted patent US10304013B2.', '2016', 2),
