@@ -43,7 +43,7 @@ async function callAnthropic(messages: Message[]): Promise<string> {
   })
   if (!res.ok) throw new Error(await res.text())
   const data = await res.json()
-  return data.content?.[0]?.text ?? 'No response.'
+  return (data.content?.[0]?.text ?? 'No response.') + '\n\n_via Claude_'
 }
 
 async function callOpenAI(messages: Message[]): Promise<string> {
@@ -61,7 +61,7 @@ async function callOpenAI(messages: Message[]): Promise<string> {
   })
   if (!res.ok) throw new Error(await res.text())
   const data = await res.json()
-  return data.choices?.[0]?.message?.content ?? 'No response.'
+  return (data.choices?.[0]?.message?.content ?? 'No response.') + '\n\n_via GPT-4o mini_'
 }
 
 export async function POST(req: NextRequest) {
