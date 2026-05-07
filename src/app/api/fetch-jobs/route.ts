@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
+const OPENAI_KEY = process.env.OPENAI_API_KEY
 
 type RawJob = {
   source: string
@@ -194,13 +196,121 @@ async function fetchAdzuna(): Promise<RawJob[]> {
   })
 }
 
+// ─── AI Job Scoring ───────────────────────────────────────────────────────────
+
+type UnscoredJob = { id: string; title: string; description: string; tags: string[]; location: string; company: string }
+
+async function fetchResumeSnapshot(): Promise<string> {
+  const [profileRes, expRes, skillsRes] = await Promise.all([
+    fetch(`${SUPABASE_URL}/rest/v1/profile?limit=1`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }),
+    fetch(`${SUPABASE_URL}/rest/v1/experience?order=sort_order.asc`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }),
+    fetch(`${SUPABASE_URL}/rest/v1/skills?order=sort_order.asc`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }),
+  ])
+  const [profiles, experiences, skills] = await Promise.all([profileRes.json(), expRes.json(), skillsRes.json()])
+  const profile = profiles[0]
+
+  const expText = experiences.map((e: { role: string; company: string; description: string; technologies: string[] }) =>
+    `- ${e.role} at ${e.company}: ${e.description} (${e.technologies?.join(', ')})`
+  ).join('\n')
+
+  const skillText = skills.map((s: { category: string; items: string[] }) =>
+    `${s.category}: ${s.items?.join(', ')}`
+  ).join('\n')
+
+  return `Name: ${profile.name}
+Headline: ${profile.headline}
+Years experience: ${profile.years_experience}
+Skills:\n${skillText}
+Experience:\n${expText}`
+}
+
+async function scoreJob(resume: string, job: UnscoredJob): Promise<{ score: number; reasoning: string }> {
+  const prompt = `You are evaluating a job posting against a candidate's resume. Return a JSON object with two fields:
+- "score": integer 0-100 representing how well the candidate matches this job
+- "reasoning": one sentence explaining the score
+
+Resume:
+${resume}
+
+Job Title: ${job.title}
+Company: ${job.company}
+Location: ${job.location}
+Description: ${job.description.slice(0, 1500)}
+Tags: ${job.tags?.join(', ')}
+
+Respond with only valid JSON, no markdown.`
+
+  if (ANTHROPIC_KEY) {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 128, messages: [{ role: 'user', content: prompt }] }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      return JSON.parse(data.content[0].text.trim())
+    }
+    console.error('Anthropic scoring failed, falling back to OpenAI')
+  }
+
+  if (OPENAI_KEY) {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${OPENAI_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 128, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
+    })
+    if (!res.ok) throw new Error(`OpenAI scoring failed: ${await res.text()}`)
+    const data = await res.json()
+    return JSON.parse(data.choices[0].message.content.trim())
+  }
+
+  throw new Error('No LLM API key configured')
+}
+
+async function saveScore(id: string, score: number, reasoning: string): Promise<void> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ match_score: score, match_reasoning: reasoning }),
+  })
+  if (!res.ok) throw new Error(`Supabase PATCH failed: ${await res.text()}`)
+}
+
+async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?match_score=is.null&select=id,title,description,tags,location,company&limit=50`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+  })
+  if (!res.ok) return { scored: 0, failed: 0 }
+  const jobs: UnscoredJob[] = await res.json()
+  if (jobs.length === 0) return { scored: 0, failed: 0 }
+
+  const resume = await fetchResumeSnapshot()
+
+  let scored = 0, failed = 0
+  const CONCURRENCY = 5
+  for (let i = 0; i < jobs.length; i += CONCURRENCY) {
+    const batch = jobs.slice(i, i + CONCURRENCY)
+    await Promise.all(batch.map(async (job) => {
+      try {
+        const { score, reasoning } = await scoreJob(resume, job)
+        await saveScore(job.id, score, reasoning)
+        scored++
+      } catch {
+        failed++
+      }
+    }))
+  }
+
+  return { scored, failed }
+}
+
 // ─── Route handler ────────────────────────────────────────────────────────────
 
 const SAP_KEYWORDS = ['sap', 'abap', 's/4hana', 's4hana', 'fiori', 'btp', 'hana', 'sapui5']
 
 function isSapRelevant(job: RawJob): boolean {
   const text = `${job.title} ${job.description} ${job.tags.join(' ')}`.toLowerCase()
-  return SAP_KEYWORDS.some((kw) => text.includes(kw))
+  return SAP_KEYWORDS.some((kw: string) => text.includes(kw))
 }
 
 // ─── Route handler ────────────────────────────────────────────────────────────
@@ -228,7 +338,10 @@ export async function GET() {
   }
 
   const total = results.reduce((sum, r) => sum + (r.filtered ?? 0), 0)
-  return NextResponse.json({ total, results })
+
+  const scoring = await scoreUnscoredJobs()
+
+  return NextResponse.json({ total, results, scoring })
 }
 
 // Allow Vercel Cron to call this

@@ -104,7 +104,7 @@ export type Job = {
 }
 
 export async function getJobs(limit = 50) {
-  return query<Job>('jobs', `order=fetched_at.desc&limit=${limit}`)
+  return query<Job>('jobs', `order=match_score.desc.nullslast,fetched_at.desc&limit=${limit}`)
 }
 
 export async function getProfile() {
