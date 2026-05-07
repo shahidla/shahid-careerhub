@@ -294,7 +294,7 @@ ${jobList}`
   return Array.isArray(parsed) ? parsed : parsed.scores ?? parsed.results ?? []
 }
 
-async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> {
+async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number; debug?: string }> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?match_score=is.null&select=id,title,description,tags,location,company&limit=100`, {
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   })
@@ -303,6 +303,7 @@ async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> 
   if (jobs.length === 0) return { scored: 0, failed: 0 }
 
   const resume = await fetchAllResumeChunks()
+  if (!resume) return { scored: 0, failed: jobs.length, debug: 'resume_chunks empty' }
 
   let scored = 0, failed = 0
   const BATCH = 10
@@ -321,7 +322,10 @@ async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> 
           scored++
         } catch { failed++ }
       }))
-    } catch { failed += Math.min(BATCH, jobs.length - i) }
+    } catch (err) {
+      console.error(`Batch ${i} failed:`, err)
+      failed += Math.min(BATCH, jobs.length - i)
+    }
   }
 
   return { scored, failed }
