@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-07 (session 5)
+Last updated: 2026-05-07 (session 6)
 
 ---
 
@@ -433,7 +433,7 @@ This is the master dev task list. Always update this when a task is done. This s
 18. ✅ Recruiter mode vs visitor mode (different system prompts, same backend — AI concept: prompt engineering)
 19. ⬜ Prompt caching on system prompt — AI concept: 90% cost reduction on repeated calls
 20. ⬜ Hybrid search: combine vector similarity + BM25 keyword search — AI concept: hybrid retrieval
-21. ⬜ Cohere Rerank to improve chunk ordering before injecting into prompt — AI concept: reranking
+21. ✅ Cohere Rerank to improve chunk ordering before injecting into prompt — AI concept: reranking
 22. ⬜ Context window management: truncate/summarise chunks if job description exceeds token limit
 
 ### Phase 3 — AI Resume Editor (AI concepts: structured output, Chain of Verification, human-in-the-loop)
