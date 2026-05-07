@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-07 (session 6)
+Last updated: 2026-05-07 (session 7)
 
 ---
 
@@ -74,10 +74,14 @@ Set in Vercel project settings AND `.env.local` for local dev. Never commit `.en
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://nlklhnptshxtywojmsed.supabase.co` — set in `.env.local` and Vercel |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Set in `.env.local` and Vercel |
 | `SUPABASE_SERVICE_ROLE_KEY` | Set in `.env.local` and Vercel |
+| `OPENAI_API_KEY` | Set in Vercel — used for embeddings + LLM fallback |
+| `ANTHROPIC_API_KEY` | Set in Vercel — primary LLM (Claude Haiku) |
+| `COHERE_API_KEY` | Set in Vercel — used for reranking |
+| `ADZUNA_APP_ID` | `7d498411` — set in Vercel |
+| `ADZUNA_API_KEY` | Set in Vercel |
 | `UPWORK_CLIENT_ID` | Pending — waiting for Upwork developer keys |
 | `UPWORK_CLIENT_SECRET` | Pending — waiting for Upwork developer keys |
 | `UPWORK_REDIRECT_URI` | `https://upwork-5j8apg26s-shahidmsyed-projects.vercel.app/api/auth/upwork/callback` (registered with Upwork) |
-| `OPENAI_API_KEY` | Not yet added |
 
 > Note: The Upwork developer portal was registered with the OLD callback URL (`upwork-5j8apg26s...`). Update to `upwork-sepia.vercel.app` when keys arrive.
 
@@ -90,7 +94,7 @@ C:/Dev/upwork/
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx
-│   │   ├── page.tsx                          # Home page — Connect Upwork button + callback URLs
+│   │   ├── page.tsx                          # Home page
 │   │   ├── globals.css
 │   │   ├── resume/
 │   │   │   └── page.tsx                      # /resume — public SAP profile
@@ -98,29 +102,42 @@ C:/Dev/upwork/
 │   │   │   └── page.tsx                      # /ai — AI portfolio page
 │   │   ├── chat/
 │   │   │   └── page.tsx                      # /chat — RAG chatbot UI (streaming)
+│   │   ├── dashboard/
+│   │   │   ├── page.tsx                      # /dashboard — job feed (server component)
+│   │   │   ├── JobFeed.tsx                   # Job cards with status buttons (client component)
+│   │   │   └── FetchButton.tsx               # Fetch now + Re-score all buttons (client component)
 │   │   └── api/
 │   │       ├── health/route.ts               # GET /api/health → { ok: true }
 │   │       ├── chat/route.ts                 # POST /api/chat — RAG + LLM streaming
 │   │       ├── embed/route.ts                # GET /api/embed — embed all resume data into pgvector
+│   │       ├── generate-summaries/route.ts   # GET /api/generate-summaries — AI summaries per project
+│   │       ├── fetch-jobs/route.ts           # GET /api/fetch-jobs — fetch+insert from all sources
+│   │       ├── score-batch/route.ts          # POST /api/score-batch — score 10 unscored jobs per call
+│   │       ├── rescore-jobs/route.ts         # POST /api/rescore-jobs — null all scores (triggers rescore)
+│   │       ├── jobs/
+│   │       │   └── status/route.ts           # PATCH /api/jobs/status — update job status
 │   │       └── auth/upwork/
-│   │           ├── login/route.ts            # GET /api/auth/upwork/login → redirects to Upwork OAuth
-│   │           └── callback/route.ts         # GET /api/auth/upwork/callback → exchanges code for token
+│   │           ├── login/route.ts
+│   │           └── callback/route.ts
 │   └── lib/
-│       └── supabase.ts                       # supabase (anon) + supabaseAdmin (service role) clients
+│       ├── db.ts                             # Supabase fetch helpers + all TypeScript types
+│       └── supabase.ts                       # supabase clients
 ├── supabase/
-│   ├── schema.sql                            # DROP + CREATE all 9 tables — run first in SQL Editor
-│   ├── match-chunks-function.sql             # pgvector RPC function for vector similarity search
-│   ├── seed-1-profile.sql                    # 1 row — name, headline, contact, proof points
-│   ├── seed-2-certifications.sql             # 9 certifications
-│   ├── seed-3-skills.sql                     # 5 skill categories
-│   ├── seed-4-blogs.sql                      # 7 SAP Community blogs
-│   ├── seed-5-achievements.sql               # 8 achievements/awards
-│   ├── seed-6-experience.sql                 # 9 experience roles
-│   └── seed-7-projects.sql                   # 10 key projects
+│   ├── schema.sql
+│   ├── match-chunks-function.sql
+│   ├── add-ai-summary.sql                    # alter table projects add column ai_summary text
+│   ├── add-jobs-columns.sql                  # add source_id, posted_at, salary, job_type + unique index
+│   ├── seed-1-profile.sql
+│   ├── seed-2-certifications.sql
+│   ├── seed-3-skills.sql
+│   ├── seed-4-blogs.sql
+│   ├── seed-5-achievements.sql
+│   ├── seed-6-experience.sql
+│   └── seed-7-projects.sql
 ├── docs/
-│   └── resume.pdf                            # Reference copy of PDF resume
-├── .npmrc                                    # registry=https://registry.npmjs.org/
-├── vercel.json                               # installCommand: npm install --legacy-peer-deps
+│   └── resume.pdf
+├── .npmrc
+├── vercel.json                               # installCommand + daily cron for /api/fetch-jobs
 ├── .env.example
 ├── next.config.js
 ├── tailwind.config.ts
@@ -133,7 +150,27 @@ C:/Dev/upwork/
 
 ## 8. Current Status
 
-### Done
+### Live at https://upwork-sepia.vercel.app
+
+| Route | Status |
+|---|---|
+| `/resume` | ✅ Live — full SAP profile from Supabase, AI summaries per project |
+| `/ai` | ✅ Live — AI portfolio page |
+| `/chat` | ✅ Live — RAG chatbot (Claude + OpenAI fallback, Cohere rerank, streaming) |
+| `/dashboard` | ✅ Live — job feed with scoring, status management, fetch+rescore buttons |
+| `/api/fetch-jobs` | ✅ Live — fetches Remotive (SAP filtered), SAP Contractors, Adzuna AU. Cron daily 9am UTC |
+| `/api/score-batch` | ✅ Live — scores 10 jobs per call using resume chunks + LLM (batched to avoid Hobby 10s timeout) |
+| `/api/rescore-jobs` | ✅ Live — nulls all scores to trigger full rescore |
+| `/api/embed` | ✅ Live — embeds all resume data into pgvector |
+| `/api/generate-summaries` | ✅ Live — one-time AI summary generation per project |
+
+### Known Issues / Pending
+- Scoring prompt needs tuning — LLM doesn't distinguish functional vs technical SAP roles
+- Resume chunks may need enrichment — candidate is a **technical SAP developer** not a functional consultant
+- Vercel Hobby 10s timeout workaround — scoring batched into 10-job client-side loops
+- Anthropic API key may still be failing — OpenAI fallback active
+
+### Done (session 1-6)
 - [x] Next.js 14 app with TypeScript + Tailwind scaffolded
 - [x] Home page with Connect Upwork button and callback URLs displayed
 - [x] `/api/auth/upwork/login` — OAuth redirect with CSRF state cookie
@@ -443,11 +480,11 @@ This is the master dev task list. Always update this when a task is done. This s
 26. ⬜ Chain of Verification — Claude validates extracted data against original input before saving
 
 ### Phase 4 — Job Aggregator (AI concepts: ETL pipeline, data normalisation, deduplication)
-27. ⬜ RSS fetchers: Freelancer.com, FreelancerMap, Guru, EurSAP, SAPcontractors
-28. ⬜ API integrations: Freelancer.com, Adzuna AU (apply for free keys)
-29. ⬜ Remotive.io integration (no key needed)
-30. ⬜ Normalize all sources to unified job schema — AI concept: data normalisation
-31. ⬜ Deduplicate + store in Supabase with delta tracking — AI concept: delta ETL
+27. ✅ RSS fetchers: SAP Contractors, Remotive (SAP keyword filtered)
+28. ✅ API integrations: Adzuna AU (free key)
+29. ✅ Remotive.io integration (no key needed)
+30. ✅ Normalize all sources to unified job schema — AI concept: data normalisation
+31. ✅ Deduplicate + store in Supabase with delta tracking — unique index on (source, source_id), description-change detection resets score
 
 ### Phase 4b — Manual Job Entry
 32. ⬜ Build `POST /api/jobs/manual` — accepts URL or raw text, Claude extracts fields, normalises to unified job schema with `source: "manual"`
@@ -459,7 +496,7 @@ This is the master dev task list. Always update this when a task is done. This s
 36. ⬜ Hybrid search: vector similarity + BM25 against profile — AI concept: hybrid retrieval
 37. ⬜ Cohere Rerank for result ordering — AI concept: reranking
 38. ⬜ Job match scorecard: skills %, seniority, location, rate
-39. ⬜ LLM-as-judge: Claude scores job match with reasoning — AI concept: Zero-shot Chain-of-Thought
+39. ✅ LLM-as-judge: scores job match with reasoning — AI concept: Zero-shot Chain-of-Thought. **TODO: improve prompt to distinguish technical vs functional SAP roles**
 40. ⬜ Skill gap analyzer: aggregate missing skills across unmatched jobs
 
 ### Phase 6 — Agents (AI concepts: ReAct, tool use, MCP, multi-agent, LangGraph, self-reflection)
@@ -484,7 +521,7 @@ This is the master dev task list. Always update this when a task is done. This s
 53. ⬜ Given a job → generate likely questions + answers from your project experience via RAG
 
 ### Phase 10 — Email & Scheduler
-54. ⬜ Vercel Cron to run job agent on schedule
+54. ✅ Vercel Cron — daily at 9am UTC, calls /api/fetch-jobs
 55. ⬜ Weekly digest email via Resend: new jobs, top 3, skill gaps, profile score
 
 ### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
