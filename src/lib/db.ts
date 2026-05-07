@@ -84,6 +84,29 @@ export type Achievement = {
   sort_order: number
 }
 
+export type Job = {
+  id: string
+  title: string
+  company: string
+  location: string
+  description: string
+  url: string
+  source: string
+  source_id: string
+  tags: string[]
+  salary: string | null
+  job_type: string | null
+  match_score: number | null
+  match_reasoning: string | null
+  status: string
+  posted_at: string | null
+  fetched_at: string
+}
+
+export async function getJobs(limit = 50) {
+  return query<Job>('jobs', `order=fetched_at.desc&limit=${limit}`)
+}
+
 export async function getProfile() {
   const rows = await query<Profile>('profile', 'limit=1')
   return rows[0]
