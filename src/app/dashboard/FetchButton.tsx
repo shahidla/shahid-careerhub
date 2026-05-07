@@ -14,9 +14,9 @@ export default function FetchButton() {
     try {
       const res = await fetch('/api/fetch-jobs')
       const data = await res.json()
-      const total = data.total ?? 0
+      const totalNew = data.totalNew ?? 0
       const scored = data.scoring?.scored ?? 0
-      setResult(`${total} fetched · ${scored} scored`)
+      setResult(`${totalNew} new · ${scored} scored`)
       router.refresh()
     } catch {
       setResult('Error fetching jobs')

@@ -119,20 +119,21 @@ async function fetchRSS(source: { name: string; url: string }): Promise<RawJob[]
 
 // ─── Upsert jobs to Supabase ──────────────────────────────────────────────────
 
-async function upsertJobs(jobs: RawJob[]): Promise<number> {
-  if (jobs.length === 0) return 0
+async function upsertJobs(jobs: RawJob[]): Promise<{ attempted: number; inserted: number }> {
+  if (jobs.length === 0) return { attempted: 0, inserted: 0 }
   const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?on_conflict=source,source_id`, {
     method: 'POST',
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
       'content-type': 'application/json',
-      Prefer: 'resolution=ignore-duplicates,return=minimal',
+      Prefer: 'resolution=ignore-duplicates,return=representation',
     },
     body: JSON.stringify(jobs),
   })
   if (!res.ok) throw new Error(`Supabase upsert failed: ${await res.text()}`)
-  return jobs.length
+  const inserted: unknown[] = await res.json()
+  return { attempted: jobs.length, inserted: inserted.length }
 }
 
 // ─── Adzuna API ───────────────────────────────────────────────────────────────
@@ -214,12 +215,19 @@ async function batchScoreJobs(resume: string, jobs: UnscoredJob[]): Promise<{ id
     `[${i}] id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 800)}`
   ).join('\n\n')
 
-  const prompt = `You are evaluating job postings against a candidate's full resume. Score each job 0-100 based on how well the candidate matches.
+  const prompt = `You are a strict recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
+
+Scoring rules:
+- Score HIGH (70-100) only if the job directly matches the candidate's SAP/ABAP/BTP/Fiori technical background
+- Score MEDIUM (40-69) if there is partial overlap — e.g. SAP adjacent, or requires some but not all of the candidate's skills
+- Score LOW (0-39) if the role is non-technical, managerial without hands-on SAP, or outside the candidate's experience
+- A "Chief Data Officer" or "Head of" role with no hands-on SAP technical requirement should score below 40
+- Be strict — most jobs should score between 40-75, reserve 80+ for near-perfect matches
 
 Return a JSON array only — no markdown, no explanation outside the array. Each element must have:
 - "id": the job id string (copy exactly from input)
 - "score": integer 0-100
-- "reasoning": one sentence
+- "reasoning": one sentence explaining the score, mentioning specific matching skills or gaps
 
 Candidate Resume:
 ${resume.slice(0, 6000)}
@@ -301,32 +309,31 @@ function isSapRelevant(job: RawJob): boolean {
 // ─── Route handler ────────────────────────────────────────────────────────────
 
 export async function GET() {
-  const results: { source: string; fetched: number; filtered: number; error?: string }[] = []
+  const results: { source: string; fetched: number; new: number; error?: string }[] = []
 
   for (const source of RSS_SOURCES) {
     try {
       const jobs = await fetchRSS(source)
       const sapJobs = jobs.filter(isSapRelevant)
-      const count = await upsertJobs(sapJobs)
-      results.push({ source: source.name, fetched: jobs.length, filtered: count })
+      const { attempted, inserted } = await upsertJobs(sapJobs)
+      results.push({ source: source.name, fetched: attempted, new: inserted })
     } catch (err) {
-      results.push({ source: source.name, fetched: 0, filtered: 0, error: String(err) })
+      results.push({ source: source.name, fetched: 0, new: 0, error: String(err) })
     }
   }
 
   try {
     const jobs = await fetchAdzuna()
-    const count = await upsertJobs(jobs)
-    results.push({ source: 'adzuna_au', fetched: jobs.length, filtered: count })
+    const { attempted, inserted } = await upsertJobs(jobs)
+    results.push({ source: 'adzuna_au', fetched: attempted, new: inserted })
   } catch (err) {
-    results.push({ source: 'adzuna_au', fetched: 0, filtered: 0, error: String(err) })
+    results.push({ source: 'adzuna_au', fetched: 0, new: 0, error: String(err) })
   }
 
-  const total = results.reduce((sum, r) => sum + (r.filtered ?? 0), 0)
-
+  const totalNew = results.reduce((sum, r) => sum + (r.new ?? 0), 0)
   const scoring = await scoreUnscoredJobs()
 
-  return NextResponse.json({ total, results, scoring })
+  return NextResponse.json({ totalNew, results, scoring })
 }
 
 // Allow Vercel Cron to call this

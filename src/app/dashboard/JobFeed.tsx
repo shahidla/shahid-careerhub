@@ -32,9 +32,10 @@ function timeAgo(date: string | null): string {
   return `${d}d ago`
 }
 
-function JobCard({ job }: { job: Job }) {
+function JobCard({ job, index }: { job: Job; index: number }) {
   const [status, setStatus] = useState(job.status)
   const [saving, setSaving] = useState(false)
+  const [showReasoning, setShowReasoning] = useState(false)
 
   async function updateStatus(newStatus: string) {
     setSaving(true)
@@ -52,6 +53,7 @@ function JobCard({ job }: { job: Job }) {
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-gray-300 font-mono shrink-0">#{index}</span>
             <a
               href={job.url}
               target="_blank"
@@ -61,15 +63,21 @@ function JobCard({ job }: { job: Job }) {
               {job.title}
             </a>
             {job.match_score != null && (
-              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                job.match_score >= 75 ? 'bg-green-100 text-green-700' :
-                job.match_score >= 50 ? 'bg-yellow-100 text-yellow-700' :
-                'bg-gray-100 text-gray-500'
-              }`}>
+              <button
+                onClick={() => setShowReasoning(!showReasoning)}
+                className={`text-xs font-semibold px-2 py-0.5 rounded-full cursor-pointer hover:opacity-80 ${
+                  job.match_score >= 75 ? 'bg-green-100 text-green-700' :
+                  job.match_score >= 50 ? 'bg-yellow-100 text-yellow-700' :
+                  'bg-gray-100 text-gray-500'
+                }`}
+              >
                 {job.match_score}% match
-              </span>
+              </button>
             )}
           </div>
+          {showReasoning && job.match_reasoning && (
+            <p className="mt-1 text-xs text-gray-500 italic">{job.match_reasoning}</p>
+          )}
           <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 flex-wrap">
             {job.company && <span>{job.company}</span>}
             {job.company && job.location && <span>·</span>}
@@ -167,8 +175,8 @@ export default function JobFeed({ jobs }: { jobs: Job[] }) {
   return (
     <div>
       <div className="space-y-3">
-        {visible.map((job) => (
-          <JobCard key={job.id} job={job} />
+        {visible.map((job, i) => (
+          <JobCard key={job.id} job={job} index={i + 1} />
         ))}
       </div>
       {hiddenCount > 0 && (
