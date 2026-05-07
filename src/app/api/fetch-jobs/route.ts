@@ -119,13 +119,13 @@ async function fetchRSS(source: { name: string; url: string }): Promise<RawJob[]
 
 async function upsertJobs(jobs: RawJob[]): Promise<number> {
   if (jobs.length === 0) return 0
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?on_conflict=source,source_id`, {
     method: 'POST',
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
       'content-type': 'application/json',
-      Prefer: 'resolution=merge-duplicates,return=minimal',
+      Prefer: 'resolution=ignore-duplicates,return=minimal',
     },
     body: JSON.stringify(jobs),
   })
