@@ -6,21 +6,35 @@ import { useRouter } from 'next/navigation'
 export default function FetchButton() {
   const [loading, setLoading] = useState(false)
   const [rescoring, setRescoring] = useState(false)
-  const [result, setResult] = useState<string | null>(null)
+  const [status, setStatus] = useState<string | null>(null)
   const router = useRouter()
+
+  async function runScoring(label: string) {
+    let total = 0
+    while (true) {
+      const res = await fetch('/api/score-batch', { method: 'POST' })
+      if (!res.ok) { setStatus(`${label} — scoring error`); break }
+      const data = await res.json()
+      total += data.scored ?? 0
+      setStatus(`${label} — scored ${total}…`)
+      if ((data.remaining ?? 0) <= 0) break
+    }
+    setStatus(`${label} — ${total} scored`)
+    router.refresh()
+  }
 
   async function handleFetch() {
     setLoading(true)
-    setResult(null)
+    setStatus(null)
     try {
       const res = await fetch('/api/fetch-jobs')
       const data = await res.json()
       const totalNew = data.totalNew ?? 0
-      const scored = data.scoring?.scored ?? 0
-      setResult(`${totalNew} new · ${scored} scored`)
-      router.refresh()
+      setStatus(`${totalNew} new jobs`)
+      if (totalNew > 0) await runScoring(`${totalNew} new`)
+      else { setStatus('0 new jobs'); router.refresh() }
     } catch {
-      setResult('Error fetching jobs')
+      setStatus('Error fetching jobs')
     } finally {
       setLoading(false)
     }
@@ -28,18 +42,13 @@ export default function FetchButton() {
 
   async function handleRescore() {
     setRescoring(true)
-    setResult(null)
+    setStatus(null)
     try {
-      // Reset all scores
+      // Null all scores first
       await fetch('/api/rescore-jobs', { method: 'POST' })
-      // Re-run scoring via fetch-jobs (scoring picks up match_score=null)
-      const res = await fetch('/api/fetch-jobs')
-      const data = await res.json()
-      const scored = data.scoring?.scored ?? 0
-      setResult(`Re-scored ${scored} jobs`)
-      router.refresh()
+      await runScoring('Re-scoring')
     } catch {
-      setResult('Error re-scoring')
+      setStatus('Error re-scoring')
     } finally {
       setRescoring(false)
     }
@@ -63,7 +72,7 @@ export default function FetchButton() {
           {loading ? 'Fetching…' : 'Fetch now'}
         </button>
       </div>
-      {result && <span className="text-xs text-gray-500">{result}</span>}
+      {status && <span className="text-xs text-gray-500">{status}</span>}
     </div>
   )
 }

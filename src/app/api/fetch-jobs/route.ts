@@ -365,9 +365,7 @@ export async function GET() {
   }
 
   const totalNew = results.reduce((sum, r) => sum + (r.new ?? 0), 0)
-  const scoring = await scoreUnscoredJobs()
-
-  return NextResponse.json({ totalNew, results, scoring })
+  return NextResponse.json({ totalNew, results })
 }
 
 // Allow Vercel Cron to call this
