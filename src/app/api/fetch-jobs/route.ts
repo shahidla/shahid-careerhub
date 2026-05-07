@@ -200,80 +200,66 @@ async function fetchAdzuna(): Promise<RawJob[]> {
 
 type UnscoredJob = { id: string; title: string; description: string; tags: string[]; location: string; company: string }
 
-async function fetchResumeSnapshot(): Promise<string> {
-  const [profileRes, expRes, skillsRes] = await Promise.all([
-    fetch(`${SUPABASE_URL}/rest/v1/profile?limit=1`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }),
-    fetch(`${SUPABASE_URL}/rest/v1/experience?order=sort_order.asc`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }),
-    fetch(`${SUPABASE_URL}/rest/v1/skills?order=sort_order.asc`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }),
-  ])
-  const [profiles, experiences, skills] = await Promise.all([profileRes.json(), expRes.json(), skillsRes.json()])
-  const profile = profiles[0]
-
-  const expText = experiences.map((e: { role: string; company: string; description: string; technologies: string[] }) =>
-    `- ${e.role} at ${e.company}: ${e.description} (${e.technologies?.join(', ')})`
-  ).join('\n')
-
-  const skillText = skills.map((s: { category: string; items: string[] }) =>
-    `${s.category}: ${s.items?.join(', ')}`
-  ).join('\n')
-
-  return `Name: ${profile.name}
-Headline: ${profile.headline}
-Years experience: ${profile.years_experience}
-Skills:\n${skillText}
-Experience:\n${expText}`
-}
-
-async function scoreJob(resume: string, job: UnscoredJob): Promise<{ score: number; reasoning: string }> {
-  const prompt = `You are evaluating a job posting against a candidate's resume. Return a JSON object with two fields:
-- "score": integer 0-100 representing how well the candidate matches this job
-- "reasoning": one sentence explaining the score
-
-Resume:
-${resume}
-
-Job Title: ${job.title}
-Company: ${job.company}
-Location: ${job.location}
-Description: ${job.description.slice(0, 1500)}
-Tags: ${job.tags?.join(', ')}
-
-Respond with only valid JSON, no markdown.`
-
-  if (ANTHROPIC_KEY) {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 128, messages: [{ role: 'user', content: prompt }] }),
-    })
-    if (res.ok) {
-      const data = await res.json()
-      return JSON.parse(data.content[0].text.trim())
-    }
-    console.error('Anthropic scoring failed, falling back to OpenAI')
-  }
-
-  if (OPENAI_KEY) {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${OPENAI_KEY}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 128, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
-    })
-    if (!res.ok) throw new Error(`OpenAI scoring failed: ${await res.text()}`)
-    const data = await res.json()
-    return JSON.parse(data.choices[0].message.content.trim())
-  }
-
-  throw new Error('No LLM API key configured')
-}
-
-async function saveScore(id: string, score: number, reasoning: string): Promise<void> {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
-    body: JSON.stringify({ match_score: score, match_reasoning: reasoning }),
+async function fetchAllResumeChunks(): Promise<string> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/resume_chunks?select=content&order=id.asc`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   })
-  if (!res.ok) throw new Error(`Supabase PATCH failed: ${await res.text()}`)
+  if (!res.ok) return ''
+  const rows: { content: string }[] = await res.json()
+  return rows.map((r) => r.content).join('\n\n')
+}
+
+async function batchScoreJobs(resume: string, jobs: UnscoredJob[]): Promise<{ id: string; score: number; reasoning: string }[]> {
+  const jobList = jobs.map((j, i) =>
+    `[${i}] id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 800)}`
+  ).join('\n\n')
+
+  const prompt = `You are evaluating job postings against a candidate's full resume. Score each job 0-100 based on how well the candidate matches.
+
+Return a JSON array only — no markdown, no explanation outside the array. Each element must have:
+- "id": the job id string (copy exactly from input)
+- "score": integer 0-100
+- "reasoning": one sentence
+
+Candidate Resume:
+${resume.slice(0, 6000)}
+
+Jobs to score:
+${jobList}`
+
+  async function callLLM(apiKey: string, provider: 'anthropic' | 'openai'): Promise<string> {
+    if (provider === 'anthropic') {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] }),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      const data = await res.json()
+      return data.content[0].text.trim()
+    } else {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 2048, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      const data = await res.json()
+      return data.choices[0].message.content.trim()
+    }
+  }
+
+  let raw = ''
+  if (ANTHROPIC_KEY) {
+    try { raw = await callLLM(ANTHROPIC_KEY, 'anthropic') } catch { console.error('Anthropic batch score failed, falling back to OpenAI') }
+  }
+  if (!raw && OPENAI_KEY) {
+    raw = await callLLM(OPENAI_KEY, 'openai')
+  }
+  if (!raw) throw new Error('No LLM API key configured')
+
+  const parsed = JSON.parse(raw)
+  return Array.isArray(parsed) ? parsed : parsed.results ?? parsed.scores ?? []
 }
 
 async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> {
@@ -284,22 +270,21 @@ async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> 
   const jobs: UnscoredJob[] = await res.json()
   if (jobs.length === 0) return { scored: 0, failed: 0 }
 
-  const resume = await fetchResumeSnapshot()
+  const resume = await fetchAllResumeChunks()
+  const scores = await batchScoreJobs(resume, jobs)
 
   let scored = 0, failed = 0
-  const CONCURRENCY = 5
-  for (let i = 0; i < jobs.length; i += CONCURRENCY) {
-    const batch = jobs.slice(i, i + CONCURRENCY)
-    await Promise.all(batch.map(async (job) => {
-      try {
-        const { score, reasoning } = await scoreJob(resume, job)
-        await saveScore(job.id, score, reasoning)
-        scored++
-      } catch {
-        failed++
-      }
-    }))
-  }
+  await Promise.all(scores.map(async ({ id, score, reasoning }) => {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ match_score: score, match_reasoning: reasoning }),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      scored++
+    } catch { failed++ }
+  }))
 
   return { scored, failed }
 }
