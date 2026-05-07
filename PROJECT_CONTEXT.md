@@ -46,13 +46,13 @@ This project has two goals:
 
 ## 4. Repository & URLs
 
-- **GitHub (job assistant):** https://github.com/shahidla/upwork
+- **GitHub (job assistant):** https://github.com/shahidla/shahid-careerhub
 - **GitHub (resume):** https://github.com/shahidla/Resume
 - **Local path (job assistant):** `C:/Dev/upwork`
 - **Local path (resume):** `C:/Dev/Resume`
-- **Production URL:** https://upwork-sepia.vercel.app
+- **Production URL:** https://shahid-careerhub.vercel.app
 - **Resume (current, to be replaced):** https://shahidla.github.io/Resume/
-- **Vercel dashboard:** https://vercel.com/shahidmsyed-projects/upwork/deployments
+- **Vercel dashboard:** https://vercel.com/shahidmsyed-projects/shahid-careerhub/deployments
 
 ---
 
@@ -81,9 +81,7 @@ Set in Vercel project settings AND `.env.local` for local dev. Never commit `.en
 | `ADZUNA_API_KEY` | Set in Vercel |
 | `UPWORK_CLIENT_ID` | Pending — waiting for Upwork developer keys |
 | `UPWORK_CLIENT_SECRET` | Pending — waiting for Upwork developer keys |
-| `UPWORK_REDIRECT_URI` | `https://upwork-5j8apg26s-shahidmsyed-projects.vercel.app/api/auth/upwork/callback` (registered with Upwork) |
-
-> Note: The Upwork developer portal was registered with the OLD callback URL (`upwork-5j8apg26s...`). Update to `upwork-sepia.vercel.app` when keys arrive.
+| `UPWORK_REDIRECT_URI` | `https://shahid-careerhub.vercel.app/api/auth/upwork/callback` |
 
 ---
 
@@ -150,7 +148,7 @@ C:/Dev/upwork/
 
 ## 8. Current Status
 
-### Live at https://upwork-sepia.vercel.app
+### Live at https://shahid-careerhub.vercel.app
 
 | Route | Status |
 |---|---|
@@ -176,7 +174,7 @@ C:/Dev/upwork/
 - [x] `/api/auth/upwork/login` — OAuth redirect with CSRF state cookie
 - [x] `/api/auth/upwork/callback` — code exchange, token stored in httpOnly cookie
 - [x] `/api/health` — health check endpoint
-- [x] Deployed to Vercel — https://upwork-sepia.vercel.app
+- [x] Deployed to Vercel — https://shahid-careerhub.vercel.app
 - [x] GitHub → Vercel auto-deploy connected
 - [x] Personal images purged from git history (`git filter-branch`)
 - [x] `.npmrc` + `vercel.json` fixes applied for Vercel build
@@ -207,7 +205,7 @@ Run these in order at https://supabase.com/dashboard/project/nlklhnptshxtywojmse
 ### Pending — Phase 1 (Upwork OAuth)
 - [ ] Receive Upwork developer keys
 - [ ] Update `UPWORK_CLIENT_ID` + `UPWORK_CLIENT_SECRET` in Vercel env vars
-- [ ] Update callback URL in Upwork portal to `https://upwork-sepia.vercel.app/api/auth/upwork/callback`
+- [ ] Update callback URL in Upwork portal to `https://shahid-careerhub.vercel.app/api/auth/upwork/callback`
 - [ ] Test full OAuth flow end-to-end
 
 ### Pending — Phase 2 (Job Search Aggregator)
@@ -326,7 +324,7 @@ Fields: Title, Overview/Bio, Skills, Hourly rate.
 
 ## 12. Unified Platform Vision — AI Career Hub
 
-The long-term goal is ONE unified Next.js app (`upwork-sepia.vercel.app`) that:
+The long-term goal is ONE unified Next.js app (`shahid-careerhub.vercel.app`) that:
 - **Replaces** the static GitHub Pages resume (`shahidla.github.io/Resume/`)
 - **Runs** the job assistant and AI features
 - **Uses resume data as single source of truth** — all AI features read from it
@@ -403,7 +401,7 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 | Corporate Artifactory npm registry blocks Vercel | `.npmrc` sets `registry=https://registry.npmjs.org/` |
 | Vercel npm `Exit handler never called` bug | `vercel.json` sets `installCommand: npm install --legacy-peer-deps` |
 | Personal photos accidentally uploaded to GitHub | Removed via `git filter-branch --force`, force-pushed |
-| Two Vercel URLs live simultaneously | Old URL (`upwork-5j8apg26s...`) still live — use `upwork-sepia.vercel.app` |
+| Two Vercel URLs live simultaneously | Old URL (`upwork-5j8apg26s...`) still live — use `shahid-careerhub.vercel.app` |
 | `package-lock.json` generated with Node 25 breaks Vercel | Deleted lock file from repo — Vercel regenerates it cleanly. Never commit `package-lock.json` from this machine (Node 25). |
 | `supabase-js` v2.105.3 broken — missing `iceberg-js` peer dep | Do NOT use `createClient` from supabase-js in seed scripts. Use plain `fetch` against `/rest/v1/<table>` with `apikey` + `Authorization: Bearer` headers. |
 | Corporate proxy blocks outbound HTTPS to supabase.co | Cannot run seed scripts locally. Use Supabase SQL Editor in browser to run `.sql` files. |
@@ -432,8 +430,8 @@ git push origin main
 
 - **npm registry:** Always use `https://registry.npmjs.org/` — corporate Artifactory only works on the dev machine
 - **Never commit** `.env.local`
-- **Production domain:** `upwork-sepia.vercel.app` — use this everywhere
-- **Callback URL registered with Upwork:** currently the OLD URL — update when keys arrive
+- **Production domain:** `shahid-careerhub.vercel.app` — use this everywhere
+- **Callback URL for Upwork:** `https://shahid-careerhub.vercel.app/api/auth/upwork/callback`
 - **Do not remove** `vercel.json` — it fixes the Vercel build
 - **Human review always required** before any Upwork API write action
 - **AI stack preference:** Claude API (Anthropic) as primary LLM
