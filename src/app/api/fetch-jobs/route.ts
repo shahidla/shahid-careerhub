@@ -22,6 +22,10 @@ const RSS_SOURCES = [
     name: 'remotive',
     url: 'https://remotive.com/remote-jobs/feed',
   },
+  {
+    name: 'sapcontractors',
+    url: 'https://www.sapcontractors.com/rss',
+  },
 ]
 
 // ─── XML parser (no dependencies) ────────────────────────────────────────────
@@ -129,6 +133,67 @@ async function upsertJobs(jobs: RawJob[]): Promise<number> {
   return jobs.length
 }
 
+// ─── Adzuna API ───────────────────────────────────────────────────────────────
+
+const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID
+const ADZUNA_API_KEY = process.env.ADZUNA_API_KEY
+
+async function fetchAdzuna(): Promise<RawJob[]> {
+  if (!ADZUNA_APP_ID || !ADZUNA_API_KEY) return []
+
+  const params = new URLSearchParams({
+    app_id: ADZUNA_APP_ID,
+    app_key: ADZUNA_API_KEY,
+    what: 'SAP',
+    results_per_page: '50',
+    'content-type': 'application/json',
+  })
+
+  const res = await fetch(
+    `https://api.adzuna.com/v1/api/jobs/au/search/1?${params}`,
+    { signal: AbortSignal.timeout(10000) }
+  )
+  if (!res.ok) throw new Error(`Adzuna HTTP ${res.status}`)
+
+  const data = await res.json()
+  const results: {
+    id: string
+    title: string
+    company?: { display_name: string }
+    location?: { display_name: string }
+    description: string
+    redirect_url: string
+    salary_min?: number
+    salary_max?: number
+    contract_time?: string
+    created: string
+    category?: { label: string }
+  }[] = data.results ?? []
+
+  return results.map((r) => {
+    const salary =
+      r.salary_min != null
+        ? r.salary_max != null
+          ? `$${Math.round(r.salary_min / 1000)}k–$${Math.round(r.salary_max / 1000)}k`
+          : `from $${Math.round(r.salary_min / 1000)}k`
+        : null
+
+    return {
+      source: 'adzuna_au',
+      source_id: r.id,
+      title: (r.title ?? '').slice(0, 500),
+      company: r.company?.display_name ?? '',
+      location: r.location?.display_name ?? '',
+      description: (r.description ?? '').slice(0, 5000),
+      url: (r.redirect_url ?? '').slice(0, 1000),
+      posted_at: r.created ? new Date(r.created).toISOString() : null,
+      tags: r.category?.label ? [r.category.label] : [],
+      salary,
+      job_type: r.contract_time ?? null,
+    }
+  })
+}
+
 // ─── Route handler ────────────────────────────────────────────────────────────
 
 const SAP_KEYWORDS = ['sap', 'abap', 's/4hana', 's4hana', 'fiori', 'btp', 'hana', 'sapui5']
@@ -152,6 +217,14 @@ export async function GET() {
     } catch (err) {
       results.push({ source: source.name, fetched: 0, filtered: 0, error: String(err) })
     }
+  }
+
+  try {
+    const jobs = await fetchAdzuna()
+    const count = await upsertJobs(jobs)
+    results.push({ source: 'adzuna_au', fetched: jobs.length, filtered: count })
+  } catch (err) {
+    results.push({ source: 'adzuna_au', fetched: 0, filtered: 0, error: String(err) })
   }
 
   const total = results.reduce((sum, r) => sum + (r.filtered ?? 0), 0)

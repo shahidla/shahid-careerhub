@@ -8,6 +8,8 @@ const SOURCE_LABELS: Record<string, string> = {
   freelancermap_au: 'FreelancerMap AU',
   eursap: 'EurSAP',
   remotive: 'Remotive',
+  sapcontractors: 'SAP Contractors',
+  adzuna_au: 'Adzuna AU',
   manual: 'Manual',
 }
 
