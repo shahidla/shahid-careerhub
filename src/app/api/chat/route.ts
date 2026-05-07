@@ -4,6 +4,7 @@ const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
 const OPENAI_KEY = process.env.OPENAI_API_KEY
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const COHERE_KEY = process.env.COHERE_API_KEY
 
 // ─── RAG: embed question + vector search ─────────────────────────────────────
 
@@ -29,11 +30,31 @@ async function searchChunks(embedding: number[]): Promise<string[]> {
       Authorization: `Bearer ${SUPABASE_KEY}`,
       'content-type': 'application/json',
     },
-    body: JSON.stringify({ query_embedding: embedding, match_count: 5 }),
+    body: JSON.stringify({ query_embedding: embedding, match_count: 10 }),
   })
   if (!res.ok) throw new Error(`Vector search failed: ${await res.text()}`)
   const rows = await res.json()
   return rows.map((r: { content: string }) => r.content)
+}
+
+async function rerankChunks(query: string, chunks: string[]): Promise<string[]> {
+  if (!COHERE_KEY || chunks.length === 0) return chunks.slice(0, 5)
+  const res = await fetch('https://api.cohere.com/v1/rerank', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${COHERE_KEY}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'rerank-v3.5',
+      query,
+      documents: chunks,
+      top_n: 5,
+    }),
+  })
+  if (!res.ok) throw new Error(`Rerank failed: ${await res.text()}`)
+  const data = await res.json()
+  return data.results.map((r: { index: number }) => chunks[r.index])
 }
 
 // ─── Rate limiter ─────────────────────────────────────────────────────────────
@@ -213,7 +234,8 @@ export async function POST(req: NextRequest) {
   try {
     const embedding = await embedQuestion(lastUserMessage)
     const chunks = await searchChunks(embedding)
-    systemPrompt = buildSystemPrompt(chunks)
+    const reranked = await rerankChunks(lastUserMessage, chunks)
+    systemPrompt = buildSystemPrompt(reranked)
   } catch (err) {
     console.error('RAG failed, falling back to base prompt:', err)
   }
