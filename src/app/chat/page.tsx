@@ -13,12 +13,19 @@ const STARTERS = [
   "What makes Shahid different from other SAP architects?",
 ]
 
+const RECRUITER_STARTERS = [
+  "What is Shahid's availability and rate?",
+  "What are Shahid's strongest skills for a senior SAP role?",
+  "Can you summarise Shahid's experience in one paragraph?",
+]
+
 const ACCESS_PASSWORD = process.env.NEXT_PUBLIC_CHAT_PASSWORD ?? 'CHAT_PASSWORD_REMOVED'
 
 export default function ChatPage() {
   const [unlocked, setUnlocked] = useState(false)
   const [passwordInput, setPasswordInput] = useState('')
   const [passwordError, setPasswordError] = useState(false)
+  const [mode, setMode] = useState<'visitor' | 'recruiter'>('visitor')
 
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -29,6 +36,10 @@ export default function ChatPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  useEffect(() => {
+    setMessages([])
+  }, [mode])
 
   function unlock() {
     if (passwordInput === ACCESS_PASSWORD) {
@@ -56,6 +67,7 @@ export default function ChatPage() {
             ...m,
             content: m.content.replace(/\n\n_via (Claude|GPT-4o mini)_$/, ''),
           })),
+          mode,
         }),
       })
 
@@ -139,11 +151,26 @@ export default function ChatPage() {
       </header>
 
       {/* Identity bar */}
-      <div className="border-b border-gray-100 px-6 py-4 bg-gray-50">
+      <div className={`border-b border-gray-100 px-6 py-4 ${mode === 'recruiter' ? 'bg-blue-50' : 'bg-gray-50'}`}>
         <div className="max-w-2xl mx-auto">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">Talking to</p>
           <p className="text-base font-bold text-gray-900">Shahid M Syed — SAP Development Architect + AI Engineer</p>
           <p className="text-sm text-gray-500 mt-0.5">19 years SAP · S/4HANA · ABAP on HANA · BTP · MCP · RAG · Agents</p>
+          <div className="flex items-center gap-2 mt-3">
+            <span className="text-xs text-gray-400 mr-1">Mode:</span>
+            <button
+              onClick={() => setMode('visitor')}
+              className={`text-xs px-3 py-1 rounded-full border transition-colors ${mode === 'visitor' ? 'bg-gray-800 text-white border-gray-800' : 'text-gray-400 border-gray-300 hover:border-gray-500 hover:text-gray-600'}`}
+            >
+              Visitor
+            </button>
+            <button
+              onClick={() => setMode('recruiter')}
+              className={`text-xs px-3 py-1 rounded-full border transition-colors ${mode === 'recruiter' ? 'bg-blue-600 text-white border-blue-600' : 'text-gray-400 border-gray-300 hover:border-blue-400 hover:text-blue-600'}`}
+            >
+              Recruiter
+            </button>
+          </div>
         </div>
       </div>
 
@@ -158,7 +185,7 @@ export default function ChatPage() {
               </div>
               <div className="space-y-2">
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Try asking</p>
-                {STARTERS.map((s) => (
+                {(mode === 'recruiter' ? RECRUITER_STARTERS : STARTERS).map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}

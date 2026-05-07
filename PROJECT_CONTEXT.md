@@ -430,7 +430,7 @@ This is the master dev task list. Always update this when a task is done. This s
 15. ✅ Guardrails — system prompt restricts bot to Shahid-only topics
 16. ✅ Rate limiting — 20 requests per IP per 10 minutes
 17. ✅ Stream Claude/OpenAI responses to UI (text appears word by word — AI concept: streaming)
-18. ⬜ Recruiter mode vs visitor mode (different system prompts, same backend — AI concept: prompt engineering)
+18. ✅ Recruiter mode vs visitor mode (different system prompts, same backend — AI concept: prompt engineering)
 19. ⬜ Prompt caching on system prompt — AI concept: 90% cost reduction on repeated calls
 20. ⬜ Hybrid search: combine vector similarity + BM25 keyword search — AI concept: hybrid retrieval
 21. ⬜ Cohere Rerank to improve chunk ordering before injecting into prompt — AI concept: reranking
