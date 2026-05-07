@@ -350,96 +350,107 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 
 ---
 
-## 17. Complete Task List (55 tasks + manual job entry)
+## 17. Complete Task List
 
-### Phase 0 — Foundation
-1. Scaffold `/resume` public route + `/dashboard` private route in Next.js
-2. Create Supabase project, add connection string to `.env.local` and Vercel
-3. Migrate `profile.json`, `projects.json`, `certifications.json` into Supabase tables
-4. Fix resume data gaps: add experience role descriptions, fill missing cert codes/PDF links
+### Phase 0 — Foundation ✅
+1. ✅ Scaffold `/resume` public route + `/dashboard` private route in Next.js
+2. ✅ Create Supabase project, add connection string to `.env.local` and Vercel
+3. ✅ Migrate `profile.json`, `projects.json`, `certifications.json` into Supabase tables
+4. ✅ Fix resume data gaps: add experience role descriptions, fill missing cert codes/PDF links
 
-### Phase 1 — Public Resume + AI Pages
-5. Build `/resume` page in Next.js rendering from Supabase (replaces GitHub Pages)
-6. Build `/ai` page — AI portfolio: AI projects, AI certs, AI blogs, this app as live demo, learning roadmap
-7. Add Schema.org JSON-LD for SEO on `/resume`
-8. Style both pages with Tailwind
-9. AI-generated executive summaries per project (Claude, approved once, stored)
-10. Profile completeness score widget on dashboard
+### Phase 1 — Public Resume + AI Pages ✅
+5. ✅ Build `/resume` page in Next.js rendering from Supabase (replaces GitHub Pages)
+6. ✅ Build `/ai` page — AI portfolio: AI projects, AI certs, AI blogs, this app as live demo, learning roadmap
+7. ✅ Style both pages with Tailwind — sticky side nav, AI badges, AI work section, chat CTAs
+8. ⬜ Add Schema.org JSON-LD for SEO on `/resume`
+9. ⬜ AI-generated executive summaries per project (Claude, approved once, stored)
+10. ⬜ Profile completeness score widget on dashboard
 
-### Phase 2 — RAG Chatbot
-10. Chunk resume data into optimal pieces
-11. Embed chunks → Supabase pgvector (OpenAI `text-embedding-3-small`)
-12. Build `/api/chat` RAG route with Claude (replaces Cloudflare Worker)
-13. Recruiter mode vs visitor mode (different system prompts, same backend)
-14. Stream Claude responses to UI
-15. Add prompt caching to system prompt (90% cost reduction)
+### Phase 2 — RAG Chatbot (AI concepts: ETL, chunking, embeddings, vector DB, RAG, prompt engineering)
+11. ✅ Chunk resume data into text pieces (one chunk per row across all 7 tables)
+12. ✅ Embed chunks → Supabase pgvector via OpenAI `text-embedding-3-small` (49 chunks stored)
+13. ✅ Build `/api/chat` RAG route — embed question → vector search → inject top 5 chunks → LLM
+14. ✅ Anthropic (Claude Haiku) primary + OpenAI GPT-4o mini fallback
+15. ✅ Guardrails — system prompt restricts bot to Shahid-only topics
+16. ✅ Rate limiting — 20 requests per IP per 10 minutes
+17. ⬜ Stream Claude/OpenAI responses to UI (text appears word by word — AI concept: streaming)
+18. ⬜ Recruiter mode vs visitor mode (different system prompts, same backend — AI concept: prompt engineering)
+19. ⬜ Prompt caching on system prompt — AI concept: 90% cost reduction on repeated calls
+20. ⬜ Hybrid search: combine vector similarity + BM25 keyword search — AI concept: hybrid retrieval
+21. ⬜ Cohere Rerank to improve chunk ordering before injecting into prompt — AI concept: reranking
+22. ⬜ Context window management: truncate/summarise chunks if job description exceeds token limit
 
-### Phase 3 — AI Resume Editor
-16. Build UI: plain English → Claude extracts structured data → diff view → approve → write to Supabase
-17. Re-embed updated profile on approval (chatbot uses latest data immediately)
-18. Structured output (Instructor pattern) for reliable JSON from Claude
+### Phase 3 — AI Resume Editor (AI concepts: structured output, Chain of Verification, human-in-the-loop)
+23. ⬜ Build UI: plain English → Claude extracts structured data → diff view → approve → write to Supabase
+24. ⬜ Re-embed updated profile on approval (chatbot uses latest data immediately)
+25. ⬜ Structured output (Instructor pattern) — reliable JSON from Claude, no hallucinated fields
+26. ⬜ Chain of Verification — Claude validates extracted data against original input before saving
 
-### Phase 4 — Job Aggregator
-19. RSS fetchers: Freelancer.com, FreelancerMap, Guru, EurSAP, SAPcontractors
-20. API integrations: Freelancer.com, Adzuna AU (apply for free keys)
-21. Remotive.io integration (no key needed)
-22. Normalize all sources to unified job schema
-23. Deduplicate + store in Supabase with delta tracking
+### Phase 4 — Job Aggregator (AI concepts: ETL pipeline, data normalisation, deduplication)
+27. ⬜ RSS fetchers: Freelancer.com, FreelancerMap, Guru, EurSAP, SAPcontractors
+28. ⬜ API integrations: Freelancer.com, Adzuna AU (apply for free keys)
+29. ⬜ Remotive.io integration (no key needed)
+30. ⬜ Normalize all sources to unified job schema — AI concept: data normalisation
+31. ⬜ Deduplicate + store in Supabase with delta tracking — AI concept: delta ETL
 
 ### Phase 4b — Manual Job Entry
-24. Build `POST /api/jobs/manual` — accepts URL or raw text, fetches/parses, normalises to unified job schema with `source: "manual"`
-25. Build dashboard UI: paste a URL or job description → preview extracted fields → confirm → save to Supabase
-26. All downstream features (scoring, cover letter, skill gap, interview prep, memory) work identically for manual jobs
+32. ⬜ Build `POST /api/jobs/manual` — accepts URL or raw text, Claude extracts fields, normalises to unified job schema with `source: "manual"`
+33. ⬜ Build dashboard UI: paste a URL or job description → preview extracted fields → confirm → save to Supabase
+34. ⬜ All downstream features (scoring, cover letter, skill gap, interview prep, memory) work identically for manual jobs
 
-### Phase 5 — Job Scoring
-27. Embed job descriptions
-28. Hybrid search: vector similarity + BM25 against profile
-29. Cohere Rerank for result ordering
-30. Job match scorecard: skills %, seniority, location, rate
-31. LLM-as-judge: Claude scores job match with reasoning
-32. Skill gap analyzer: aggregate missing skills across unmatched jobs
+### Phase 5 — Job Scoring (AI concepts: embeddings, hybrid search, reranking, LLM-as-judge, Zero-shot CoT)
+35. ⬜ Embed job descriptions using `text-embedding-3-small`
+36. ⬜ Hybrid search: vector similarity + BM25 against profile — AI concept: hybrid retrieval
+37. ⬜ Cohere Rerank for result ordering — AI concept: reranking
+38. ⬜ Job match scorecard: skills %, seniority, location, rate
+39. ⬜ LLM-as-judge: Claude scores job match with reasoning — AI concept: Zero-shot Chain-of-Thought
+40. ⬜ Skill gap analyzer: aggregate missing skills across unmatched jobs
 
-### Phase 6 — Agents
-33. Build ReAct agent: Fetcher → Scorer → Ranker → Email loop
-34. Define agent tools: `search_jobs`, `get_profile`, `score_job`, `send_email`, `update_resume`
-35. Add self-reflection step (agent reviews its own output)
-36. Expose job DB as MCP server (Anthropic Model Context Protocol)
-37. Multi-agent: Fetcher + Scorer + Email agents orchestrated by LangGraph
+### Phase 6 — Agents (AI concepts: ReAct, tool use, MCP, multi-agent, LangGraph, self-reflection)
+41. ⬜ Build ReAct agent: Fetcher → Scorer → Ranker → Email loop — AI concept: ReAct pattern (reason → act → observe)
+42. ⬜ Define agent tools: `search_jobs`, `get_profile`, `score_job`, `send_email`, `update_resume` — AI concept: function calling / tool use
+43. ⬜ Add self-reflection step — agent reviews its own output before sending — AI concept: self-reflection
+44. ⬜ Expose job DB as MCP server (Anthropic Model Context Protocol) — AI concept: MCP
+45. ⬜ Multi-agent: Fetcher + Scorer + Email agents orchestrated by LangGraph — AI concept: multi-agent orchestration
+46. ⬜ Human-in-the-loop: user approves before any write action — AI concept: HITL
 
-### Phase 7 — Cover Letter Generator
-38. Pick job → RAG retrieves relevant projects/skills → Claude drafts → human reviews before copying
-39. Add Chain of Verification to validate proposal claims against resume
+### Phase 7 — Cover Letter Generator (AI concepts: RAG, Chain of Verification, tool use)
+47. ⬜ Pick job → RAG retrieves relevant projects/skills → Claude drafts → human reviews before copying
+48. ⬜ Chain of Verification: validate proposal claims against resume before showing to user
 
-### Phase 8 — Memory
-40. Track jobs acted on (Apply / Pass / Save) in Supabase
-41. Long-term memory via Mem0 or Zep: learn from accepted/rejected jobs
-42. Semantic caching for repeated job searches (GPTCache or Redis)
+### Phase 8 — Memory (AI concepts: short-term memory, long-term memory, semantic caching, delta search)
+49. ⬜ Track jobs acted on (Apply / Pass / Save) in Supabase — AI concept: short-term memory
+50. ⬜ Long-term memory via Mem0 or Zep: learn from accepted/rejected jobs — AI concept: long-term memory
+51. ⬜ Semantic caching for repeated job searches via GPTCache or Redis — AI concept: semantic caching
+52. ⬜ Delta search — only return new jobs since last run — AI concept: delta tracking
 
-### Phase 9 — Interview Prep
-43. Given a job → generate likely questions + answers from your project experience via RAG
+### Phase 9 — Interview Prep (AI concept: RAG)
+53. ⬜ Given a job → generate likely questions + answers from your project experience via RAG
 
 ### Phase 10 — Email & Scheduler
-44. Vercel Cron to run job agent on schedule
-45. Weekly digest email via Resend: new jobs, top 3, skill gaps, profile score
+54. ⬜ Vercel Cron to run job agent on schedule
+55. ⬜ Weekly digest email via Resend: new jobs, top 3, skill gaps, profile score
 
-### Phase 11 — Observability
-46. Langfuse LLM tracing (50k traces/month free)
-47. Token + cost tracking per agent run
-48. `/admin` page: run history, jobs per source, tokens, cost, Langfuse links
-49. DeepEval or RAGAs evals for retrieval quality
+### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
+56. ⬜ Langfuse LLM tracing — 50k traces/month free — AI concept: observability
+57. ⬜ Token + cost tracking per agent run
+58. ⬜ `/admin` page: run history, jobs per source, tokens, cost, Langfuse links
+59. ⬜ DeepEval or RAGAs evals for retrieval quality — AI concept: evals
+60. ⬜ LLM-as-judge: Claude scores whether job matched correctly — AI concept: automated evaluation
 
 ### Phase 12 — Upwork OAuth
-50. Receive Upwork developer keys, add to Vercel env vars
-51. Update callback URL in Upwork portal to `upwork-sepia.vercel.app`
-52. Test full OAuth flow end-to-end
-53. AI Profile Optimizer: fetch Upwork profile → Claude suggestions → human review → push
+61. ⬜ Receive Upwork developer keys, add to Vercel env vars
+62. ⬜ Update callback URL in Upwork portal to `upwork-sepia.vercel.app`
+63. ⬜ Test full OAuth flow end-to-end
+64. ⬜ AI Profile Optimizer: fetch Upwork profile → Claude suggestions → human review → push
 
-### Phase 13 — Advanced
-54. Guardrails: NeMo Guardrails + Presidio for PII + input validation
-55. LLM routing: Haiku for simple tasks, Opus for complex scoring
-56. GraphRAG: knowledge graph over job market
-57. Fine-tuning prep: collect accepted/rejected dataset from memory
-58. Multimodal: parse job PDFs or screenshots with Claude vision
+### Phase 13 — Advanced (AI concepts: LLM routing, streaming, GraphRAG, fine-tuning, multimodal, guardrails)
+65. ⬜ Streaming: stream AI responses to dashboard in real time — AI concept: streaming output
+66. ⬜ LLM routing: Haiku for simple tasks, Opus for complex scoring — AI concept: model routing
+67. ⬜ Guardrails: NeMo Guardrails + Presidio for PII + input validation — AI concept: guardrails
+68. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
+69. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
+70. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
 
 ---
 
