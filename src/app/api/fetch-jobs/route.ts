@@ -55,9 +55,9 @@ function parseItems(xml: string): string[] {
 }
 
 function parseGuid(item: string): string {
-  const cdataMatch = item.match(/<guid[^>]*><!\\[CDATA\\[(.*?)\\]\\]><\/guid>/s)
+  const cdataMatch = item.match(/<guid[^>]*><!\[CDATA\[([\s\S]*?)\]\]><\/guid>/)
   if (cdataMatch) return cdataMatch[1].trim()
-  const match = item.match(/<guid[^>]*>(.*?)<\/guid>/s)
+  const match = item.match(/<guid[^>]*>([\s\S]*?)<\/guid>/)
   return match ? match[1].trim() : ''
 }
 
