@@ -67,7 +67,7 @@ export default async function AiPage() {
               <h3 className="font-semibold text-gray-900">AI Career Hub</h3>
               <p className="text-sm text-gray-600 mt-0.5">Next.js 14 · Supabase pgvector · Claude API · Vercel</p>
             </div>
-            <a href="https://github.com/shahidla/upwork" target="_blank" rel="noopener noreferrer"
+            <a href="https://github.com/shahidla/shahid-careerhub" target="_blank" rel="noopener noreferrer"
               className="text-sm text-purple-700 hover:underline font-medium self-start">
               GitHub →
             </a>

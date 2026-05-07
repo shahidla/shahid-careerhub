@@ -1,14 +1,14 @@
-# Upwork AI Job Assistant
+# AI Career Hub
 
-A minimal production-ready web app for Upwork API integration, built with Next.js 14, TypeScript, and Tailwind CSS.
+A job search aggregator + AI career assistant built with Next.js 14, TypeScript, and Tailwind CSS.
 
 ## Setup
 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/shahidla/upwork.git
-cd upwork
+git clone https://github.com/shahidla/shahid-careerhub.git
+cd shahid-careerhub
 ```
 
 ### 2. Install dependencies

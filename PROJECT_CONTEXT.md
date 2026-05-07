@@ -531,7 +531,7 @@ This is the master dev task list. Always update this when a task is done. This s
 
 ### Phase 12 — Upwork OAuth
 61. ⬜ Receive Upwork developer keys, add to Vercel env vars
-62. ⬜ Update callback URL in Upwork portal to `upwork-sepia.vercel.app`
+62. ⬜ Update callback URL in Upwork portal to `shahid-careerhub.vercel.app`
 63. ⬜ Test full OAuth flow end-to-end
 64. ⬜ AI Profile Optimizer: fetch Upwork profile → Claude suggestions → human review → push
 
