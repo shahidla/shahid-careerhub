@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-07 (session 4)
+Last updated: 2026-05-07 (session 5)
 
 ---
 
@@ -359,7 +359,54 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 
 ---
 
+## 14. Known Issues & Fixes
+
+| Issue | Fix Applied |
+|---|---|
+| Corporate Artifactory npm registry blocks Vercel | `.npmrc` sets `registry=https://registry.npmjs.org/` |
+| Vercel npm `Exit handler never called` bug | `vercel.json` sets `installCommand: npm install --legacy-peer-deps` |
+| Personal photos accidentally uploaded to GitHub | Removed via `git filter-branch --force`, force-pushed |
+| Two Vercel URLs live simultaneously | Old URL (`upwork-5j8apg26s...`) still live — use `upwork-sepia.vercel.app` |
+| `package-lock.json` generated with Node 25 breaks Vercel | Deleted lock file from repo — Vercel regenerates it cleanly. Never commit `package-lock.json` from this machine (Node 25). |
+| `supabase-js` v2.105.3 broken — missing `iceberg-js` peer dep | Do NOT use `createClient` from supabase-js in seed scripts. Use plain `fetch` against `/rest/v1/<table>` with `apikey` + `Authorization: Bearer` headers. |
+| Corporate proxy blocks outbound HTTPS to supabase.co | Cannot run seed scripts locally. Use Supabase SQL Editor in browser to run `.sql` files. |
+| `tsx` not available globally — `npx` blocked by proxy | Use tsx from trbk-mcp project: `/c/Dev/trbk-mcp/node_modules/.bin/tsx` (only works when proxy not blocking supabase) |
+
+---
+
+## 15. Local Dev Commands
+
+```bash
+cd C:/Dev/upwork
+
+# Install
+npm install
+
+# Run locally (http://localhost:3000)
+npm run dev
+
+# Deploy (auto on push)
+git push origin main
+```
+
+---
+
+## 16. Notes for AI Assistants
+
+- **npm registry:** Always use `https://registry.npmjs.org/` — corporate Artifactory only works on the dev machine
+- **Never commit** `.env.local`
+- **Production domain:** `upwork-sepia.vercel.app` — use this everywhere
+- **Callback URL registered with Upwork:** currently the OLD URL — update when keys arrive
+- **Do not remove** `vercel.json` — it fixes the Vercel build
+- **Human review always required** before any Upwork API write action
+- **AI stack preference:** Claude API (Anthropic) as primary LLM
+- **Dev machine OS:** Windows 11, shell is bash (Git Bash), paths use forward slashes
+
+---
+
 ## 17. Complete Task List
+
+This is the master dev task list. Always update this when a task is done. This section is always last.
 
 ### Phase 0 — Foundation ✅
 1. ✅ Scaffold `/resume` public route + `/dashboard` private route in Next.js
@@ -460,48 +507,3 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 68. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
 69. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
 70. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
-
----
-
-## 14. Known Issues & Fixes
-
-| Issue | Fix Applied |
-|---|---|
-| Corporate Artifactory npm registry blocks Vercel | `.npmrc` sets `registry=https://registry.npmjs.org/` |
-| Vercel npm `Exit handler never called` bug | `vercel.json` sets `installCommand: npm install --legacy-peer-deps` |
-| Personal photos accidentally uploaded to GitHub | Removed via `git filter-branch --force`, force-pushed |
-| Two Vercel URLs live simultaneously | Old URL (`upwork-5j8apg26s...`) still live — use `upwork-sepia.vercel.app` |
-| `package-lock.json` generated with Node 25 breaks Vercel | Deleted lock file from repo — Vercel regenerates it cleanly. Never commit `package-lock.json` from this machine (Node 25). |
-| `supabase-js` v2.105.3 broken — missing `iceberg-js` peer dep | Do NOT use `createClient` from supabase-js in seed scripts. Use plain `fetch` against `/rest/v1/<table>` with `apikey` + `Authorization: Bearer` headers. |
-| Corporate proxy blocks outbound HTTPS to supabase.co | Cannot run seed scripts locally. Use Supabase SQL Editor in browser to run `.sql` files. |
-| `tsx` not available globally — `npx` blocked by proxy | Use tsx from trbk-mcp project: `/c/Dev/trbk-mcp/node_modules/.bin/tsx` (only works when proxy not blocking supabase) |
-
----
-
-## 15. Local Dev Commands
-
-```bash
-cd C:/Dev/upwork
-
-# Install
-npm install
-
-# Run locally (http://localhost:3000)
-npm run dev
-
-# Deploy (auto on push)
-git push origin main
-```
-
----
-
-## 16. Notes for AI Assistants
-
-- **npm registry:** Always use `https://registry.npmjs.org/` — corporate Artifactory only works on the dev machine
-- **Never commit** `.env.local`
-- **Production domain:** `upwork-sepia.vercel.app` — use this everywhere
-- **Callback URL registered with Upwork:** currently the OLD URL — update when keys arrive
-- **Do not remove** `vercel.json` — it fixes the Vercel build
-- **Human review always required** before any Upwork API write action
-- **AI stack preference:** Claude API (Anthropic) as primary LLM
-- **Dev machine OS:** Windows 11, shell is bash (Git Bash), paths use forward slashes
