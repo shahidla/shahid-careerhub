@@ -19,20 +19,8 @@ type RawJob = {
 
 const RSS_SOURCES = [
   {
-    name: 'freelancermap',
-    url: 'https://www.freelancermap.com/projektboerse.html?output=rss&query=SAP&remote=1',
-  },
-  {
-    name: 'freelancermap_au',
-    url: 'https://www.freelancermap.com/projektboerse.html?output=rss&query=SAP&country=36',
-  },
-  {
-    name: 'eursap',
-    url: 'https://www.eursap.eu/jobs/feed/',
-  },
-  {
     name: 'remotive',
-    url: 'https://remotive.com/remote-jobs/software-dev/feed',
+    url: 'https://remotive.com/remote-jobs/feed',
   },
 ]
 
