@@ -56,27 +56,13 @@ function isRateLimited(ip: string): boolean {
 
 // ─── System prompt ────────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT_BASE = `You are an AI assistant representing Shahid M Syed's resume and professional profile.
-You help recruiters and hiring managers understand Shahid's experience, skills, and fit for roles.
+const SYSTEM_PROMPT_BASE = `You are an AI assistant representing Shahid M Syed's professional profile, speaking to recruiters, hiring managers, and visitors.
 
-IMPORTANT: You ONLY answer questions about Shahid M Syed — his experience, skills, projects, certifications, and fit for specific roles. If the question is not about Shahid or evaluating a job description against his profile, politely decline and redirect the user to ask about Shahid. Do not answer general questions, write code, explain technologies in general terms, or discuss unrelated topics.
-
-When a user pastes a job description, analyse it and provide:
-1. A match score (0–100%)
-2. Key strengths aligned to the role
-3. Potential gaps or areas to address
-4. A one-paragraph summary of fit
-
-Be direct, helpful, and honest. Keep responses concise unless the user asks for detail.`
-
-const SYSTEM_PROMPT_RECRUITER = `You are an AI assistant representing Shahid M Syed's professional profile, speaking directly to a recruiter or hiring manager.
-
-Be direct and concise. Lead with what matters to a hiring decision: availability, key strengths, and fit for the role.
+Be direct and concise. Lead with what matters: availability, key strengths, and fit for the role.
 
 IMPORTANT: Only answer questions about Shahid M Syed — his experience, availability, skills, and fit for roles. If a question is not about Shahid or evaluating a role against his profile, politely decline.
 
-When asked about availability or rate: state what is known from the resume data.
-When a recruiter pastes a job description, provide:
+When a user pastes a job description, provide:
 1. Match score (0–100%)
 2. Top 3 strengths aligned to the role
 3. Any gaps to be aware of
@@ -84,10 +70,9 @@ When a recruiter pastes a job description, provide:
 
 End every response with: "Get in touch → shahid.la@gmail.com"`
 
-function buildSystemPrompt(chunks: string[], mode: string): string {
-  const base = mode === 'recruiter' ? SYSTEM_PROMPT_RECRUITER : SYSTEM_PROMPT_BASE
-  if (chunks.length === 0) return base
-  return `${base}
+function buildSystemPrompt(chunks: string[]): string {
+  if (chunks.length === 0) return SYSTEM_PROMPT_BASE
+  return `${SYSTEM_PROMPT_BASE}
 
 ## Shahid's Resume Data (use this to answer the question)
 
@@ -213,7 +198,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const { messages, mode } = await req.json()
+  const { messages } = await req.json()
 
   if (!ANTHROPIC_KEY && !OPENAI_KEY) {
     return NextResponse.json(
@@ -224,11 +209,11 @@ export async function POST(req: NextRequest) {
 
   // RAG: embed the latest user question and find relevant chunks
   const lastUserMessage = [...messages].reverse().find((m: Message) => m.role === 'user')?.content ?? ''
-  let systemPrompt = mode === 'recruiter' ? SYSTEM_PROMPT_RECRUITER : SYSTEM_PROMPT_BASE
+  let systemPrompt = SYSTEM_PROMPT_BASE
   try {
     const embedding = await embedQuestion(lastUserMessage)
     const chunks = await searchChunks(embedding)
-    systemPrompt = buildSystemPrompt(chunks, mode ?? 'visitor')
+    systemPrompt = buildSystemPrompt(chunks)
   } catch (err) {
     console.error('RAG failed, falling back to base prompt:', err)
   }
