@@ -131,20 +131,30 @@ async function upsertJobs(jobs: RawJob[]): Promise<number> {
 
 // ─── Route handler ────────────────────────────────────────────────────────────
 
+const SAP_KEYWORDS = ['sap', 'abap', 's/4hana', 's4hana', 'fiori', 'btp', 'hana', 'sapui5']
+
+function isSapRelevant(job: RawJob): boolean {
+  const text = `${job.title} ${job.description} ${job.tags.join(' ')}`.toLowerCase()
+  return SAP_KEYWORDS.some((kw) => text.includes(kw))
+}
+
+// ─── Route handler ────────────────────────────────────────────────────────────
+
 export async function GET() {
-  const results: { source: string; fetched: number; error?: string }[] = []
+  const results: { source: string; fetched: number; filtered: number; error?: string }[] = []
 
   for (const source of RSS_SOURCES) {
     try {
       const jobs = await fetchRSS(source)
-      const count = await upsertJobs(jobs)
-      results.push({ source: source.name, fetched: count })
+      const sapJobs = jobs.filter(isSapRelevant)
+      const count = await upsertJobs(sapJobs)
+      results.push({ source: source.name, fetched: jobs.length, filtered: count })
     } catch (err) {
-      results.push({ source: source.name, fetched: 0, error: String(err) })
+      results.push({ source: source.name, fetched: 0, filtered: 0, error: String(err) })
     }
   }
 
-  const total = results.reduce((sum, r) => sum + r.fetched, 0)
+  const total = results.reduce((sum, r) => sum + (r.filtered ?? 0), 0)
   return NextResponse.json({ total, results })
 }
 
