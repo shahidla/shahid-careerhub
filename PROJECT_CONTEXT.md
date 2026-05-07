@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-06 (session 3)
+Last updated: 2026-05-07 (session 4)
 
 ---
 
@@ -92,8 +92,16 @@ C:/Dev/upwork/
 │   │   ├── layout.tsx
 │   │   ├── page.tsx                          # Home page — Connect Upwork button + callback URLs
 │   │   ├── globals.css
+│   │   ├── resume/
+│   │   │   └── page.tsx                      # /resume — public SAP profile
+│   │   ├── ai/
+│   │   │   └── page.tsx                      # /ai — AI portfolio page
+│   │   ├── chat/
+│   │   │   └── page.tsx                      # /chat — RAG chatbot UI (streaming)
 │   │   └── api/
 │   │       ├── health/route.ts               # GET /api/health → { ok: true }
+│   │       ├── chat/route.ts                 # POST /api/chat — RAG + LLM streaming
+│   │       ├── embed/route.ts                # GET /api/embed — embed all resume data into pgvector
 │   │       └── auth/upwork/
 │   │           ├── login/route.ts            # GET /api/auth/upwork/login → redirects to Upwork OAuth
 │   │           └── callback/route.ts         # GET /api/auth/upwork/callback → exchanges code for token
@@ -101,6 +109,7 @@ C:/Dev/upwork/
 │       └── supabase.ts                       # supabase (anon) + supabaseAdmin (service role) clients
 ├── supabase/
 │   ├── schema.sql                            # DROP + CREATE all 9 tables — run first in SQL Editor
+│   ├── match-chunks-function.sql             # pgvector RPC function for vector similarity search
 │   ├── seed-1-profile.sql                    # 1 row — name, headline, contact, proof points
 │   ├── seed-2-certifications.sql             # 9 certifications
 │   ├── seed-3-skills.sql                     # 5 skill categories
@@ -278,7 +287,7 @@ Fields: Title, Overview/Bio, Skills, Hourly rate.
 
 ---
 
-## 15. Unified Platform Vision — AI Career Hub
+## 12. Unified Platform Vision — AI Career Hub
 
 The long-term goal is ONE unified Next.js app (`upwork-sepia.vercel.app`) that:
 - **Replaces** the static GitHub Pages resume (`shahidla.github.io/Resume/`)
@@ -334,7 +343,7 @@ Projects and blogs that are both SAP and AI (MCP server, event-driven AI, ML at 
 
 ---
 
-## 16. Manual Job Entry
+## 13. Manual Job Entry
 
 Any job not found by the aggregator can be manually added by pasting a URL or raw job description.
 All AI features (scoring, cover letter, skill gap, interview prep, memory) apply identically to manual jobs.
@@ -373,7 +382,7 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 14. ✅ Anthropic (Claude Haiku) primary + OpenAI GPT-4o mini fallback
 15. ✅ Guardrails — system prompt restricts bot to Shahid-only topics
 16. ✅ Rate limiting — 20 requests per IP per 10 minutes
-17. ⬜ Stream Claude/OpenAI responses to UI (text appears word by word — AI concept: streaming)
+17. ✅ Stream Claude/OpenAI responses to UI (text appears word by word — AI concept: streaming)
 18. ⬜ Recruiter mode vs visitor mode (different system prompts, same backend — AI concept: prompt engineering)
 19. ⬜ Prompt caching on system prompt — AI concept: 90% cost reduction on repeated calls
 20. ⬜ Hybrid search: combine vector similarity + BM25 keyword search — AI concept: hybrid retrieval
@@ -454,7 +463,7 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 
 ---
 
-## 12. Known Issues & Fixes
+## 14. Known Issues & Fixes
 
 | Issue | Fix Applied |
 |---|---|
@@ -469,7 +478,7 @@ Route: `POST /api/jobs/manual` — accepts `{ url? }` or `{ text? }`, returns no
 
 ---
 
-## 13. Local Dev Commands
+## 15. Local Dev Commands
 
 ```bash
 cd C:/Dev/upwork
@@ -486,7 +495,7 @@ git push origin main
 
 ---
 
-## 14. Notes for AI Assistants
+## 16. Notes for AI Assistants
 
 - **npm registry:** Always use `https://registry.npmjs.org/` — corporate Artifactory only works on the dev machine
 - **Never commit** `.env.local`
