@@ -419,7 +419,7 @@ This is the master dev task list. Always update this when a task is done. This s
 6. ✅ Build `/ai` page — AI portfolio: AI projects, AI certs, AI blogs, this app as live demo, learning roadmap
 7. ✅ Style both pages with Tailwind — sticky side nav, AI badges, AI work section, chat CTAs
 8. ⬜ Add Schema.org JSON-LD for SEO on `/resume`
-9. ⬜ AI-generated executive summaries per project (Claude, approved once, stored)
+9. ✅ AI-generated executive summaries per project (Claude, approved once, stored)
 10. ⬜ Profile completeness score widget on dashboard
 
 ### Phase 2 — RAG Chatbot (AI concepts: ETL, chunking, embeddings, vector DB, RAG, prompt engineering)
