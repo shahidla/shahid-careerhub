@@ -122,50 +122,42 @@ async function fetchRSS(source: { name: string; url: string }): Promise<RawJob[]
 async function upsertJobs(jobs: RawJob[]): Promise<{ attempted: number; inserted: number }> {
   if (jobs.length === 0) return { attempted: 0, inserted: 0 }
 
-  // Fetch existing descriptions for these source_ids to detect changes
+  // Fetch existing rows to detect new inserts and description changes
   const sourceIds = jobs.map((j) => j.source_id).filter(Boolean)
   const existingRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/jobs?select=source,source_id,description&source_id=in.(${sourceIds.map((id) => `"${id}"`).join(',')})`,
+    `${SUPABASE_URL}/rest/v1/jobs?select=id,source,source_id,description&source_id=in.(${sourceIds.map((id) => `"${id}"`).join(',')})`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
   )
-  const existing: { source: string; source_id: string; description: string }[] = existingRes.ok ? await existingRes.json() : []
-  const existingMap = new Map(existing.map((e) => [`${e.source}:${e.source_id}`, e.description]))
+  const existing: { id: string; source: string; source_id: string; description: string }[] = existingRes.ok ? await existingRes.json() : []
+  const existingMap = new Map(existing.map((e) => [`${e.source}:${e.source_id}`, e]))
 
-  // Upsert all jobs (merge so description/title stay current)
-  const upsertRes = await fetch(`${SUPABASE_URL}/rest/v1/jobs?on_conflict=source,source_id`, {
+  // Insert new jobs only (ignore duplicates — preserves match_score on existing rows)
+  const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/jobs?on_conflict=source,source_id`, {
     method: 'POST',
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
       'content-type': 'application/json',
-      Prefer: 'resolution=merge-duplicates,return=representation',
+      Prefer: 'resolution=ignore-duplicates,return=representation',
     },
     body: JSON.stringify(jobs),
   })
-  if (!upsertRes.ok) throw new Error(`Supabase upsert failed: ${await upsertRes.text()}`)
-  const upserted: { id: string; source: string; source_id: string }[] = await upsertRes.json()
+  if (!insertRes.ok) throw new Error(`Supabase upsert failed: ${await insertRes.text()}`)
+  const inserted: unknown[] = await insertRes.json()
 
-  // Count genuinely new rows (weren't in existingMap before)
-  const inserted = upserted.filter((r) => !existingMap.has(`${r.source}:${r.source_id}`)).length
-
-  // Reset score for rows whose description changed
-  const changedIds = jobs
-    .filter((j) => {
-      const prev = existingMap.get(`${j.source}:${j.source_id}`)
-      return prev !== undefined && prev !== j.description
-    })
-    .map((j) => upserted.find((r) => r.source === j.source && r.source_id === j.source_id)?.id)
-    .filter((id): id is string => !!id)
-
-  if (changedIds.length > 0) {
-    await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=in.(${changedIds.join(',')})`, {
-      method: 'PATCH',
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
-      body: JSON.stringify({ match_score: null, match_reasoning: null }),
-    })
+  // For existing jobs whose description changed: update description and reset score
+  for (const job of jobs) {
+    const prev = existingMap.get(`${job.source}:${job.source_id}`)
+    if (prev && prev.description !== job.description) {
+      await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${prev.id}`, {
+        method: 'PATCH',
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ description: job.description, title: job.title, match_score: null, match_reasoning: null }),
+      })
+    }
   }
 
-  return { attempted: jobs.length, inserted }
+  return { attempted: jobs.length, inserted: inserted.length }
 }
 
 // ─── Adzuna API ───────────────────────────────────────────────────────────────
