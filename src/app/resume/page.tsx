@@ -229,7 +229,7 @@ export default async function ResumePage() {
                     </div>
                   </div>
                   <p className="mt-1 text-sm font-medium text-blue-700">{p.impact}</p>
-                  <p className="mt-1 text-sm text-gray-700 leading-relaxed">{p.description}</p>
+                  <p className="mt-1 text-sm text-gray-700 leading-relaxed">{p.ai_summary ?? p.description}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {p.technologies.map((t) => (
                       <span key={t} className={`tag-sm ${p.is_ai ? 'bg-purple-50 text-purple-700' : ''}`}>{t}</span>

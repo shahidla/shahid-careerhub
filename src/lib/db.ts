@@ -40,6 +40,7 @@ export type Project = {
   client: string
   impact: string
   description: string
+  ai_summary: string | null
   technologies: string[]
   tags: string[]
   url: string
