@@ -235,9 +235,9 @@ async function fetchAllResumeChunks(): Promise<string> {
 }
 
 async function batchScoreJobs(resume: string, jobs: UnscoredJob[]): Promise<{ id: string; score: number; reasoning: string }[]> {
-  const jobList = jobs.map((j, i) =>
-    `[${i}] id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 800)}`
-  ).join('\n\n')
+  const jobList = jobs.map((j) =>
+    `id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 600)}`
+  ).join('\n\n---\n\n')
 
   const prompt = `You are a strict recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
 
@@ -248,13 +248,13 @@ Scoring rules:
 - A "Chief Data Officer" or "Head of" role with no hands-on SAP technical requirement should score below 40
 - Be strict — most jobs should score between 40-75, reserve 80+ for near-perfect matches
 
-Return a JSON array only — no markdown, no explanation outside the array. Each element must have:
+Return a JSON object with a single key "scores" containing an array. Each element must have:
 - "id": the job id string (copy exactly from input)
 - "score": integer 0-100
 - "reasoning": one sentence explaining the score, mentioning specific matching skills or gaps
 
 Candidate Resume:
-${resume.slice(0, 6000)}
+${resume.slice(0, 4000)}
 
 Jobs to score:
 ${jobList}`
@@ -264,7 +264,7 @@ ${jobList}`
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] }),
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] }),
       })
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
@@ -273,7 +273,7 @@ ${jobList}`
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 2048, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
+        body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 4096, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
       })
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
@@ -291,11 +291,11 @@ ${jobList}`
   if (!raw) throw new Error('No LLM API key configured')
 
   const parsed = JSON.parse(raw)
-  return Array.isArray(parsed) ? parsed : parsed.results ?? parsed.scores ?? []
+  return Array.isArray(parsed) ? parsed : parsed.scores ?? parsed.results ?? []
 }
 
 async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?match_score=is.null&select=id,title,description,tags,location,company&limit=50`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?match_score=is.null&select=id,title,description,tags,location,company&limit=100`, {
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   })
   if (!res.ok) return { scored: 0, failed: 0 }
@@ -303,20 +303,26 @@ async function scoreUnscoredJobs(): Promise<{ scored: number; failed: number }> 
   if (jobs.length === 0) return { scored: 0, failed: 0 }
 
   const resume = await fetchAllResumeChunks()
-  const scores = await batchScoreJobs(resume, jobs)
 
   let scored = 0, failed = 0
-  await Promise.all(scores.map(async ({ id, score, reasoning }) => {
+  const BATCH = 10
+  for (let i = 0; i < jobs.length; i += BATCH) {
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
-        body: JSON.stringify({ match_score: score, match_reasoning: reasoning }),
-      })
-      if (!res.ok) throw new Error(await res.text())
-      scored++
-    } catch { failed++ }
-  }))
+      const batch = jobs.slice(i, i + BATCH)
+      const scores = await batchScoreJobs(resume, batch)
+      await Promise.all(scores.map(async ({ id, score, reasoning }) => {
+        try {
+          const r = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
+            body: JSON.stringify({ match_score: score, match_reasoning: reasoning }),
+          })
+          if (!r.ok) throw new Error(await r.text())
+          scored++
+        } catch { failed++ }
+      }))
+    } catch { failed += Math.min(BATCH, jobs.length - i) }
+  }
 
   return { scored, failed }
 }
