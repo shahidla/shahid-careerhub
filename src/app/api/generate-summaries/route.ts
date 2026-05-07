@@ -39,9 +39,11 @@ AI project: ${project.is_ai ? 'Yes' : 'No'}`
         messages: [{ role: 'user', content: prompt }],
       }),
     })
-    if (!res.ok) throw new Error(`Anthropic failed: ${await res.text()}`)
-    const data = await res.json()
-    return data.content[0].text.trim()
+    if (res.ok) {
+      const data = await res.json()
+      return data.content[0].text.trim()
+    }
+    console.error('Anthropic failed, falling back to OpenAI:', await res.text())
   }
 
   if (OPENAI_KEY) {
