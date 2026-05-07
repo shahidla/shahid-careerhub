@@ -3,8 +3,27 @@ import { NextRequest, NextResponse } from 'next/server'
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
 const OPENAI_KEY = process.env.OPENAI_API_KEY
 
-const SYSTEM_PROMPT = `You are an AI assistant representing Shahid M Syed's resume.
+// Simple in-memory rate limiter: 20 requests per IP per 10 minutes
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT = 20
+const RATE_WINDOW_MS = 10 * 60 * 1000
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return false
+  }
+  if (entry.count >= RATE_LIMIT) return true
+  entry.count++
+  return false
+}
+
+const SYSTEM_PROMPT = `You are an AI assistant representing Shahid M Syed's resume and professional profile.
 You help recruiters and hiring managers understand Shahid's experience, skills, and fit for roles.
+
+IMPORTANT: You ONLY answer questions about Shahid M Syed — his experience, skills, projects, certifications, and fit for specific roles. If the question is not about Shahid or evaluating a job description against his profile, politely decline and redirect the user to ask about Shahid. Do not answer general questions, write code, explain technologies in general terms, or discuss unrelated topics.
 
 About Shahid:
 - SAP Development Architect with 19 years of enterprise SAP experience
@@ -65,6 +84,14 @@ async function callOpenAI(messages: Message[]): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { content: 'Too many requests. Please wait a few minutes before trying again.' },
+      { status: 429 },
+    )
+  }
+
   const { messages } = await req.json()
 
   if (!ANTHROPIC_KEY && !OPENAI_KEY) {
