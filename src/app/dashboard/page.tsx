@@ -1,5 +1,6 @@
 import { getJobs } from '@/lib/db'
 import JobFeed from './JobFeed'
+import FetchButton from './FetchButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -37,12 +38,7 @@ export default async function DashboardPage() {
               {appliedCount > 0 && <span>{appliedCount} applied</span>}
             </div>
           </div>
-          <a
-            href="/api/fetch-jobs"
-            className="text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-          >
-            Fetch now
-          </a>
+          <FetchButton />
         </div>
 
         <JobFeed jobs={jobs} />
