@@ -371,4 +371,5 @@ export async function GET() {
 }
 
 // Allow Vercel Cron to call this
+export const dynamic = 'force-dynamic'
 export const maxDuration = 30
