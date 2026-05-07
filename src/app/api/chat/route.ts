@@ -38,7 +38,6 @@ async function searchChunks(embedding: number[]): Promise<string[]> {
 
 // ─── Rate limiter ─────────────────────────────────────────────────────────────
 
-// Simple in-memory rate limiter: 20 requests per IP per 10 minutes
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_LIMIT = 20
 const RATE_WINDOW_MS = 10 * 60 * 1000
@@ -54,6 +53,8 @@ function isRateLimited(ip: string): boolean {
   entry.count++
   return false
 }
+
+// ─── System prompt ────────────────────────────────────────────────────────────
 
 const SYSTEM_PROMPT_BASE = `You are an AI assistant representing Shahid M Syed's resume and professional profile.
 You help recruiters and hiring managers understand Shahid's experience, skills, and fit for roles.
@@ -79,7 +80,24 @@ ${chunks.map((c, i) => `[${i + 1}] ${c}`).join('\n\n')}`
 
 type Message = { role: string; content: string }
 
-async function callAnthropic(messages: Message[], systemPrompt: string): Promise<string> {
+// ─── Streaming helpers ────────────────────────────────────────────────────────
+
+function makeStream(producer: (push: (text: string) => void, done: () => void) => void): Response {
+  const encoder = new TextEncoder()
+  const stream = new ReadableStream({
+    start(controller) {
+      producer(
+        (text) => controller.enqueue(encoder.encode(text)),
+        () => controller.close(),
+      )
+    },
+  })
+  return new Response(stream, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  })
+}
+
+async function streamAnthropic(messages: Message[], systemPrompt: string): Promise<Response> {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -90,16 +108,42 @@ async function callAnthropic(messages: Message[], systemPrompt: string): Promise
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
+      stream: true,
       system: systemPrompt,
       messages,
     }),
   })
   if (!res.ok) throw new Error(await res.text())
-  const data = await res.json()
-  return (data.content?.[0]?.text ?? 'No response.') + '\n\n_via Claude_'
+
+  const reader = res.body!.getReader()
+  const decoder = new TextDecoder()
+
+  return makeStream(async (push, done) => {
+    let buffer = ''
+    while (true) {
+      const { value, done: streamDone } = await reader.read()
+      if (streamDone) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue
+        const json = line.slice(6).trim()
+        if (!json || json === '[DONE]') continue
+        try {
+          const evt = JSON.parse(json)
+          if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+            push(evt.delta.text)
+          }
+        } catch { /* skip malformed lines */ }
+      }
+    }
+    push('\n\n_via Claude_')
+    done()
+  })
 }
 
-async function callOpenAI(messages: Message[], systemPrompt: string): Promise<string> {
+async function streamOpenAI(messages: Message[], systemPrompt: string): Promise<Response> {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -109,13 +153,40 @@ async function callOpenAI(messages: Message[], systemPrompt: string): Promise<st
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       max_tokens: 1024,
+      stream: true,
       messages: [{ role: 'system', content: systemPrompt }, ...messages],
     }),
   })
   if (!res.ok) throw new Error(await res.text())
-  const data = await res.json()
-  return (data.choices?.[0]?.message?.content ?? 'No response.') + '\n\n_via GPT-4o mini_'
+
+  const reader = res.body!.getReader()
+  const decoder = new TextDecoder()
+
+  return makeStream(async (push, done) => {
+    let buffer = ''
+    while (true) {
+      const { value, done: streamDone } = await reader.read()
+      if (streamDone) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue
+        const json = line.slice(6).trim()
+        if (!json || json === '[DONE]') continue
+        try {
+          const evt = JSON.parse(json)
+          const token = evt.choices?.[0]?.delta?.content
+          if (token) push(token)
+        } catch { /* skip malformed lines */ }
+      }
+    }
+    push('\n\n_via GPT-4o mini_')
+    done()
+  })
 }
+
+// ─── Route handler ────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
@@ -148,8 +219,7 @@ export async function POST(req: NextRequest) {
 
   try {
     if (ANTHROPIC_KEY) {
-      const content = await callAnthropic(messages, systemPrompt)
-      return NextResponse.json({ content })
+      return await streamAnthropic(messages, systemPrompt)
     }
     throw new Error('No Anthropic key')
   } catch (err) {
@@ -161,8 +231,7 @@ export async function POST(req: NextRequest) {
       )
     }
     try {
-      const content = await callOpenAI(messages, systemPrompt)
-      return NextResponse.json({ content })
+      return await streamOpenAI(messages, systemPrompt)
     } catch (err2) {
       console.error('OpenAI also failed:', err2)
       return NextResponse.json(

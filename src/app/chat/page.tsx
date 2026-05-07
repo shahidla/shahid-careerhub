@@ -58,8 +58,26 @@ export default function ChatPage() {
           })),
         }),
       })
-      const data = await res.json()
-      setMessages([...next, { role: 'assistant', content: data.content }])
+
+      if (!res.ok || !res.body) {
+        const data = await res.json()
+        setMessages([...next, { role: 'assistant', content: data.content ?? 'Something went wrong.' }])
+        return
+      }
+
+      // Stream: read tokens as they arrive and append to the message
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ''
+      setLoading(false)
+      setMessages([...next, { role: 'assistant', content: '' }])
+
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
+        accumulated += decoder.decode(value, { stream: true })
+        setMessages([...next, { role: 'assistant', content: accumulated }])
+      }
     } catch {
       setMessages([...next, { role: 'assistant', content: 'Something went wrong. Please try again.' }])
     } finally {
