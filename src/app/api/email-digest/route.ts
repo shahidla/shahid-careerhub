@@ -76,7 +76,7 @@ export async function GET() {
     method: 'POST',
     headers: { Authorization: `Bearer ${RESEND_KEY}`, 'content-type': 'application/json' },
     body: JSON.stringify({
-      from: 'AI Career Hub <digest@shahid-careerhub.vercel.app>',
+      from: 'AI Career Hub <onboarding@resend.dev>',
       to: DIGEST_EMAIL,
       subject: `Job Digest — ${jobs.length} high-match jobs`,
       html: buildHtml(jobs),
