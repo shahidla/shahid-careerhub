@@ -2,7 +2,7 @@
   "installCommand": "npm install --legacy-peer-deps",
   "crons": [
     {
-      "path": "/api/fetch-jobs",
+      "path": "/api/pipeline/run",
       "schedule": "0 9 * * *"
     },
     {

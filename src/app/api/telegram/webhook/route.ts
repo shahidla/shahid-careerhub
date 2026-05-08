@@ -10,11 +10,16 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://shahid-careerhub.vercel.app'
 
 async function sendMessage(text: string) {
-  await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+  const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' }),
   })
+  if (!res.ok) console.error('Telegram sendMessage failed:', await res.text())
+}
+
+function esc(s: string): string {
+  return s.replace(/[_*`[]/g, '\\$&')
 }
 
 async function getCount(table: string, filter = ''): Promise<number> {
@@ -70,7 +75,7 @@ async function handleTop(): Promise<string> {
   const jobs = await res.json()
   if (jobs.length === 0) return '📭 No high-match new jobs right now'
   const lines = jobs.map((j: { title: string; company: string; location: string; match_score: number; url: string }, i: number) =>
-    `${i + 1}. *${j.title}* — ${j.company}${j.location ? ` · ${j.location}` : ''}\n   Score: ${j.match_score} | [View](${j.url})`
+    `${i + 1}. *${esc(j.title)}* — ${esc(j.company)}${j.location ? ` · ${esc(j.location)}` : ''}\n   Score: ${j.match_score} | [View](${j.url})`
   )
   return `🏆 *Top Jobs (score ≥ 75)*\n\n${lines.join('\n\n')}`
 }
@@ -84,7 +89,7 @@ async function handleJobs(): Promise<string> {
   const jobs = await res.json()
   if (jobs.length === 0) return '📭 No jobs in database'
   const lines = jobs.map((j: { title: string; company: string; match_score: number | null; status: string }) =>
-    `• *${j.title}* — ${j.company}\n  Score: ${j.match_score ?? '—'} | ${j.status}`
+    `• *${esc(j.title)}* — ${esc(j.company)}\n  Score: ${j.match_score ?? '—'} | ${j.status}`
   )
   return `📋 *Recent Jobs*\n\n${lines.join('\n\n')}`
 }
