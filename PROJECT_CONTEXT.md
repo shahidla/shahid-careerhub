@@ -79,6 +79,8 @@ Set in Vercel project settings AND `.env.local` for local dev. Never commit `.en
 | `COHERE_API_KEY` | Set in Vercel — used for reranking |
 | `ADZUNA_APP_ID` | `7d498411` — set in Vercel |
 | `ADZUNA_API_KEY` | Set in Vercel |
+| `TELEGRAM_BOT_TOKEN` | From @BotFather — Telegram bot token |
+| `TELEGRAM_CHAT_ID` | Your personal Telegram chat ID (from @userinfobot) |
 | `NEXT_PUBLIC_APP_URL` | `https://shahid-careerhub.vercel.app` — used by pipeline to call internal API routes |
 | `ENABLE_ANTHROPIC` | `true` / `false` — set in Vercel to disable without redeploy |
 | `ENABLE_OPENAI` | `true` / `false` — set in Vercel to disable without redeploy |
@@ -117,6 +119,9 @@ C:/Dev/upwork/
 │   │       ├── chat/route.ts                 # POST /api/chat — RAG + LLM streaming
 │   │       ├── embed/route.ts                # GET /api/embed — embed all resume data into pgvector
 │   │       ├── generate-summaries/route.ts   # GET /api/generate-summaries — AI summaries per project
+│   │       ├── telegram/
+│   │       │   ├── webhook/route.ts          # POST /api/telegram/webhook — Telegram bot commands
+│   │       │   └── register/route.ts         # GET /api/telegram/register — register webhook with Telegram
 │   │       ├── pipeline/
 │   │       │   └── run/route.ts              # POST /api/pipeline/run — fetch + score in one call
 │   │       ├── fetch-jobs/route.ts           # GET /api/fetch-jobs — fetch+insert from all sources
@@ -531,7 +536,7 @@ This is the master dev task list. Always update this when a task is done. This s
 ### Phase 10 — Email & Scheduler
 54. ✅ Vercel Cron — daily at 9am UTC, calls /api/fetch-jobs
 55. ⚠️ Daily digest email via Resend — route built, cron wired (10am UTC), Langfuse tracing added — BLOCKED: requires a custom domain for Resend sender verification. Revisit when domain is available.
-56. ⬜ New task: purchase/configure a custom domain and verify with Resend to unblock email sending
+56. ✅ Telegram bot — /run, /stats, /top, /jobs, /rescore, /help commands; replaces email digest while domain is pending
 
 ### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
 57. ✅ Langfuse LLM tracing — traces visible in us.cloud.langfuse.com, input/output/tokens captured for /api/chat and /api/score-batch
