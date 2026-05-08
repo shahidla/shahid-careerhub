@@ -88,8 +88,8 @@ async function handleJobs(): Promise<string> {
   if (!res.ok) return '❌ Failed to fetch jobs'
   const jobs = await res.json()
   if (jobs.length === 0) return '📭 No jobs in database'
-  const lines = jobs.map((j: { title: string; company: string; match_score: number | null; status: string }) =>
-    `• *${esc(j.title)}* — ${esc(j.company)}\n  Score: ${j.match_score ?? '—'} | ${j.status}`
+  const lines = jobs.map((j: { title: string; company: string; match_score: number | null; status: string }, i: number) =>
+    `${i + 1}. *${esc(j.title)}* — ${esc(j.company)}\n   Score: ${j.match_score ?? '—'} | ${j.status}`
   )
   return `📋 *Recent Jobs*\n\n${lines.join('\n\n')}`
 }

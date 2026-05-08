@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-08 (session 8)
+Last updated: 2026-05-08 (session 9)
 
 ---
 
@@ -150,7 +150,7 @@ C:/Dev/upwork/
 ├── docs/
 │   └── resume.pdf
 ├── .npmrc
-├── vercel.json                               # installCommand + daily cron for /api/fetch-jobs
+├── vercel.json                               # installCommand + daily crons: pipeline/run (9am UTC), email-digest (10am UTC)
 ├── .env.example
 ├── next.config.js
 ├── tailwind.config.ts
@@ -534,9 +534,9 @@ This is the master dev task list. Always update this when a task is done. This s
 53. ⬜ Given a job → generate likely questions + answers from your project experience via RAG
 
 ### Phase 10 — Email & Scheduler
-54. ✅ Vercel Cron — daily at 9am UTC, calls /api/fetch-jobs
+54. ✅ Vercel Cron — daily at 9am UTC, now calls `/api/pipeline/run` (fetch + score in one shot); sends Telegram notification on completion
 55. ⚠️ Daily digest email via Resend — route built, cron wired (10am UTC), Langfuse tracing added — BLOCKED: requires a custom domain for Resend sender verification. Revisit when domain is available.
-56. ✅ Telegram bot — /run, /stats, /top, /jobs, /rescore, /help commands; replaces email digest while domain is pending
+56. ✅ Telegram bot — /run, /stats, /top, /jobs (numbered list), /rescore, /help commands; replaces email digest while domain is pending; webhook registered and live
 
 ### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
 57. ✅ Langfuse LLM tracing — traces visible in us.cloud.langfuse.com, input/output/tokens captured for /api/chat and /api/score-batch
