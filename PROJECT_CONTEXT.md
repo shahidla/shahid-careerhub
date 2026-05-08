@@ -494,7 +494,7 @@ This is the master dev task list. Always update this when a task is done. This s
 36. ⬜ Hybrid search: vector similarity + BM25 against profile — AI concept: hybrid retrieval
 37. ⬜ Cohere Rerank for result ordering — AI concept: reranking
 38. ⬜ Job match scorecard: skills %, seniority, location, rate
-39. ✅ LLM-as-judge: scores job match with reasoning — AI concept: Zero-shot Chain-of-Thought. **TODO: improve prompt to distinguish technical vs functional SAP roles**
+39. ✅ LLM-as-judge: scores job match with reasoning — prompt improved to distinguish technical vs functional SAP roles — AI concept: Zero-shot Chain-of-Thought
 40. ⬜ Skill gap analyzer: aggregate missing skills across unmatched jobs
 
 ### Phase 6 — Agents (AI concepts: ReAct, tool use, MCP, multi-agent, LangGraph, self-reflection)
@@ -520,25 +520,27 @@ This is the master dev task list. Always update this when a task is done. This s
 
 ### Phase 10 — Email & Scheduler
 54. ✅ Vercel Cron — daily at 9am UTC, calls /api/fetch-jobs
-55. ⬜ Weekly digest email via Resend: new jobs, top 3, skill gaps, profile score
+55. ⚠️ Daily digest email via Resend — route built, cron wired (10am UTC), Langfuse tracing added — BLOCKED: requires a custom domain for Resend sender verification. Revisit when domain is available.
+56. ⬜ New task: purchase/configure a custom domain and verify with Resend to unblock email sending
 
 ### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
-56. ⬜ Langfuse LLM tracing — 50k traces/month free — AI concept: observability
-57. ⬜ Token + cost tracking per agent run
-58. ⬜ `/admin` page: run history, jobs per source, tokens, cost, Langfuse links
-59. ⬜ DeepEval or RAGAs evals for retrieval quality — AI concept: evals
-60. ⬜ LLM-as-judge: Claude scores whether job matched correctly — AI concept: automated evaluation
+57. ✅ Langfuse LLM tracing — traces visible in us.cloud.langfuse.com, input/output/tokens captured for /api/chat and /api/score-batch
+58. ✅ Provider enable/disable switches — ENABLE_ANTHROPIC / ENABLE_OPENAI env vars in Vercel, no redeploy needed
+59. ⬜ Token + cost tracking per agent run
+60. ⬜ `/admin` page: run history, jobs per source, tokens, cost, Langfuse links
+61. ⬜ DeepEval or RAGAs evals for retrieval quality — AI concept: evals
+62. ⬜ LLM-as-judge: Claude scores whether job matched correctly — AI concept: automated evaluation
 
 ### Phase 12 — Upwork OAuth
-61. ⬜ Receive Upwork developer keys, add to Vercel env vars
-62. ⬜ Update callback URL in Upwork portal to `shahid-careerhub.vercel.app`
-63. ⬜ Test full OAuth flow end-to-end
-64. ⬜ AI Profile Optimizer: fetch Upwork profile → Claude suggestions → human review → push
+63. ⬜ Receive Upwork developer keys, add to Vercel env vars
+64. ⬜ Update callback URL in Upwork portal to `shahid-careerhub.vercel.app`
+65. ⬜ Test full OAuth flow end-to-end
+66. ⬜ AI Profile Optimizer: fetch Upwork profile → Claude suggestions → human review → push
 
 ### Phase 13 — Advanced (AI concepts: LLM routing, streaming, GraphRAG, fine-tuning, multimodal, guardrails)
-65. ⬜ Streaming: stream AI responses to dashboard in real time — AI concept: streaming output
-66. ⬜ LLM routing: Haiku for simple tasks, Opus for complex scoring — AI concept: model routing
-67. ⬜ Guardrails: NeMo Guardrails + Presidio for PII + input validation — AI concept: guardrails
-68. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
-69. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
-70. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
+67. ⬜ Streaming: stream AI responses to dashboard in real time — AI concept: streaming output
+68. ⬜ LLM routing: Haiku for simple tasks, Opus for complex scoring — AI concept: model routing
+69. ⬜ Guardrails: NeMo Guardrails + Presidio for PII + input validation — AI concept: guardrails
+70. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
+71. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
+72. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
