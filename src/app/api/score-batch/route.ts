@@ -57,7 +57,8 @@ async function scoreBatch(resume: string, jobs: UnscoredJob[]): Promise<{ id: st
     `id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 600)}`
   ).join('\n\n---\n\n')
 
-  const prompt = `You are a strict technical recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
+  // Static prefix (instructions + resume) — cached by Anthropic for 5 min across batch calls
+  const systemPrompt = `You are a strict technical recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
 
 The candidate is a TECHNICAL SAP developer (ABAP, BTP, Fiori, S/4HANA). They write code and build technical solutions. They are NOT a functional consultant, project manager, or business analyst.
 
@@ -74,17 +75,27 @@ Return a JSON object with key "scores" containing an array. Each element must ha
 - "reasoning": one sentence mentioning specific technical skills matched or why the role is not a technical fit
 
 Candidate Resume:
-${resume.slice(0, 4000)}
+${resume.slice(0, 4000)}`
 
-Jobs to score:
-${jobList}`
+  // Dynamic part — only the job list changes per batch
+  const userPrompt = `Jobs to score:\n${jobList}`
 
   async function callLLM(apiKey: string, provider: 'anthropic' | 'openai'): Promise<string> {
     if (provider === 'anthropic') {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] }),
+        headers: {
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 4096,
+          system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+          messages: [{ role: 'user', content: userPrompt }],
+        }),
       })
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
@@ -93,7 +104,12 @@ ${jobList}`
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 4096, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          max_tokens: 4096,
+          messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
+          response_format: { type: 'json_object' },
+        }),
       })
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
@@ -112,7 +128,7 @@ ${jobList}`
   }
   if (!raw) throw new Error('No LLM API key configured or all providers disabled')
 
-  logGeneration({ name: 'score-batch', model: usedModel, input: prompt, output: raw, startTime, endTime: new Date().toISOString(), jobCount: jobs.length })
+  logGeneration({ name: 'score-batch', model: usedModel, input: userPrompt, output: raw, startTime, endTime: new Date().toISOString(), jobCount: jobs.length })
 
   const parsed = JSON.parse(raw)
   return Array.isArray(parsed) ? parsed : parsed.scores ?? parsed.results ?? []

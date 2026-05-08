@@ -33,7 +33,7 @@ async function createTrace(name: string, input: unknown): Promise<string> {
 async function createGeneration(opts: {
   traceId: string; name: string; model: string
   input: unknown; output: string; startTime: string; endTime: string
-  promptTokens?: number; completionTokens?: number
+  promptTokens?: number; completionTokens?: number; metadata?: Record<string, unknown>
 }) {
   if (!LANGFUSE_PK || !LANGFUSE_SK) return
   await fetch(`${LANGFUSE_HOST}/api/public/generations`, {
@@ -48,6 +48,7 @@ async function createGeneration(opts: {
       startTime: opts.startTime,
       endTime: opts.endTime,
       usage: { input: opts.promptTokens, output: opts.completionTokens },
+      metadata: opts.metadata,
     }),
   }).catch(() => {})
 }
@@ -172,13 +173,16 @@ async function streamAnthropic(messages: Message[], systemPrompt: string, traceI
     headers: {
       'x-api-key': ANTHROPIC_KEY!,
       'anthropic-version': '2023-06-01',
+      'anthropic-beta': 'prompt-caching-2024-07-31',
       'content-type': 'application/json',
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
       stream: true,
-      system: systemPrompt,
+      // system as array enables cache_control — the full prompt is cached since it contains
+      // the static base + resume chunks (changes per question but Claude caches the prefix for 5 min)
+      system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
       messages,
     }),
   })
@@ -192,6 +196,8 @@ async function streamAnthropic(messages: Message[], systemPrompt: string, traceI
     let fullOutput = ''
     let inputTokens = 0
     let outputTokens = 0
+    let cacheReadTokens = 0
+    let cacheCreateTokens = 0
     while (true) {
       const { value, done: streamDone } = await reader.read()
       if (streamDone) break
@@ -210,6 +216,8 @@ async function streamAnthropic(messages: Message[], systemPrompt: string, traceI
           }
           if (evt.type === 'message_start') {
             inputTokens = evt.message?.usage?.input_tokens ?? 0
+            cacheReadTokens = evt.message?.usage?.cache_read_input_tokens ?? 0
+            cacheCreateTokens = evt.message?.usage?.cache_creation_input_tokens ?? 0
           }
           if (evt.type === 'message_delta') {
             outputTokens = evt.usage?.output_tokens ?? 0
@@ -223,6 +231,7 @@ async function streamAnthropic(messages: Message[], systemPrompt: string, traceI
       input: messages, output: fullOutput,
       startTime, endTime: new Date().toISOString(),
       promptTokens: inputTokens, completionTokens: outputTokens,
+      metadata: { cacheReadTokens, cacheCreateTokens },
     })
     done()
   })
