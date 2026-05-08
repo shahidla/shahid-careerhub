@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-07 (session 7)
+Last updated: 2026-05-08 (session 8)
 
 ---
 
@@ -79,6 +79,14 @@ Set in Vercel project settings AND `.env.local` for local dev. Never commit `.en
 | `COHERE_API_KEY` | Set in Vercel — used for reranking |
 | `ADZUNA_APP_ID` | `7d498411` — set in Vercel |
 | `ADZUNA_API_KEY` | Set in Vercel |
+| `NEXT_PUBLIC_APP_URL` | `https://shahid-careerhub.vercel.app` — used by pipeline to call internal API routes |
+| `ENABLE_ANTHROPIC` | `true` / `false` — set in Vercel to disable without redeploy |
+| `ENABLE_OPENAI` | `true` / `false` — set in Vercel to disable without redeploy |
+| `RESEND_API_KEY` | Set in Vercel — email digest (blocked pending custom domain) |
+| `DIGEST_EMAIL` | `shahid.la@gmail.com` — recipient for daily digest |
+| `LANGFUSE_PUBLIC_KEY` | Set in Vercel — LLM tracing |
+| `LANGFUSE_SECRET_KEY` | Set in Vercel — LLM tracing |
+| `LANGFUSE_HOST` | `https://us.cloud.langfuse.com` — Langfuse US region |
 | `UPWORK_CLIENT_ID` | Pending — waiting for Upwork developer keys |
 | `UPWORK_CLIENT_SECRET` | Pending — waiting for Upwork developer keys |
 | `UPWORK_REDIRECT_URI` | `https://shahid-careerhub.vercel.app/api/auth/upwork/callback` |
@@ -109,6 +117,8 @@ C:/Dev/upwork/
 │   │       ├── chat/route.ts                 # POST /api/chat — RAG + LLM streaming
 │   │       ├── embed/route.ts                # GET /api/embed — embed all resume data into pgvector
 │   │       ├── generate-summaries/route.ts   # GET /api/generate-summaries — AI summaries per project
+│   │       ├── pipeline/
+│   │       │   └── run/route.ts              # POST /api/pipeline/run — fetch + score in one call
 │   │       ├── fetch-jobs/route.ts           # GET /api/fetch-jobs — fetch+insert from all sources
 │   │       ├── score-batch/route.ts          # POST /api/score-batch — score 10 unscored jobs per call
 │   │       ├── rescore-jobs/route.ts         # POST /api/rescore-jobs — null all scores (triggers rescore)
@@ -465,8 +475,8 @@ This is the master dev task list. Always update this when a task is done. This s
 15. ✅ Guardrails — system prompt restricts bot to Shahid-only topics
 16. ✅ Rate limiting — 20 requests per IP per 10 minutes
 17. ✅ Stream Claude/OpenAI responses to UI (text appears word by word — AI concept: streaming)
-18. ✅ Recruiter mode vs visitor mode (different system prompts, same backend — AI concept: prompt engineering)
-19. ⬜ Prompt caching on system prompt — AI concept: 90% cost reduction on repeated calls
+18. 🚫 Recruiter mode vs visitor mode — not required
+19. ✅ Prompt caching on system prompt — `anthropic-beta: prompt-caching-2024-07-31` + `cache_control: ephemeral` on system array; cache tokens logged to Langfuse — AI concept: 90% cost reduction on repeated calls
 20. ⬜ Hybrid search: combine vector similarity + BM25 keyword search — AI concept: hybrid retrieval
 21. ✅ Cohere Rerank to improve chunk ordering before injecting into prompt — AI concept: reranking
 22. ⬜ Context window management: truncate/summarise chunks if job description exceeds token limit
@@ -498,7 +508,7 @@ This is the master dev task list. Always update this when a task is done. This s
 40. ⬜ Skill gap analyzer: aggregate missing skills across unmatched jobs
 
 ### Phase 6 — Agents (AI concepts: ReAct, tool use, MCP, multi-agent, LangGraph, self-reflection)
-41. ⬜ Build ReAct agent: Fetcher → Scorer → Ranker → Email loop — AI concept: ReAct pattern (reason → act → observe)
+41. ✅ Pipeline: `/api/pipeline/run` — fetch + score loop in one callable backend endpoint; FetchButton simplified to call it; agent will reuse these as tools
 42. ⬜ Define agent tools: `search_jobs`, `get_profile`, `score_job`, `send_email`, `update_resume` — AI concept: function calling / tool use
 43. ⬜ Add self-reflection step — agent reviews its own output before sending — AI concept: self-reflection
 44. ⬜ Expose job DB as MCP server (Anthropic Model Context Protocol) — AI concept: MCP
@@ -526,8 +536,8 @@ This is the master dev task list. Always update this when a task is done. This s
 ### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
 57. ✅ Langfuse LLM tracing — traces visible in us.cloud.langfuse.com, input/output/tokens captured for /api/chat and /api/score-batch
 58. ✅ Provider enable/disable switches — ENABLE_ANTHROPIC / ENABLE_OPENAI env vars in Vercel, no redeploy needed
-59. ⬜ Token + cost tracking per agent run
-60. ⬜ `/admin` page: run history, jobs per source, tokens, cost, Langfuse links
+59. ✅ Token + cost tracking per agent run — input/output/cache tokens captured in Langfuse for both /api/chat and /api/score-batch
+60. ✅ `/admin` page: job counts by status/score, resume chunk health, observability links (Langfuse/Vercel/Supabase/Resend), recent 10 jobs table — server component with `force-dynamic`
 61. ⬜ DeepEval or RAGAs evals for retrieval quality — AI concept: evals
 62. ⬜ LLM-as-judge: Claude scores whether job matched correctly — AI concept: automated evaluation
 
