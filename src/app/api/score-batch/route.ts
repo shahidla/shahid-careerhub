@@ -4,9 +4,42 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
 const OPENAI_KEY = process.env.OPENAI_API_KEY
+const LANGFUSE_HOST = process.env.LANGFUSE_HOST ?? 'https://us.cloud.langfuse.com'
+const LANGFUSE_PK = process.env.LANGFUSE_PUBLIC_KEY
+const LANGFUSE_SK = process.env.LANGFUSE_SECRET_KEY
+
+// Provider switches — set ENABLE_ANTHROPIC=false or ENABLE_OPENAI=false in Vercel to disable without redeploying
+const ANTHROPIC_ENABLED = process.env.ENABLE_ANTHROPIC !== 'false'
+const OPENAI_ENABLED = process.env.ENABLE_OPENAI !== 'false'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
+
+function langfuseAuth() {
+  return 'Basic ' + Buffer.from(`${LANGFUSE_PK}:${LANGFUSE_SK}`).toString('base64')
+}
+
+async function logGeneration(opts: {
+  name: string; model: string; input: string; output: string
+  startTime: string; endTime: string; jobCount: number
+}) {
+  if (!LANGFUSE_PK || !LANGFUSE_SK) return
+  const traceId = crypto.randomUUID()
+  await fetch(`${LANGFUSE_HOST}/api/public/traces`, {
+    method: 'POST',
+    headers: { Authorization: langfuseAuth(), 'content-type': 'application/json' },
+    body: JSON.stringify({ id: traceId, name: opts.name, metadata: { jobCount: opts.jobCount } }),
+  }).catch(() => {})
+  await fetch(`${LANGFUSE_HOST}/api/public/generations`, {
+    method: 'POST',
+    headers: { Authorization: langfuseAuth(), 'content-type': 'application/json' },
+    body: JSON.stringify({
+      traceId, name: opts.name, model: opts.model,
+      input: opts.input, output: opts.output,
+      startTime: opts.startTime, endTime: opts.endTime,
+    }),
+  }).catch(() => {})
+}
 
 type UnscoredJob = { id: string; title: string; description: string; tags: string[]; location: string; company: string }
 
@@ -24,18 +57,21 @@ async function scoreBatch(resume: string, jobs: UnscoredJob[]): Promise<{ id: st
     `id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 600)}`
   ).join('\n\n---\n\n')
 
-  const prompt = `You are a strict recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
+  const prompt = `You are a strict technical recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
+
+The candidate is a TECHNICAL SAP developer (ABAP, BTP, Fiori, S/4HANA). They write code and build technical solutions. They are NOT a functional consultant, project manager, or business analyst.
 
 Scoring rules:
-- Score HIGH (70-100) only if the job directly matches the candidate's SAP/ABAP/BTP/Fiori technical background
-- Score MEDIUM (40-69) if there is partial overlap — SAP adjacent, or requires some but not all of the candidate's skills
-- Score LOW (0-39) if the role is non-technical, managerial without hands-on SAP, or outside the candidate's experience
-- Reserve 80+ for near-perfect matches only
+- Score HIGH (70-100) only if the role requires hands-on technical SAP development: ABAP programming, BTP development, Fiori/UI5, S/4HANA technical implementation, SAP integration development
+- Score MEDIUM (40-69) if there is partial technical overlap — e.g. SAP technical adjacent, cloud/integration development, or requires some but not all of the candidate's technical skills
+- Score LOW (0-39) for ANY of these: functional consultant roles, project manager, business analyst, solution architect without hands-on coding, "Head of", "Chief", "Director", or "Lead" roles focused on management not development, non-SAP roles, roles outside the candidate's technical experience
+- A role with "SAP" in the title but no hands-on technical/coding requirement should score below 40
+- Reserve 80+ for near-perfect matches: ABAP developer, BTP developer, Fiori developer, SAP integration developer
 
 Return a JSON object with key "scores" containing an array. Each element must have:
 - "id": the job id string (copy exactly from input)
 - "score": integer 0-100
-- "reasoning": one sentence mentioning specific matching skills or gaps
+- "reasoning": one sentence mentioning specific technical skills matched or why the role is not a technical fit
 
 Candidate Resume:
 ${resume.slice(0, 4000)}
@@ -66,13 +102,17 @@ ${jobList}`
   }
 
   let raw = ''
-  if (ANTHROPIC_KEY) {
-    try { raw = await callLLM(ANTHROPIC_KEY, 'anthropic') } catch { console.error('Anthropic failed, falling back to OpenAI') }
+  let usedModel = ''
+  const startTime = new Date().toISOString()
+  if (ANTHROPIC_ENABLED && ANTHROPIC_KEY) {
+    try { raw = await callLLM(ANTHROPIC_KEY, 'anthropic'); usedModel = 'claude-haiku-4-5-20251001' } catch { console.error('Anthropic failed, falling back to OpenAI') }
   }
-  if (!raw && OPENAI_KEY) {
-    raw = await callLLM(OPENAI_KEY, 'openai')
+  if (!raw && OPENAI_ENABLED && OPENAI_KEY) {
+    raw = await callLLM(OPENAI_KEY, 'openai'); usedModel = 'gpt-4o-mini'
   }
-  if (!raw) throw new Error('No LLM API key configured')
+  if (!raw) throw new Error('No LLM API key configured or all providers disabled')
+
+  logGeneration({ name: 'score-batch', model: usedModel, input: prompt, output: raw, startTime, endTime: new Date().toISOString(), jobCount: jobs.length })
 
   const parsed = JSON.parse(raw)
   return Array.isArray(parsed) ? parsed : parsed.scores ?? parsed.results ?? []

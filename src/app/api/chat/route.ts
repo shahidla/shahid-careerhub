@@ -6,6 +6,52 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const COHERE_KEY = process.env.COHERE_API_KEY
 
+// Provider switches — set ENABLE_ANTHROPIC=false or ENABLE_OPENAI=false in Vercel to disable without redeploying
+const ANTHROPIC_ENABLED = process.env.ENABLE_ANTHROPIC !== 'false'
+const OPENAI_ENABLED = process.env.ENABLE_OPENAI !== 'false'
+const LANGFUSE_HOST = process.env.LANGFUSE_HOST ?? 'https://us.cloud.langfuse.com'
+const LANGFUSE_PK = process.env.LANGFUSE_PUBLIC_KEY
+const LANGFUSE_SK = process.env.LANGFUSE_SECRET_KEY
+
+// ─── Langfuse tracing ─────────────────────────────────────────────────────────
+
+function langfuseAuth() {
+  return 'Basic ' + Buffer.from(`${LANGFUSE_PK}:${LANGFUSE_SK}`).toString('base64')
+}
+
+async function createTrace(name: string, input: unknown): Promise<string> {
+  const traceId = crypto.randomUUID()
+  if (!LANGFUSE_PK || !LANGFUSE_SK) return traceId
+  await fetch(`${LANGFUSE_HOST}/api/public/traces`, {
+    method: 'POST',
+    headers: { Authorization: langfuseAuth(), 'content-type': 'application/json' },
+    body: JSON.stringify({ id: traceId, name, input }),
+  }).catch(() => {})
+  return traceId
+}
+
+async function createGeneration(opts: {
+  traceId: string; name: string; model: string
+  input: unknown; output: string; startTime: string; endTime: string
+  promptTokens?: number; completionTokens?: number
+}) {
+  if (!LANGFUSE_PK || !LANGFUSE_SK) return
+  await fetch(`${LANGFUSE_HOST}/api/public/generations`, {
+    method: 'POST',
+    headers: { Authorization: langfuseAuth(), 'content-type': 'application/json' },
+    body: JSON.stringify({
+      traceId: opts.traceId,
+      name: opts.name,
+      model: opts.model,
+      input: opts.input,
+      output: opts.output,
+      startTime: opts.startTime,
+      endTime: opts.endTime,
+      usage: { input: opts.promptTokens, output: opts.completionTokens },
+    }),
+  }).catch(() => {})
+}
+
 // ─── RAG: embed question + vector search ─────────────────────────────────────
 
 async function embedQuestion(text: string): Promise<number[]> {
@@ -119,7 +165,8 @@ function makeStream(producer: (push: (text: string) => void, done: () => void) =
   })
 }
 
-async function streamAnthropic(messages: Message[], systemPrompt: string): Promise<Response> {
+async function streamAnthropic(messages: Message[], systemPrompt: string, traceId: string): Promise<Response> {
+  const startTime = new Date().toISOString()
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -142,6 +189,9 @@ async function streamAnthropic(messages: Message[], systemPrompt: string): Promi
 
   return makeStream(async (push, done) => {
     let buffer = ''
+    let fullOutput = ''
+    let inputTokens = 0
+    let outputTokens = 0
     while (true) {
       const { value, done: streamDone } = await reader.read()
       if (streamDone) break
@@ -156,16 +206,30 @@ async function streamAnthropic(messages: Message[], systemPrompt: string): Promi
           const evt = JSON.parse(json)
           if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
             push(evt.delta.text)
+            fullOutput += evt.delta.text
+          }
+          if (evt.type === 'message_start') {
+            inputTokens = evt.message?.usage?.input_tokens ?? 0
+          }
+          if (evt.type === 'message_delta') {
+            outputTokens = evt.usage?.output_tokens ?? 0
           }
         } catch { /* skip malformed lines */ }
       }
     }
     push('\n\n_via Claude_')
+    createGeneration({
+      traceId, name: 'chat', model: 'claude-haiku-4-5-20251001',
+      input: messages, output: fullOutput,
+      startTime, endTime: new Date().toISOString(),
+      promptTokens: inputTokens, completionTokens: outputTokens,
+    })
     done()
   })
 }
 
-async function streamOpenAI(messages: Message[], systemPrompt: string): Promise<Response> {
+async function streamOpenAI(messages: Message[], systemPrompt: string, traceId: string): Promise<Response> {
+  const startTime = new Date().toISOString()
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -176,6 +240,7 @@ async function streamOpenAI(messages: Message[], systemPrompt: string): Promise<
       model: 'gpt-4o-mini',
       max_tokens: 1024,
       stream: true,
+      stream_options: { include_usage: true },
       messages: [{ role: 'system', content: systemPrompt }, ...messages],
     }),
   })
@@ -186,6 +251,9 @@ async function streamOpenAI(messages: Message[], systemPrompt: string): Promise<
 
   return makeStream(async (push, done) => {
     let buffer = ''
+    let fullOutput = ''
+    let inputTokens = 0
+    let outputTokens = 0
     while (true) {
       const { value, done: streamDone } = await reader.read()
       if (streamDone) break
@@ -199,11 +267,21 @@ async function streamOpenAI(messages: Message[], systemPrompt: string): Promise<
         try {
           const evt = JSON.parse(json)
           const token = evt.choices?.[0]?.delta?.content
-          if (token) push(token)
+          if (token) { push(token); fullOutput += token }
+          if (evt.usage) {
+            inputTokens = evt.usage.prompt_tokens ?? 0
+            outputTokens = evt.usage.completion_tokens ?? 0
+          }
         } catch { /* skip malformed lines */ }
       }
     }
     push('\n\n_via GPT-4o mini_')
+    createGeneration({
+      traceId, name: 'chat', model: 'gpt-4o-mini',
+      input: messages, output: fullOutput,
+      startTime, endTime: new Date().toISOString(),
+      promptTokens: inputTokens, completionTokens: outputTokens,
+    })
     done()
   })
 }
@@ -228,8 +306,10 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  // RAG: embed the latest user question and find relevant chunks
   const lastUserMessage = [...messages].reverse().find((m: Message) => m.role === 'user')?.content ?? ''
+  const traceId = await createTrace('chat', { question: lastUserMessage })
+
+  // RAG: embed the latest user question and find relevant chunks
   let systemPrompt = SYSTEM_PROMPT_BASE
   try {
     const embedding = await embedQuestion(lastUserMessage)
@@ -241,20 +321,21 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    if (ANTHROPIC_KEY) {
-      return await streamAnthropic(messages, systemPrompt)
+    if (ANTHROPIC_ENABLED && ANTHROPIC_KEY) {
+      return await streamAnthropic(messages, systemPrompt, traceId)
     }
-    throw new Error('No Anthropic key')
+    if (!OPENAI_ENABLED || !OPENAI_KEY) throw new Error('No enabled provider')
+    return await streamOpenAI(messages, systemPrompt, traceId)
   } catch (err) {
-    console.error('Anthropic failed, falling back to OpenAI:', err)
-    if (!OPENAI_KEY) {
+    console.error('Primary provider failed, falling back to OpenAI:', err)
+    if (!OPENAI_ENABLED || !OPENAI_KEY) {
       return NextResponse.json(
         { content: 'Something went wrong. Please try again.' },
         { status: 200 },
       )
     }
     try {
-      return await streamOpenAI(messages, systemPrompt)
+      return await streamOpenAI(messages, systemPrompt, traceId)
     } catch (err2) {
       console.error('OpenAI also failed:', err2)
       return NextResponse.json(

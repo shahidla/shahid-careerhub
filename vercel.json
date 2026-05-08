@@ -4,6 +4,10 @@
     {
       "path": "/api/fetch-jobs",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/email-digest",
+      "schedule": "0 10 * * *"
     }
   ]
 }
