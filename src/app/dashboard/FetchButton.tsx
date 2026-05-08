@@ -29,9 +29,18 @@ export default function FetchButton() {
     setRescoring(true)
     setStatus(null)
     try {
-      // Null all scores first
       await fetch('/api/rescore-jobs', { method: 'POST' })
-      await runScoring('Re-scoring')
+      let total = 0
+      while (true) {
+        const res = await fetch('/api/score-batch', { method: 'POST' })
+        if (!res.ok) { setStatus('Scoring error'); break }
+        const data = await res.json()
+        total += data.scored ?? 0
+        setStatus(`Re-scoring — scored ${total}…`)
+        if ((data.remaining ?? 0) <= 0) break
+      }
+      setStatus(`Re-scored ${total} jobs`)
+      router.refresh()
     } catch {
       setStatus('Error re-scoring')
     } finally {
