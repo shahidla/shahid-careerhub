@@ -14,15 +14,22 @@ async function run() {
   const fetched: number = fetchData.totalNew ?? 0
 
   let scored = 0
+  let scoreError = ''
+  let model = ''
   while (true) {
     const scoreRes = await fetch(`${BASE_URL}/api/score-batch`, { method: 'POST' })
-    if (!scoreRes.ok) break
+    if (!scoreRes.ok) {
+      const errBody = await scoreRes.text().catch(() => 'unknown error')
+      scoreError = errBody
+      break
+    }
     const scoreData = await scoreRes.json()
     scored += scoreData.scored ?? 0
+    if (scoreData.model) model = scoreData.model
     if ((scoreData.remaining ?? 0) <= 0) break
   }
 
-  return { fetched, scored }
+  return { fetched, scored, model, scoreError: scoreError || undefined }
 }
 
 async function notifyTelegram(fetched: number, scored: number) {

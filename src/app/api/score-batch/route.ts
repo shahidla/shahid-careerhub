@@ -52,7 +52,7 @@ async function fetchAllResumeChunks(): Promise<string> {
   return rows.map((r) => r.content).join('\n\n')
 }
 
-async function scoreBatch(resume: string, jobs: UnscoredJob[]): Promise<{ id: string; score: number; reasoning: string }[]> {
+async function scoreBatch(resume: string, jobs: UnscoredJob[]): Promise<{ scores: { id: string; score: number; reasoning: string }[]; model: string }> {
   const jobList = jobs.map((j) =>
     `id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 600)}`
   ).join('\n\n---\n\n')
@@ -131,7 +131,8 @@ ${resume.slice(0, 4000)}`
   logGeneration({ name: 'score-batch', model: usedModel, input: userPrompt, output: raw, startTime, endTime: new Date().toISOString(), jobCount: jobs.length })
 
   const parsed = JSON.parse(raw)
-  return Array.isArray(parsed) ? parsed : parsed.scores ?? parsed.results ?? []
+  const scores = Array.isArray(parsed) ? parsed : parsed.scores ?? parsed.results ?? []
+  return { scores, model: usedModel }
 }
 
 export async function POST() {
@@ -153,7 +154,7 @@ export async function POST() {
   const resume = await fetchAllResumeChunks()
   if (!resume) return NextResponse.json({ error: 'resume_chunks empty — run /api/embed first' }, { status: 500 })
 
-  const scores = await scoreBatch(resume, jobs)
+  const { scores, model } = await scoreBatch(resume, jobs)
 
   let scored = 0
   await Promise.all(scores.map(async ({ id, score, reasoning }) => {
@@ -165,5 +166,5 @@ export async function POST() {
     scored++
   }))
 
-  return NextResponse.json({ scored, remaining })
+  return NextResponse.json({ scored, remaining, model })
 }

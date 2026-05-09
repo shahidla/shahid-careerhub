@@ -38,7 +38,9 @@ async function handleRun(): Promise<string> {
   const res = await fetch(`${BASE_URL}/api/pipeline/run`, { method: 'POST' })
   if (!res.ok) return '❌ Pipeline failed'
   const data = await res.json()
-  return `✅ *Pipeline complete*\nFetched: ${data.fetched ?? 0}\nScored: ${data.scored ?? 0}`
+  const modelLine = data.model ? `\nModel: ${data.model}` : ''
+  const errorLine = data.scoreError ? `\n⚠️ Score error: ${String(data.scoreError).slice(0, 200)}` : ''
+  return `✅ *Pipeline complete*\nFetched: ${data.fetched ?? 0}\nScored: ${data.scored ?? 0}${modelLine}${errorLine}`
 }
 
 async function handleStats(): Promise<string> {
