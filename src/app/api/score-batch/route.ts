@@ -157,14 +157,16 @@ export async function POST() {
   const { scores, model } = await scoreBatch(resume, jobs)
 
   let scored = 0
+  let patchErrors = 0
   await Promise.all(scores.map(async ({ id, score, reasoning }) => {
-    await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
+    const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
       method: 'PATCH',
       headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'content-type': 'application/json', Prefer: 'return=minimal' },
       body: JSON.stringify({ match_score: score, match_reasoning: reasoning }),
     })
-    scored++
+    if (patchRes.ok) scored++
+    else { patchErrors++; console.error(`PATCH failed for job ${id}:`, patchRes.status, await patchRes.text()) }
   }))
 
-  return NextResponse.json({ scored, remaining, model })
+  return NextResponse.json({ scored, remaining, model, patchErrors: patchErrors || undefined })
 }

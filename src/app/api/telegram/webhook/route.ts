@@ -40,7 +40,8 @@ async function handleRun(): Promise<string> {
   const data = await res.json()
   const modelLine = data.model ? `\nModel: ${data.model}` : ''
   const errorLine = data.scoreError ? `\n⚠️ Score error: ${String(data.scoreError).slice(0, 200)}` : ''
-  return `✅ *Pipeline complete*\nFetched: ${data.fetched ?? 0}\nScored: ${data.scored ?? 0}${modelLine}${errorLine}`
+  const patchLine = data.patchErrors ? `\n⚠️ Patch failures: ${data.patchErrors}` : ''
+  return `✅ *Pipeline complete*\nFetched: ${data.fetched ?? 0}\nScored: ${data.scored ?? 0}${modelLine}${errorLine}${patchLine}`
 }
 
 async function handleStats(): Promise<string> {
