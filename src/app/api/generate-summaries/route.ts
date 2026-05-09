@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
 const OPENAI_KEY = process.env.OPENAI_API_KEY
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!

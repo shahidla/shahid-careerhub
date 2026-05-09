@@ -12,4 +12,19 @@
   .tag-sm {
     @apply inline-block bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded;
   }
+
+  .blog-prose h1 { @apply text-3xl font-bold mt-10 mb-4 text-gray-900; }
+  .blog-prose h2 { @apply text-2xl font-bold mt-10 mb-3 text-gray-900 border-b border-gray-200 pb-2; }
+  .blog-prose h3 { @apply text-xl font-semibold mt-8 mb-2 text-gray-900; }
+  .blog-prose h4 { @apply text-lg font-semibold mt-6 mb-2 text-gray-800; }
+  .blog-prose p  { @apply text-gray-700 leading-relaxed mb-4; }
+  .blog-prose a  { @apply text-blue-600 hover:underline; }
+  .blog-prose strong { @apply font-semibold text-gray-900; }
+  .blog-prose em { @apply italic; }
+  .blog-prose code { @apply bg-gray-100 text-gray-800 text-sm px-1.5 py-0.5 rounded font-mono; }
+  .blog-prose img { @apply rounded-lg border border-gray-200 my-6 max-w-full; }
+  .blog-prose ul { @apply list-disc list-inside mb-4 space-y-1 text-gray-700; }
+  .blog-prose ol { @apply list-decimal list-inside mb-4 space-y-1 text-gray-700; }
+  .blog-prose blockquote { @apply border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4; }
+  .blog-prose pre { @apply bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto my-6 text-sm font-mono; }
 }

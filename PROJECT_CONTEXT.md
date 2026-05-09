@@ -1,7 +1,7 @@
 # Upwork AI Job Assistant — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-08 (session 9)
+Last updated: 2026-05-09 (session 10)
 
 ---
 
@@ -140,8 +140,10 @@ C:/Dev/upwork/
 │   ├── match-chunks-function.sql
 │   ├── add-ai-summary.sql                    # alter table projects add column ai_summary text
 │   ├── add-jobs-columns.sql                  # add source_id, posted_at, salary, job_type + unique index
+│   ├── migrations/
+│   │   └── 20260508_certifications_expand.sql  # adds issued_date, expires_date, category, subcategory, is_featured, platform — RUN IN SUPABASE SQL EDITOR
 │   ├── seed-1-profile.sql
-│   ├── seed-2-certifications.sql
+│   ├── seed-2-certifications.sql             # 9 certs (old schema) — will be replaced with 73-cert seed after CSV is finalised
 │   ├── seed-3-skills.sql
 │   ├── seed-4-blogs.sql
 │   ├── seed-5-achievements.sql
@@ -181,7 +183,11 @@ C:/Dev/upwork/
 - Scoring prompt needs tuning — LLM doesn't distinguish functional vs technical SAP roles
 - Resume chunks may need enrichment — candidate is a **technical SAP developer** not a functional consultant
 - Vercel Hobby 10s timeout workaround — scoring batched into 10-job client-side loops
-- Anthropic API key may still be failing — OpenAI fallback active
+- Anthropic API key invalid — get personal key from console.anthropic.com (sk-ant-api03-...). OpenAI fallback active.
+- Upwork API key applied 2026-05-07 — check approval status (was 1-3 business days)
+- Email digest sending from `onboarding@resend.dev` (Resend shared domain) — can only send to registered Resend email. Working fine for personal use. Custom domain needed to send to others.
+- certifications table needs expanding — migration `supabase/migrations/20260508_certifications_expand.sql` created, run in Supabase SQL Editor
+- certifications CSV being prepared by user — once shared, seed SQL + /certifications page to be built
 
 ### Done (session 1-6)
 - [x] Next.js 14 app with TypeScript + Tailwind scaffolded
@@ -217,25 +223,16 @@ Run these in order at https://supabase.com/dashboard/project/nlklhnptshxtywojmse
 6. `supabase/seed-6-experience.sql`
 7. `supabase/seed-7-projects.sql`
 
-### Pending — Phase 1 (Upwork OAuth)
-- [ ] Receive Upwork developer keys
-- [ ] Update `UPWORK_CLIENT_ID` + `UPWORK_CLIENT_SECRET` in Vercel env vars
-- [ ] Update callback URL in Upwork portal to `https://shahid-careerhub.vercel.app/api/auth/upwork/callback`
-- [ ] Test full OAuth flow end-to-end
-
-### Pending — Phase 2 (Job Search Aggregator)
-- [ ] Build job fetcher for RSS sources (Freelancer.com, FreelancerMap, Guru, EurSAP)
-- [ ] Build job fetcher for free APIs (Remotive.io, Adzuna AU)
-- [ ] Normalize all jobs to a common schema
-- [ ] Deduplicate jobs across sources
-- [ ] Store jobs in Supabase with delta tracking
-- [ ] Email digest via Resend
-
-### Pending — Phase 3 (AI Features)
-- [ ] Embed skills.json + resume.md into vector DB
-- [ ] Score/rank jobs using embeddings + LLM
-- [ ] AI Profile Optimizer (fetch Upwork profile → AI suggestions → human review → push)
-- [ ] Multi-agent orchestration (Fetcher Agent, Scorer Agent, Email Agent)
+### Pending — session 10 tasks
+- [ ] Run `supabase/migrations/20260508_certifications_expand.sql` in Supabase SQL Editor
+- [ ] User to share certifications CSV → generate seed SQL + build /certifications page
+- [ ] Build `/certifications` page — all 73 certs with filters (category, platform, year)
+- [ ] Update `/resume` certifications section — show is_featured only + "View all 73" link to /certifications
+- [ ] Blog hosting — copy 20 SAP Community blogs as MDX files (use MarkDownload Chrome extension), build /blogs listing + /blogs/[slug] pages
+- [ ] Get personal Anthropic API key from console.anthropic.com — fix /chat primary LLM
+- [ ] Check Upwork API key approval (applied 2026-05-07) — wire up if approved
+- [ ] Task 23 — Plain English resume editor (Phase 3)
+- [ ] SEO / Schema.org — after domain is set up
 
 ---
 

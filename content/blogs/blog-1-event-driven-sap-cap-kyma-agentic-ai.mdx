@@ -1,0 +1,54 @@
+---
+title: "Event Driven SAP CAP on Kyma with Agentic AI and UI Auto Refresh"
+author: "Shahid Syed"
+published_at: "2025-12-01"
+tags: ["Agentic AI", "AI Agent", "SAP CAP", "SAP Fiori Auto Refresh", "SAP Integration Suite", "SAP BTP Kyma runtime", "SAP Cloud Application Programming Model"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/event-driven-sap-cap-on-kyma-with-agentic-ai-and-ui-auto-refresh/ba-p/14280626"
+excerpt: "A prototype showing how a SAP CAP application on Kyma evolves into an event-driven, agentic AI architecture that auto-refreshes the UI and detects duplicate citizens autonomously using SAP Integration Suite, HANA Cloud, and OpenAI."
+---
+
+## Introduction
+
+This prototype demonstrates how a simple CAP application can evolve into an event-driven architecture enriched with autonomous agentic AI. The objective was to show how CAP can react to external events in real time, refresh the UI automatically, and trigger an AI workflow that identifies duplicate citizens without any user action. The solution combines Kyma, SAP CAP, SAP HANA Cloud DB, SAP Integration Suite, a Python agent, and OpenAI — all running together.
+
+## Demo
+
+[Watch the demo video on YouTube](https://www.youtube.com/watch?v=Nz1C5A_ViTY)
+
+## End-to-End Flow
+
+This application is built around a simple idea: when a citizen is created in the system, everything should react automatically.
+
+The process starts in SAP Integration Suite. This is the continuation of the last [Blog Post: Event Driven Integration Using SAP Integration Suite, Solace, HANA DB, and OpenAI Validation](https://community.sap.com/t5/technology-blog-posts-by-sap/event-driven-integration-using-sap-integration-suite-solace-hana-db-and/ba-p/14273167). The iFlow inserts the new citizen into HANA Cloud and then calls CAP's notify endpoint with a simple JSON payload. This notify call is the explicit trigger, because CAP does not detect database changes on its own. Once CAP receives the notification, it broadcasts the event through its citizen stream endpoint using Server-Sent Events.
+
+The UI and the Python agent are both listening to this stream. When they receive the event, each reacts independently. The UI refreshes its Fiori Elements binding and displays the new record. The agent retrieves the citizen through CAP OData, performs duplicate detection, prompts OpenAI, and writes its suggestions back through CAP. CAP exposes the suggestions via virtual enrichment fields so that the UI automatically displays AI insights during the next read.
+
+![Architecture diagram showing the end-to-end event-driven flow](/blogs/blog-1/diagram.jpg)
+
+## iFlow Changes
+
+![SAP Integration Suite iFlow configuration](/blogs/blog-1/cpi.jpg)
+
+## Code
+
+**GitHub:** User — `shahidla` | Repository — `citizen-master-cap-docker`
+
+## Agentic AI
+
+The agent is packaged as a Python container running in Kyma. It listens continuously to the citizen stream. When it receives a `CitizenCreated` event it reads the citizen through OData, prompts OpenAI with a structured tool-based instruction set and follows the returned JSON. OpenAI selects the next actions such as fetching the citizen again, running a duplicate search, or writing the final suggestion.
+
+To make the AI transparent, a thinking log table records each step in the agent run — including search inputs, candidate lists, scores, and final reasoning. Users can view not only the AI result but also how the agent reached that conclusion. This makes the system trustworthy and audit-friendly rather than a black box.
+
+## Execution Results
+
+**AI Agent Thinking Logs:**
+
+![AI agent thinking logs showing step-by-step reasoning](/blogs/blog-1/ai.jpg)
+
+## Conclusion
+
+This prototype shows that a CAP application can be extended into a fully event-driven and agentic AI architecture, and can all run together inside Kyma without additional infrastructure. The result is a responsive and intelligent application that reacts to new information immediately and explains every decision it makes.
+
+## Disclaimer
+
+This prototype is intended for learning and demonstration. It is not production grade and does not include full durability. AI reasoning results should be validated and not used for decisions without proper governance. A real solution would require reviewing security, performance, and data privacy aspects. Terminology may have been used freely as part of experimentation.
