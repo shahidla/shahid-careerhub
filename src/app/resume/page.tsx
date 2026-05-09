@@ -57,6 +57,7 @@ export default async function ResumePage() {
             Chat with my resume
           </a>
           <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio →</a>
+          <a href="/blogs" className="text-gray-600 hover:text-gray-900">Blog →</a>
         </div>
       </header>
 

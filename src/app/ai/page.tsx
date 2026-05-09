@@ -41,6 +41,7 @@ export default async function AiPage() {
         <a href="/" className="text-gray-500 hover:text-gray-900">Home</a>
         <a href="/resume" className="text-blue-600 hover:text-blue-800">SAP Profile →</a>
         <span className="text-purple-700 font-medium">AI Portfolio</span>
+        <a href="/blogs" className="text-gray-500 hover:text-gray-900 ml-auto">Blog →</a>
       </nav>
 
       {/* Hero */}
