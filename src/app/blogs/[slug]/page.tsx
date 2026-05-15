@@ -15,6 +15,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${blog.title} — Shahid M Syed`,
     description: blog.excerpt,
     alternates: { canonical: blog.canonical },
+    openGraph: {
+      title: blog.title,
+      description: blog.excerpt,
+      type: 'article',
+      url: `https://shahid-careerhub.vercel.app/blogs/${blog.slug}`,
+      publishedTime: blog.published_at,
+      authors: ['Shahid M Syed'],
+      tags: blog.tags,
+    },
   }
 }
 
@@ -26,6 +35,19 @@ export default function BlogPage({ params }: Props) {
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: blog.title,
+          description: blog.excerpt,
+          datePublished: blog.published_at,
+          author: { '@type': 'Person', name: 'Shahid M Syed', url: 'https://shahid-careerhub.vercel.app/resume' },
+          url: `https://shahid-careerhub.vercel.app/blogs/${blog.slug}`,
+          keywords: blog.tags.join(', '),
+        })}}
+      />
 
       <nav className="flex gap-4 text-sm border-b border-gray-200 pb-4 mb-10">
         <a href="/" className="text-gray-500 hover:text-gray-900">Home</a>

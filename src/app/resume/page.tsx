@@ -14,6 +14,13 @@ export const metadata = {
   title: 'Shahid M Syed — SAP Development Architect',
   description:
     'SAP Development Architect with 19 years experience in S/4HANA modernisation, ABAP on HANA, BTP, and AI-assisted SAP automation.',
+  openGraph: {
+    title: 'Shahid M Syed — SAP Development Architect',
+    description: 'SAP Development Architect with 19 years experience in S/4HANA modernisation, ABAP on HANA, BTP, and AI-assisted SAP automation.',
+    url: 'https://shahid-careerhub.vercel.app/resume',
+    type: 'profile',
+  },
+  alternates: { canonical: 'https://shahid-careerhub.vercel.app/resume' },
 }
 
 const NAV = [
@@ -47,6 +54,23 @@ export default async function ResumePage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: 'Shahid M Syed',
+          jobTitle: 'SAP Development Architect',
+          description: 'SAP Development Architect with 19 years experience in S/4HANA, ABAP, BTP, and AI engineering.',
+          url: 'https://shahid-careerhub.vercel.app/resume',
+          sameAs: [
+            'https://www.linkedin.com/in/shahidmsyed/',
+            'https://github.com/shahidla',
+            'https://community.sap.com/t5/user/viewprofilepage/user-id/15422',
+          ],
+          knowsAbout: ['SAP ABAP', 'SAP BTP', 'SAP Fiori', 'S/4HANA', 'AI Engineering', 'RAG', 'LLM', 'OpenAI'],
+        })}}
+      />
 
       {/* Top bar */}
       <header className="border-b border-gray-200 px-6 py-3 flex items-center gap-6 text-sm sticky top-0 bg-white z-20">
