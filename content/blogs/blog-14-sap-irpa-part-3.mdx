@@ -1,0 +1,543 @@
+---
+title: "SAP Conversational AI &amp; SAP HANA Graph &amp; SAP Cloud Platform OData Provisioning - Part 3"
+author: "Shahid"
+published_at: "2020-05-26"
+tags: ["alexa", "hanagraph", "nlp"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provisioning/ba-p/13456710"
+excerpt: "Introduction: With the evolution of CDS, now we can create SAP HANA Graph using AMDP GraphScript with the help of CDS, a new capability on ABAP Platform for SAP S/4HANA"
+---
+
+**Introduction:**
+
+With the evolution of CDS, now we can create SAP HANA Graph using AMDP GraphScript with the help of CDS, a new capability on ABAP Platform for SAP S/4HANA 1909. Now it is possible to use GraphScript and Graph Algorithms in AMDP. I have tried executing OpenCypher code from ABAP Report. The system that I have used is a SAP S/4HANA 1909 on-premise system.
+
+I always find it interesting how data is being represented in Graphs. Everything defined by Node and Edges. When reading analyse how to traverse from one node to another node.
+
+Reading complex hierarchical data or Organizational data results in some recursive logics. When tried with Graph, queries are simpler and shorter and uses specialized Engines.
+
+Just out of curiosity, I want to try out SAP Conversational AI for creating sample data for Node and Edges. There are few reason why I want to give it a try. But, before that, I have to admit that I broke few rules by creating data using OData GET method.
+
+As I read in one of the Blog Post, It is possible to make post calls using 'Consume API Service' option in SAP Conversational AI, but it is not possible to extract X-CSRF-Token and Cookie headers from previous GET method and this option will support in future. I tried using some different authentication mechanism, but just failed to do it.
+
+**This is purely experimental curated prototype and implemented only for learning purposes. **
+
+Why I want to give a try:
+
+ 	1. Trying out a Hybrid approach using NLP and Graphs.
+
+
+ 	2. Send required data to the system or questionnaire while conversing with SAP Conversational AI, and then execute Machine Learning Algorithms or Graph Algorithms or Custom Code to find out the outcome on that data set.
+
+
+ 	3. Want to try a different way of preparing a sample data using NLP Capability.
+
+In this case: I have populated Employee-Organizational Data. Executed Graph Algorithms to find out the about the reporting managers and on which role they are assigned to.
+
+**Demo:**
+
+ 
+
+**Index for Development Details:**
+
+Details of Technical Implementation of SAP Intelligent Robotic Process Automation, SAP HANA Graph on ABAP Platform for SAP S/4HANA 1909 and SAP Conversational AI are mentioned in the following Blog Posts.
+
+I will update the below index with the blog post links, once they are published.
+
+**Blog Post 1****: **[https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sa...](https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-cloud-application-programming-model-part-1/)
+
+**Section 0: Introduction and Prototype briefing**
+
+**Section 1: Building SAP UI5 application using SAP Cloud Application Programming Model**
+
+**Section 2: Adding SAP Conversational AI Chatbot to the SAP UI5 Application**
+
+**Blog Post 2: [https://blogs.sap.com/2020/05/22/sap-intelligent-robotic-process-automation-sap-conversational-ai-pa...](https://blogs.sap.com/2020/05/22/sap-intelligent-robotic-process-automation-sap-conversational-ai-part-2/)**
+
+**Section 3: Building a SAP Intelligent Robotic Process Automation Project and Debug**
+
+**Section 4: Deploying SAP Intelligent Robotic Process Automation Project on Cloud and Execute**
+
+**In this Blog Post 3: **
+
+**Section 5: Exploring SAP HANA Graph, built using CDS and AMDP**
+
+**Section 6: SAP Cloud Platform OData Provisioning**
+
+**Blog Post 4: [https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-a...](https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-s-4hana-part-4/)**
+
+**Section 7: Triggering SAP Intelligent Robotic Process Automation bot using SAP Conversation AI Chatbot**
+
+**Section 8: Reading data from  SAP S/4HANA on-premise systems using SAP Conversation AI Chatbot**
+
+**Section 9: Integrating SAP Conversation AI Chatbot to Amazon Alexa**
+
+**Section 10: Output**
+
+ 
+
+ 
+
+**Section 5: Exploring SAP HANA Graph, built using CDS and AMDP**
+
+Prerequisite: Build your first bot: [https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/](https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/)
+
+ 
+
+Next Step: Prepared sample data using SAP Conversational AI. For this I have created two Intents, one for Node data and one for Edge data.
+
+ 
+
+ 
+
+ 
+
+Next Step: Created 4 Custom Entities so that I can tag it to the expressions in the Intent.
+
+"Node" Intent: Entity #ROLE is assigned to the expression.
+
+ 
+
+"Edge" Intent: Entity #EMPLOYEENAME, #MANAGERNAME, #RELSHP is assigned to the expression.
+
+ 
+
+Next Step: Create two Skills. I have created Skill - Node and Edge
+
+Node Skill: I have maintained Triggers, Requirements, Action and last step RESET the memory:
+
+Will pass the value of #role and #person to the URL in the Consume API service to create a record in the SAP S/4HANA System. This will be used as NODE Table.
+
+**URL is provided by the SAP Cloud Platform OData Provisioning as described in Section 6**
+
+ 
+
+ 
+
+Edge Skill: I have maintained Triggers, Requirements, Action and last step RESET the memory:
+
+Will pass #EMPLOYEENAME (Start Node) , #MANAGERNAME (End Node), #RELSHP (relationship) to URL in the Consume API service to create a record in the SAP S/4HANA System. This will be used as EDGE Table.
+
+**URL is provided by the SAP Cloud Platform OData Provisioning as described in Section 6**
+
+ 
+
+**Sample Data:**
+
+Node/Vertex Table:
+
+DESCR
+ROLE
+
+
+Anthony
+Trainee
+
+
+Carter
+Product Owner
+
+
+Diane
+Trainee
+
+
+Dominic
+Programmer
+
+
+Elias
+Team Lead
+
+
+Fusco
+CTO
+
+
+Greer
+Architect
+
+
+Harold
+CEO
+
+
+John
+CIO
+
+
+Lee
+Trainee
+
+
+Nathan
+Trainee
+
+
+Samantha
+Manager
+
+
+Shaw
+President
+
+
+Zoe
+Trainee
+
+ 
+
+Edge Table:
+
+EDGE_ID
+EMP_FR
+EMP_TP
+RELSHOP
+
+
+1
+John
+Harold
+reports to
+
+
+2
+Anthony
+Dominic
+reports to
+
+
+3
+Diane
+Dominic
+reports to
+
+
+4
+Lee
+Dominic
+reports to
+
+
+5
+Nathan
+Dominic
+reports to
+
+
+6
+Fusco
+John
+reports to
+
+
+7
+Shaw
+Fusco
+reports to
+
+
+8
+Samantha
+Shaw
+reports to
+
+
+9
+Carter
+Samantha
+reports to
+
+
+10
+Greer
+Carter
+reports to
+
+
+11
+Elias
+Greer
+reports to
+
+
+12
+Dominic
+Elias
+reports to
+
+
+13
+Zoe
+Dominic
+reports to
+
+ 
+
+**Graphical view:**
+
+ 
+
+ 
+
+Next Step: Build SAP HANA Graph and Testing:
+
+Create 2 CDS views, One of Node/Vertex Table and another for Edge Table
+
+
+```
+@AbapCatalog.sqlViewName: 'ZCDS_E3SQL'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Edge'
+define view ZCDS_EDGE3 as select from zdata_gr {
+//ZDATA_ED
+key edge_id,
+UPPER(emp_fr) as start_nd,
+UPPER(emp_tp) as end_nd,
+relshp
+}
+
+```
+
+
+ 
+
+
+```
+@AbapCatalog.sqlViewName: 'ZCDS_V3SQL'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'VERTEX'
+define view ZCDS_VERTEXT3 as select from zdata_gr_vt {
+//zdata_vt
+key UPPER(emp) as descr,
+role,
+pernr
+}
+
+```
+
+
+ 
+
+Next Step: Create AMDP Class
+
+ 
+
+Method: EMP_GR_CRT will create a Graph Workspace.
+
+Define the Source and Target Columns along with the Key Column of Node and Edge table.
+
+Method: NHOOD is the implementation of Neighborhood Algorithm.
+
+I have created an OData service which calls this Method with the help of Table Functions. This OData Service will be used in SAP Conversational AI.
+
+ 
+
+
+```
+class ZCL_TEST_AMDP3 definition
+  public
+  final
+  create public .
+
+public section.
+
+  interfaces IF_AMDP_MARKER_HDB .
+  interfaces IF_SVER_AMDP_DDL .
+
+  class-methods EMP_GR_CRT
+    for ddl object .
+
+  class-methods NHOOD
+    importing
+      value(startV) type CHAR20
+      value(levelm) type integer
+      value(levele) type integer
+  EXPORTING
+  VALUE(et_nh_res) TYPE ZTT_NODE_nd.
+
+  class-methods NHOOD_TF
+          FOR TABLE FUNCTION zcds_nh.
+
+  protected section.
+  private section.
+ENDCLASS.
+
+CLASS ZCL_TEST_AMDP3 IMPLEMENTATION.
+
+  method EMP_GR_CRT
+    by database graph workspace
+    for hdb language sql
+    using ZCDS_VERTEXT3 ZCDS_EDGE3.
+
+    edge table "ZCDS_EDGE3"
+      source column START_ND
+      target column END_ND
+      key column edge_id
+
+    vertex table "ZCDS_VERTEXT3"
+      key column DESCR
+
+  endmethod.
+
+
+  method NHOOD
+    by database procedure
+    for hdb language graph
+    options read-only
+    using ZCL_TEST_AMDP3=>EMP_GR_CRT.
+
+
+    Graph g = Graph("ZCL_TEST_AMDP3=>EMP_GR_CRT");
+
+  INTEGER minDepth = :levelm;
+  INTEGER maxDepth = :levele;
+
+  VERTEX v_s = Vertex(:g, :startV);
+  MULTISETVERTEX> ms_n = Neighbors(:g, :v_s, :minDepth, :maxDepth);
+  et_nh_res = SELECT :v."DESCR", :v."ROLE" FOREACH v IN :ms_n;
+
+  endmethod.
+
+  METHOD NHOOD_TF
+  BY DATABASE FUNCTION FOR HDB LANGUAGE SQLSCRIPT
+  OPTIONS READ-ONLY
+  USING ZCL_TEST_AMDP3=>NHOOD.
+  declare lv_startv NVARCHAR(20);
+  declare lv_levele integer;
+
+  if irole = 'Y' THEN
+   lv_levele = 15;
+   else
+   lv_levele = :levelm;
+  end if;
+
+    CALL "ZCL_TEST_AMDP3=>NHOOD"( startv => upper(:startv), levelm => :levelm, levele => :lv_levele, et_nh_RES  => :LT_NHOOD );
+
+    return SELECT SESSION_CONTEXT( 'CLIENT') as mandt, descr, role FROM :LT_NHOOD;
+  ENDMETHOD.
+
+
+ENDCLASS.
+```
+
+
+ 
+
+Next Step: Table Function and CDS view to fetch the data
+
+
+```
+@EndUserText.label: 'NH'
+
+define table function ZCDS_NH
+with parameters startv : char20, levelm : integer, irole: char1
+returns {
+    mandt : abap.clnt;
+    descr: char20;
+    role : char20;
+}  
+implemented by method
+  ZCL_TEST_AMDP3=>nhood_tf;
+```
+
+
+ 
+
+
+```
+@AbapCatalog.sqlViewName: 'ZSQLNH'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'NH RES'
+@OData.publish: true
+define view ZCDS_NH_OD
+    with parameters STARTV : char20, levelm : integer, irole : char1
+as select from ZCDS_NH( startv : $parameters.STARTV, levelm : $parameters.levelm, irole : $parameters.irole ) {
+//ZCDS_NH
+
+//ZCDS_NH
+
+key descr,
+role
+     
+} 
+
+```
+
+
+ 
+
+Next Step: Call Neighborhood Algorithm – Check Result
+
+minDepth and maxDepth are 1, so it travels to next one node.
+
+ 
+
+ 
+
+**Step 4: Call OpenCypher Code**
+
+Created a report program. Executed an OpenCypher query. Probably the easiest one that I can understand.
+
+It will start from the NODE-CARTER and it can travel up to 2 levels.
+
+
+```
+TRY.
+  statement = |SELECT * FROM OPENCYPHER_TABLE( GRAPH WORKSPACE "ZCL_TEST_AMDP3=>EMP_GR_CRT" QUERY '| &&
+                     | MATCH p = (a)-[*1..2]->(b) WHERE a.DESCR = ''CARTER''  RETURN b.DESCR AS REST  ') |.
+  result = NEW cl_sql_statement( )->execute_query( statement ).
+  result->set_param_table( REF #( lt_cyp ) ).
+  result->next_package( ).
+  cl_demo_output=>display( lt_cyp ).
+CATCH CX_ROOT.
+WRITE: 'ERROR'.
+  ENDTRY.
+
+```
+
+
+ 
+
+Result: when this query was used MATCH p =  (a)**-[*1..2]-**>(b).
+
+ 
+
+Result: when this query was used. 1..15 denotes that it can travel  up to15 nodes.
+
+MATCH p = (a)-[***1..15]**->(b) WHERE a.DESCR = ''CARTER''   AND b.ROLE = ''CEO''
+
+ 
+
+**Section 6: SAP Cloud Platform OData Provisioning:**
+
+Configure the OData Services which are created in Section 5.
+
+Prerequisite: SAP Cloud Connector, Installed, Configure the SAP S/4HANA on-premise system and Reachable.
+
+Go to SAP Cloud Platform: Subscribe to OData Provisioning Service.
+
+ 
+
+ 
+
+Configure Service – Destinations:
+
+ 
+
+I have registered OData services from two different SAP S/4HANA on-premise systems, which will be consumed in SAP Conversational AI.
+
+ 
+
+**The other OData services are straightforward which exposes data related to Payment Instructions from database tables.**
+
+ 
+
+**Conclusion: **
+
+I can think of some new way of designing solutions or evaluate how SAP HANA Graph can solve business problems during design phase itself on SAP ABAP Platform. This prototype gave me a chance to explore and execute GraphScript alongside with SQLScript and further helped me to understand the idea of combining SAP Conversational AI and SAP HANA Graph.

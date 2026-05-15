@@ -1,0 +1,214 @@
+---
+title: "SAP Cloud Platform Enterprise Messaging with Twitter"
+author: "Shahid"
+published_at: "2020-10-06"
+tags: ["twitter"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-cloud-platform-enterprise-messaging-with-twitter/ba-p/13468559"
+excerpt: "Introduction: Aggregating my learnings on few topics such as SAP Cloud Platform Enterprise Messaging, SAP Cloud Platform Open Connectors, Document Information Extraction"
+---
+
+**Introduction:****
+
+
+Aggregating my learnings on few topics such as SAP Cloud Platform Enterprise Messaging, SAP Cloud Platform Open Connectors, Document Information Extraction Service of SAP AI Business Services and SAP Conversational AI.
+
+Objective is to try out communication across different applications using SAP Cloud Platform Enterprise Messaging. Creating Service Request for customer issues or Reading JPG files to create Documents by simply reaching out on Twitter or any other similar applications.
+
+**Details about Prototype:**
+
+ 	**Considered ****Twitter**** as Event Source.**
+
+ 	**SAP Cloud Platform Open Connectors** to pull the data from Twitter using Event Poll.
+
+ 	**SAP Conversation AI** to determine the Intent of the Tweet.
+
+ 	**SAP Enterprise Messaging **for establishing communication across applications.
+
+ 	**Node.js** application for Open Connector Webhooks and Enterprise Messaging Webhooks.
+
+ 	**SAP ABAP Daemon **to pull data from Enterprise Messaging and post a reply tweet.
+
+ 
+
+**Flow:**
+
+ 
+
+Demo:**
+
+ 
+
+**Development Details:**
+
+Setup:
+
+ 	1. SAP Enterprise Messaging:
+
+Follow the steps for Trial Plan for SAP Cloud Platform Enterprise Messaging – Messaging Administration Dashboard: [https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/7e504322652d4791ade0ca2bbc5...](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/7e504322652d4791ade0ca2bbc5a6443.html)
+
+Create Queues,  Create Queue Subscriptions, Create Webhook Subscriptions for Queue:
+
+ 
+
+ 	1. Twitter: Your Twitter Account: Tweet to the User ID: @U40010 with Hashtag #ASKCET.
+
+ 
+
+ 	1. SAP Cloud Platform Open Connectors:
+
+Follow the steps to enable: [https://developers.sap.com/tutorials/cp-apim-openconnectors-enable.html](https://developers.sap.com/tutorials/cp-apim-openconnectors-enable.html)
+
+ 
+
+Instance Variables:
+
+
+```
+{
+  "add": [
+    {"tag": "#ASKCET"}
+  ]
+}
+```
+
+ 	1. SAP Conversation AI: I will not be covering creating Chatbot here. There are many deep dive blogs. Please refer to the Resource Information on how to create a chatbot. Please refer to GitHub for code.,
+
+ 
+
+ 	1. SAP ABAP Code: SAP ABAP Code is used to call SAP Cloud Platform Enterprise Messaging URLs (using cl_http_client=>create_by_url) to pull the messages and to act on it. SAP ABAP Code is used to call Document Information Extraction Services to read extracted information from the Document and in this case, Picture attached to the Tweet. SAP ABAP Code to post a reply for the Original Tweet. These methods will be called as part of SAP ABAP Daemon.
+
+ 
+
+**Scenarios:**
+
+**Scenario 1: **
+
+When a Tweet is posted:
+
+ 	SAP Cloud Platform Open Connectors will pull the data using Event Poll
+
+ 	Open Connector Webhook will trigger a Webhook
+
+ 	Webhook will determine the Intent of the Tweet
+
+ 	Once the Intent is determined, a message will be sent to SAP Cloud Platform Enterprise Messaging – Topic, based on the Intent.
+
+ 	SAP will pull the message from the Topic to create a Service Request
+
+ 	Reply to the Original Tweet with the outcome
+
+**  **
+
+
+ 
+
+**Scenario 2: **
+
+When a Tweet is posted:
+
+ 	- SAP Cloud Platform Open Connectors will pull the data using Event Poll
+
+
+ 	- Open Connector Webhook will trigger a Webhook
+
+
+ 	- Webhook will determine the Intent of the Tweet
+
+
+ 	- Intent will be determined. If the intent is related to “Document”, Tweet attachment will be sent to SAP AI Business Services – Document Information Extraction for Processing.
+
+
+ 	- Document ID/response of SAP Business AI Services will be sent as message to SAP Cloud Platform Enterprise Messaging – Topic.
+
+
+ 	- SAP will pull the response/message from the Topic to extract the Document Information and to create a Document in SAP
+
+
+ 	- Reply to the Original Tweet with the outcome
+
+ 
+
+Attachment:
+
+
+** **
+
+ 
+
+**Scenario 3: **
+
+When a Tweet is posted:
+
+ 	- SAP Cloud Platform Open Connectors will pull the data using Event Poll
+
+
+ 	- Open Connector Webhook will trigger a Webhook
+
+
+ 	- Webhook will determine the Intent of the Tweet
+
+
+ 	- Once the Intent is determined, a message will be sent to SAP Cloud Platform Enterprise Messaging – Topic, based on the Intent.
+
+
+ 	- Webhook Subscription is created for a Particular Queue in this case. This Webhook will create a Dialog in the SAP Conversation AI Chatbot.
+
+
+ 	- Sending the chatbot response as reply to the Original Tweet.
+
+**  **
+
+
+ 
+
+**Scenario 4:**
+
+When a Tweet is posted:
+
+This Scenario is very similar to Scenario 3. Only difference is, the Chatbot dialog will be created using the SAP Cloud Platform Open Connectors Webhook.
+
+ 	- SAP Cloud Platform Open Connectors will pull the data using Event Poll
+
+
+ 	- Open Connector Webhook will trigger a Webhook
+
+
+ 	- This Webhook will determine the Intent of the Tweet
+
+
+ 	- This Webhook will create a Dialog in the SAP Conversation AI Chatbot and sends the chatbot response as reply to the Original Tweet.
+
+ 
+
+**Conclusion:**
+
+This prototype is intended to give a brief overview of different tools and technologies. It’s fascinating to experience SAP Cloud Platform Enterprise Messaging Asynchronous communications along with Node.js Asynchronous executions. I am yet to try SAP Cloud Application Programming and SAP Enterprise Messaging Scenario and SAP S/4HANA Communication Arrangement.
+
+**Credits:**
+
+Base idea of connecting SAP Cloud Platform Open Connectors and Twitter was from one of my colleagues [@Srinivas](https://community.sap.com/t5/user/viewprofilepage/user-id/17477).anchuri . This has been extended while trying to be Hands-on by watching Hands-on videos on Enterprise Messaging by [@DJ](https://community.sap.com/t5/user/viewprofilepage/user-id/1399527).adams on SAP Developers YouTube Channel.
+
+**Disclaimer:**
+
+This is a prototype type built as part of learning. Bugs do exist. SAP Coding standards, Authorizations and Performance are important and essential aspects for any application development which are not considered as part of this Prototype.
+
+**References:**
+
+ 	- SAP Developers YouTube Channel: [https://www.youtube.com/channel/UCNfmelKDrvRmjYwSi9yvrMg](https://www.youtube.com/channel/UCNfmelKDrvRmjYwSi9yvrMg)
+
+ 	- SAP Conversation AI: [https://cai.tools.sap/blog/category/tutorial/](https://cai.tools.sap/blog/category/tutorial/)
+
+
+ 	- SAP Conversational AI: [https://developers.sap.com/tutorial-navigator.html?tag=products:technology-platform/sap-leonardo/sap...](https://developers.sap.com/tutorial-navigator.html?tag=products:technology-platform/sap-leonardo/sap-conversational-ai)
+
+
+ 	- [https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-a...](https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-s-4hana-part-4/)
+
+
+ 	- [https://developers.sap.com/tutorials/cp-apim-openconnectors-enable.html](https://developers.sap.com/tutorials/cp-apim-openconnectors-enable.html)
+
+
+ 	- [https://developers.sap.com/tutorials/abap-connectivity-daemon-simple.html](https://developers.sap.com/tutorials/abap-connectivity-daemon-simple.html)
+
+
+ 	- [https://developers.sap.com/mission.cp-aibus-extract-document-service.html](https://developers.sap.com/mission.cp-aibus-extract-document-service.html)

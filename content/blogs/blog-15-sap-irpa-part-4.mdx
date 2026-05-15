@@ -1,0 +1,258 @@
+---
+title: "SAP SAP Intelligent Robotic Process Automation &amp; SAP Conversational AI &amp; SAP S/4HANA – Part 4"
+author: "Shahid"
+published_at: "2020-05-26"
+tags: ["alexa", "hanagraph", "nlp"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-s/ba-p/13456719"
+excerpt: "Introduction: I have add more skills to the first bot, which will trigger SAP Intelligent Robotic Process Automation bot to create a record and read data from SAP"
+---
+
+**Introduction:**
+
+I have add more skills to the first bot, which will trigger SAP Intelligent Robotic Process Automation bot to create a record and read data from SAP S/4HANA on-premise systems.
+
+SAP Conversational AI has many capabilities which leverages NLP technology, Integrating with SAP and non-SAP solutions and can easily integrated with Amazon Alexa and Google.
+
+Prerequisite: Build your first bot: [https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/](https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/)
+
+ 
+
+**Index for Development Details:**
+
+Details of Technical Implementation of SAP Intelligent Robotic Process Automation, SAP HANA Graph on ABAP Platform for SAP S/4HANA 1909 and SAP Conversational AI are mentioned in the following Blog Posts.
+
+I will update the below index with the blog post links, once they are published.
+
+**Blog Post 1****: **[https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sa...](https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-cloud-application-programming-model-part-1/)
+
+**Section 0: Introduction and Prototype briefing**
+
+**Section 1: Building SAP UI5 application using SAP Cloud Application Programming Model**
+
+**Section 2: Adding SAP Conversational AI Chatbot to the SAP UI5 Application**
+
+**Blog Post 2: [https://blogs.sap.com/2020/05/22/sap-intelligent-robotic-process-automation-sap-conversational-ai-pa...](https://blogs.sap.com/2020/05/22/sap-intelligent-robotic-process-automation-sap-conversational-ai-part-2/)**
+
+**Section 3: Building a SAP Intelligent Robotic Process Automation Project and Debug**
+
+**Section 4: Deploying SAP Intelligent Robotic Process Automation Project on Cloud and Execute**
+
+**Blog Post 3: [https://blogs.sap.com/2020/05/26/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provi...](https://blogs.sap.com/2020/05/26/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provisioning-part-3/)**
+
+**Section 5: Exploring SAP HANA Graph, built using CDS and AMDP**
+
+**Section 6: SAP Cloud Platform OData Provisioning**
+
+**In this Blog Post 4:**
+
+**Section 7: Triggering SAP Intelligent Robotic Process Automation bot using SAP Conversation AI Chatbot**
+
+**Section 8: Reading data from  SAP S/4HANA on-premise systems using SAP Conversation AI Chatbot**
+
+**Section 9: Integrating SAP Conversation AI Chatbot to Amazon Alexa**
+
+**Section 10: Output**
+
+ 
+
+**Section 7: Triggering SAP Intelligent Robotic Process Automation bot using SAP Conversation AI Chatbot**
+
+One the first bot is ready, will create more Intents and Skills required for this prototype.
+
+ 
+
+Create an Intent:
+
+ 
+
+Next Step:
+
+Add Custom Entity for the Intent.
+
+ 
+
+Next Step:
+
+Go back to your Intent, Select the required word in the sentence and assign an Entity.
+
+ 
+
+Next Step:
+
+Click on “Test” and check whether the Entities are identified.
+
+ 
+
+Next Step:
+
+Click on Build – Create Skill
+
+ 
+
+Next Step:
+
+Add “Triggers”
+
+Next Step:
+
+Add “Requirements”
+
+ 
+
+Next Step:
+
+Go to Actions tab, add required conditions
+
+Next Step:
+
+Click on “Connect to External Service” – Select “Call WebHook”
+
+ 
+
+Add Client ID, Client Secret, Authorization URL from Service key.
+
+Add IRobotic Process Automation-TRIGGER-TOKEN in headers. This will be available when a API TRIGGER is created for SAP Intelligent Robotic Process Automation project after deployment.
+
+Add “Body”
+
+ 
+
+Next Step:
+
+RESET MEMORY or Required Variables by clicking on “Update Conversation”.
+
+ 
+
+Next Step:
+
+At this point of time, may it’s a good time to add CAI notifier.
+
+ 
+
+ 
+
+TOKEN to add in CAI Notifier should be of the same BOT. Refer to Standard documentation for adding CAI notifier and openSAP Course What’s New with Bot Building in SAP Intelligent Robotic Process Automation
+
+ 
+
+To generate Service key please refer to [https://blogs.sap.com/2019/12/26/sap-intelligent-rpa-trial-get-ready-to-build-bots.../](https://blogs.sap.com/2019/12/26/sap-intelligent-rpa-trial-get-ready-to-build-bots.../)
+
+ 
+
+**Section 8: Reading data from  SAP S/4HANA on-premise systems using SAP Conversation AI Chatbot**
+
+Created an Intent and Entities as described in the above steps.
+
+I have created #EMPNAME and #ROLE and assigned to the expressions of this Intent.
+
+ 
+
+Next Step:
+
+Create Skill, Add Triggers, Add requirements as described in the above steps.
+
+Next Step:
+
+Go to Actions tab, add required conditions.
+
+Click “Connect to External Service”
+
+Provide the URL which was provided by SAP Cloud Platform OData Provisioning. An URL will be provided by OData Provisioning when OData service is registered. Password is SAP Cloud Platform password.
+
+ 
+
+Next Step:
+
+RESET MEMORY or Required Variables by clicking on “Update Conversation”.
+
+ 
+
+**Followed the same steps to add few more skills for reading SAP HANA Graph**
+
+**Follow the same steps to add one more skill for reading Payment Instruction OData service from SAP S/4HANA on-premise system which was used in this prototype.**
+
+ 
+
+**Section 9: Integrating SAP Conversation AI Chatbot to Amazon Alexa**
+
+Last step: Integrating the Chatbot to Amazon Alexa.
+
+Create an Intent:
+
+ 
+
+This is the expression that Amazon Alexa will consider after Invocation.
+
+Next Step:
+
+Followed the drill, Create Skill, Add Triggers, Add Actions
+
+ 
+
+ 
+
+Next Step:
+
+Go to Connect Tab: Select Amazon Alexa
+
+Sign in your Amazon Alexa developer account and connect your SAP Conversation AI.
+
+ 
+
+Last Step: Give an Invocation Name.
+
+ 
+
+ 
+
+**Testing:**
+
+Few things to Consider: Please check the LOCALES, if the bot is not getting triggered by Voice. I have ended up adding 3 Locales – AU, IN, US.
+
+I have tested the Payment Instruction OData Service which was created to fetch the details from SAP S/4HANA System from Alexa Developer Console.
+
+ 
+
+ 
+
+**Section 10: Output**
+
+**Create an employee**
+
+
+** **
+
+
+ 
+
+Check UI Application:
+
+ 
+
+ 
+
+**Ask for Reporting Manager:**
+
+ 
+
+ 
+
+**Check for Document Status and Number:**
+
+ 
+
+ 
+
+**Video 1:**
+
+**Video 2:**
+
+ 
+
+Conclusion:
+
+Development time to build a Chatbot was quick using SAP Conversation AI. It also comes with predefined Intents and Skills. We can also fork other intents which helps in reducing lot of time. Consuming API services and displaying the result as a reply is a great feature. Whole narrative of a conversation can be built, trigger fallback when it fails to identify an Intent. All the queries are stored, which will help to analyse and retrain to and reduce the fallback triggers.
+
+Step Zero Experience: I do have a choice in terms of choosing Application Language, Databases, Deployment options and is important to consider these things at the start of building an application. I can easily integrate or communicate with other products and tools. To build one application, I can make use of many programming languages if required.
+
+Disclaimer: This is a prototype type built as part of learning. Bugs do exist and  SAP Coding standards, Authorizations and Performance are important and essential aspects for any application development which are not considered as part of this Prototype.
