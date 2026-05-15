@@ -1,0 +1,292 @@
+---
+title: "SAP Intelligent Robotic Process Automation &amp; SAP Conversational AI - Part 2"
+author: "Shahid"
+published_at: "2020-05-22"
+tags: ["alexa", "hanagraph", "nlp"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-intelligent-robotic-process-automation-sap-conversational-ai-part-2/ba-p/13456684"
+excerpt: "Introduction: I have used SAP Intelligent Robotic process automation to create a record which automates a SAP UI5 Application. This is same app which was built in the"
+---
+
+**Introduction:**
+
+I have used SAP Intelligent Robotic process automation to create a record which automates a SAP UI5 Application. This is same app which was built in the [previous step](https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-cloud-application-programming-model-part-1/) using SAP Cloud Application Programming Model. This app is running on LOCALHOST on my desktop and wanted to see SAP Intelligent Robotic Process Automation bot in action which will help to automate the tasks.
+
+**Index for Development Details:**
+
+Introduction, Prototype briefing, Details of Technical Implementation of SAP Intelligent Robotic Process Automation, SAP HANA Graph on ABAP Platform for SAP S/4HANA 1909 and SAP Conversational AI are mentioned in the following Blog Posts.
+
+**Index for Development Details:**
+
+Details of Technical Implementation of SAP Intelligent Robotic Process Automation, SAP HANA Graph on ABAP Platform for SAP S/4HANA 1909 and SAP Conversational AI are mentioned in the following Blog Posts.
+
+I will update the below index with the blog post links, once they are published.
+
+**Blog Post 1****: **[https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sa...](https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-cloud-application-programming-model-part-1/)
+
+**Section 0: Introduction and Prototype briefing**
+
+**Section 1: Building SAP UI5 application using SAP Cloud Application Programming Model**
+
+**Section 2: Adding SAP Conversational AI Chatbot to the SAP UI5 Application**
+
+**In this Blog Post 2: **
+
+**Section 3: Building a SAP Intelligent Robotic Process Automation Project and Debug**
+
+**Section 4: Deploying SAP Intelligent Robotic Process Automation Project on Cloud and Execute**
+
+**Blog Post 3: [https://blogs.sap.com/2020/05/26/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provi...](https://blogs.sap.com/2020/05/26/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provisioning-part-3/)**
+
+**Section 5: Exploring SAP HANA Graph, built using CDS and AMDP**
+
+**Section 6: SAP Cloud Platform OData Provisioning**
+
+**Blog Post 4: [https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-a...](https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-s-4hana-part-4/)**
+
+**Section 7: Triggering SAP Intelligent Robotic Process Automation bot using SAP Conversation AI Chatbot**
+
+**Section 8: Reading data from  SAP S/4HANA on-premise systems using SAP Conversation AI Chatbot**
+
+**Section 9: Integrating SAP Conversation AI Chatbot to Amazon Alexa**
+
+**Section 10: Output**
+
+ 
+
+ 
+
+**Section 3: Building a SAP Intelligent Robotic Process Automation Project and Debug**
+
+ 	Prerequisite: Subscribe to SAP Intelligent Robotic Process Automation service in SAP Cloud Platform. Please refer to the link mentioned in “references” section. A detail Blog Post for enabling SAP Intelligent Robotic Process Automation by Vijay Sharma.
+
+ 	Open SAP Intelligent Robotic Process Automation Desktop Studio, create a “Project” and add “Application”
+
+ 	A pop-up will be opened, I have captured both the pages of my application. Refer to the highlighted UI elements from the screenshot above.
+
+Steps to perform on Desktop Studio:
+
+There are 3 sections:
+
+ 	1. Applications: Here we need to capture the capture the Page/UI elements.
+
+ 
+
+ 
+
+ 
+
+ 
+
+Highlighted blocks are important for every Page and UI element that we need to capture.
+
+Double Click on field and associate the selected item, choose criteria.
+
+ 
+
+2. Workflow: Create a workflow
+
+ 
+
+Create workflow, add “start application” drag and drop the pages.
+
+Link the pages like the way it needs to be executed.
+
+Make sure to define fields for your Context.
+
+Next Step:
+
+Double Click on “Start Application” – Assign and Application.
+
+ 
+
+Next Step:
+
+Select the page, the button which needs to be clicked.
+
+Assign required activities.
+
+ 
+
+Next Step:
+
+Select the Second page, select the input fields and use SET activity and for button its CLICK activity.
+
+ 
+
+Next Step:
+
+Go to workflow, Double click on workflow, go to properties, define Input/Output.
+
+ 
+
+3. Scripts:
+
+The following code will help, if the bot needs to be executed in Chrome.
+
+
+```
+MainPage.navigator = e.navigator.Chrome;
+```
+
+
+“MainPage” will be the name of the captured page above XXXX.start();
+
+
+```
+MainPage.step({ Start_MainPage: function(ev, sc, st) {
+        var rootData_MainPageData = sc.data;
+        ctx.workflow('rpawf', '7fb2d71b-6466-4b23-9c73-6de8a9d34fbb') ;
+        MainPage.navigator = e.navigator.Chrome;
+        // Start 'MainPage'
+        MainPage.start();
+        sc.endStep(); // pMainPage_management
+        return;
+}});
+```
+
+
+ 
+
+Next Step:
+
+The following code is where I have added, so that these values can be filled in Debug Mode.
+
+
+```
+GLOBAL.events.START.on(function (ev) {
+        if (ctx.options.isDebug) {
+                        // Add item in systray menu.
+                        systray.addMenu('', 'rpawf', 'Test rpawf', '', function (ev) {
+                      var rootData_MainPageData = ctx.dataManagers.rootData_MainPageData.create();
+                                   
+                                        // Initialize your data here.
+                                        MainPage.scenarios.rpawf.start(rootData_MainPageData);
+                                        rootData_MainPageData.pSecondPageData.ofn = "some name";
+                                        rootData_MainPageData.pSecondPageData.oln = "some name"
+                        });
+        }
+});
+```
+
+
+ 
+
+Next Step:
+
+Final Check:  Check whether everything is in Green and click on BUILD.
+
+ 
+
+ 
+
+Debugging:
+
+Shut down the Remote Agent.
+
+Select DEBUG option in Desktop studio.
+
+Click on the “Test” to start debugging
+
+ 
+
+ 
+
+**Last step: Go to FILE, export PROJECT.**
+
+ 
+
+**Section 4: Deploying SAP Intelligent Robotic Process Automation Project on Cloud and Execute:**
+
+I have imported the Project to SAP **Intelligent Robotic Process Automation Factory**
+
+Go to SAP Cloud Platform, Go to Subscriptions, Choose SAP Intelligent Robotic Process Automation, Go to Application
+
+All the highlighted steps needs to be done.
+
+First, Click on Projects-> New Project.
+
+Import the project which was exported to the Desktop from the Studio.
+
+ 
+
+Once the project is imported, Cross check the Highlighted Blocks. Specially the I/O.
+
+If the INPUTS are blank, then go back to the Desktop Studio and assign Inputs/Outputs.
+
+If all good, Save and Generate Package.
+
+ 
+
+Next Step:
+
+Once the Package is generated, Go to the Packages Tab:
+
+ 
+
+We can check the package build version and Remote Agent Version. Please refer to standard documentation for compatibility chart.
+
+ 
+
+Next Step:
+
+Go to the AGENT Tab -> AGENT GROUPS -> New Agent Group
+
+Give a “NAME” and click “ADD NODE”.
+
+Give your HOSTNAME, if you don’t know your laptop hostname.
+
+Go to COMMAND PROMPT, type “hostname”, fill the hostname.
+
+Check SAP Standard Documentation for creating AGENTS. Copied from Standard Documentation.
+
+ 	the computer name on which the agent is installed
+
+ 	the login name of the person who will connect to the agent, SYSTEM NAME and USER
+
+Few Important Observations:
+
+If the Remote Agent is in PAUSED STATE (even after trigger the bot and REMOTE AGENT is not executing the JOB). It might happen that Remote Agent will be in PAUSED STATE when IDLE, but will change the status when the job is scheduled.
+
+If Agent Groups are wrong, REMOTE AGENT will be in PAUSED STATE. Also make sure that the REMOTE AGENT is “BACKGROUND – UNATTENDED”.
+
+ 
+
+Next Step:
+
+Go to the Next tab: Environments:
+
+Click on New Environment and add AGENT.
+
+Assign the AGENT which was created.
+
+Go to the Packages, select the package that was generated and Deploy.
+
+Click on triggers, I have created an API trigger.
+
+ 
+
+Next Step:
+
+Refer to SAP Documentation for trigger this API via POSTMAN.
+
+[https://help.sap.com/viewer/c836fab4182e45548b6c6c6d0d0a9146/Cloud/en-US/347ba172a8e64f1c8544f460264...](https://help.sap.com/viewer/c836fab4182e45548b6c6c6d0d0a9146/Cloud/en-US/347ba172a8e64f1c8544f46026446a86.html)
+
+ 
+
+Result:
+
+ 
+
+Next Step: Verify status of the Jobs
+
+Go to SAP Intelligent Robotic Process Automation Factory >> Go to Monitoring Tab
+
+ 
+
+Result: Record Created
+
+ 
+
+**Conclusion:**
+
+This is just my first impression; this opens up a lot of possibilities in automating the regular tasks. SAP Intelligent Robotic Process Automation can capture SAP GUI, SAP UI5, load data from excel. There are few other options which I haven’t explored. They can be easily integrated with SAP Conversation AI. This is more like bot talking to another bot, SAP Intelligent Robotic Process Automation bot can trigger other jobs. This can enable to automate and orchestrate a series of jobs.

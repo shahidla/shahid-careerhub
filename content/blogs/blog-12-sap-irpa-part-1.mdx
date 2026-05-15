@@ -1,0 +1,187 @@
+---
+title: "SAP Intelligent Robotic Process Automation &amp; SAP Conversational AI &amp; SAP Cloud Application Programming Model- Part 1"
+author: "Shahid"
+published_at: "2020-05-21"
+tags: ["alexa", "hanagraph", "nlp"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-cloud/ba-p/13426448"
+excerpt: "Introduction: I had a chance to explore SAP Cloud Application Programming Model, SAP Intelligent Robotic Process Automation, SAP Conversational AI, SAP Cloud Platform"
+---
+
+**Introduction:**
+
+I had a chance to explore SAP Cloud Application Programming Model, SAP Intelligent Robotic Process Automation, SAP Conversational AI, SAP Cloud Platform OData Provisioning, SAP HANA Graph on ABAP Platform for SAP S/4HANA 1909 and Amazon Alexa and to tie all together.
+
+I have attempted to build a prototype with Step Zero learnings of different concepts. An absolute ease of using different languages, programming models, libraries, tools and technologies.
+
+A non-technical aspect of this prototype is to try an Audio-Driven Chatbot, a click free, type free application for differently abled people.
+
+**Details about Prototype:**
+
+ 	**SAP Cloud Application Programming Model **to build a simple Draft Enabled SAP UI5 application.
+
+ 	**SAP Intelligent Robotic Process Automation** bot to automate the process of creating a record for this UI App.
+
+ 	**SAP Conversation AI** which can trigger this SAP Intelligent Robotic Process Automation bot and added few additional skills to reads data from **SAP S/4HANA** on-premise systems.
+
+ 	Simple **SAP HANA Graph,** built using CDS and AMDP, read data by calling Graph Algorithms and Publishing it by OData.
+
+ 	**SAP Cloud Platform OData Provisioning** will help to consume these OData services in SAP Conversation AI.
+
+ 	Adding voice with **Amazon Alexa**, super quick Integration of SAP Intelligent Robotic Process Automation, SAP CAI with Amazon Alexa.
+
+**Flow:**
+
+ 
+
+ 
+
+**Demo 1:**
+
+ 
+
+ 
+
+**Demo 2:**
+
+**Index for Development Details:**
+
+Details of Technical Implementation of SAP Intelligent Robotic Process Automation, SAP HANA Graph on ABAP Platform for SAP S/4HANA 1909 and SAP Conversational AI are mentioned in the following Blog Posts.
+
+I will update the below index with the blog post links, once they are published.
+
+**In this Blog Post 1:**
+
+**Section 0: Introduction and Prototype briefing **
+
+**Section 1: Building SAP UI5 application using SAP Cloud Application Programming Model**
+
+**Section 2: Adding SAP Conversational AI Chatbot to the SAP UI5 Application**
+
+**Blog Post 2:**[** **](https://blogs.sap.com/2020/05/22/sap-intelligent-robotic-process-automation-sap-conversational-ai-part-2/)[https://blogs.sap.com/2020/05/22/sap-intelligent-robotic-process-automation-sap-conversational-ai-pa...](https://blogs.sap.com/2020/05/22/sap-intelligent-robotic-process-automation-sap-conversational-ai-part-2/)
+
+**Section 3: Building a SAP Intelligent Robotic Process Automation Project and Debug**
+
+**Section 4: Deploying SAP Intelligent Robotic Process Automation Project on Cloud and Execute **
+
+**Blog Post 3:**** [https://blogs.sap.com/2020/05/26/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provi...](https://blogs.sap.com/2020/05/26/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provisioning-part-3/)**
+
+**Section 5: Exploring SAP HANA Graph, built using CDS and AMDP**
+
+**Section 6: SAP Cloud Platform OData Provisioning**
+
+**Blog Post 4:**** [https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-a...](https://blogs.sap.com/2020/05/26/sap-sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-s-4hana-part-4/)**
+
+**Section 7: Triggering SAP Intelligent Robotic Process Automation bot using SAP Conversation AI Chatbot**
+
+**Section 8: Reading data from  SAP S/4HANA on-premise systems using SAP Conversation AI Chatbot**
+
+**Section 9: Integrating SAP Conversation AI Chatbot to Amazon Alexa**
+
+**Section 10: Output**
+
+ 
+
+**Development:**
+
+**Section 1: Building SAP UI5 application using SAP Cloud Application Programming Model**
+
+Create a SAP UI5 application using annotations, make it draft enabled to the service.
+
+Please refer to the GitHub link for code.
+
+Service Definition:
+
+
+```
+using { ns as empns  } from '../db/datamodel';
+
+service empservice @(_requires:'admin'){ 
+ entity GetEmpMain as projection on empns.EmpMain;
+ entity GetEmpInfo as projection on empns.EmpInfo;
+}
+annotate empservice.GetEmpMain with @odata.draft.enabled;
+
+```
+
+
+ 
+
+Project Structure: 
+
+ 
+
+GitHub Link: [https://github.com/shahidla/SAPCAP](https://github.com/shahidla/SAPCAP)
+
+ 
+
+**Section 2: Adding SAP Conversational AI Chatbot to the SAP UI5 Application**
+
+Now we have an UI ready, add your SAP Conversation AI Chatbot to it.
+
+ 	Prerequisite: Build your first bot: [https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/](https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/)
+
+ 	Go to your bot and select webchat channel and create
+
+ 	Copy CHANNEL ID and TOKEN
+
+ 	Add the below code in Component.js in your project
+
+ 
+
+```
+sap.ui.define(["sap/fe/core/AppComponent"], capm =>
+capm.extend("employeeDetails.Component", {
+    metadata: { manifest: "json" },
+    onAfterRendering:function(){
+      this.getbot();      
+      },
+      getbot: function(){
+        if (! document.getElementById("chatbotint")){
+          var oElement = document.createElement("script");
+          oElement.setAttribute("id","chatbotint");
+          oElement.setAttribute("src","https://cdn.cai.tools.sap/webchat/webchat.js");
+          oElement.setAttribute("channelId","XXXXXXXX-4382-4bd8-9819-2e16df1dbbb8");
+          oElement.setAttribute("token","XXXXXX113556510e2102a256089e0c3");
+          document.body.appendChild(oElement);
+        }
+      }
+  })
+);
+```
+
+
+ 
+
+Run your project: You should be able to see Chatbot on your application page.
+
+Note: Highlighted UI elements are used for building a SAP Intelligent Robotic Process Automation project.
+
+**Conclusion:**
+
+There is a lot more to explore on these topics. This is just my first impression, they are easy to start off with, can build powerful applications and are easy to integrate.
+
+SAP Cloud Application Programming Model just takes care of all the background work, from building artefacts in that Database to deploying it on SAP Cloud Platform. Few command lines statements, one .yml file and with minimal lines of code, was able to build a SAP UI5 Application and Nodejs gives the flexibility to use libraries. At the end, this it will help us to purely concentrate on Business Logic.
+
+ 
+
+**References:**
+
+ 	- openSAP Course: Building Applications with SAP Cloud Application Programming Model
+
+
+ 	- openSAP Course: SAP Intelligent Robotic Process Automation
+
+
+ 	- [https://blogs.sap.com/2019/12/26/sap-intelligent-rpa-trial-get-ready-to-build-bots.../](https://blogs.sap.com/2019/12/26/sap-intelligent-rpa-trial-get-ready-to-build-bots.../)
+
+
+ 	- [https://help.sap.com/viewer/c836fab4182e45548b6c6c6d0d0a9146/Cloud/en-US/347ba172a8e64f1c8544f460264...](https://help.sap.com/viewer/c836fab4182e45548b6c6c6d0d0a9146/Cloud/en-US/347ba172a8e64f1c8544f46026446a86.html)
+
+
+ 	- SAP Conversation AI: [https://cai.tools.sap/blog/category/tutorial/](https://cai.tools.sap/blog/category/tutorial/)
+
+
+ 	- SAP Conversational AI: [https://developers.sap.com/tutorial-navigator.html?tag=products:technology-platform/sap-leonardo/sap...](https://developers.sap.com/tutorial-navigator.html?tag=products:technology-platform/sap-leonardo/sap-conversational-ai)
+
+
+ 	- [https://cai.tools.sap/blog/connect-sap-conversational-ai-chatbot-to-amazon-alexa/](https://cai.tools.sap/blog/connect-sap-conversational-ai-chatbot-to-amazon-alexa/)

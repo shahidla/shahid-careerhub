@@ -1,0 +1,243 @@
+---
+title: "SAP S/4HANA #Machinelearning #MQTT"
+author: "Shahid"
+published_at: "2019-10-15"
+tags: ["HIVEMQ", "machinelearning", "mqtt", "Python", "twilio", "Whatsapp"]
+canonical: "https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-sap/sap-s-4hana-machinelearning-mqtt/ba-p/13398320"
+excerpt: "Initial Thoughts: An attempt to understand newer concepts around and wanted to see it how they can all come together. Borrowed few concepts such as using Clustering"
+---
+
+**Initial Thoughts:**
+
+An attempt to understand newer concepts around and wanted to see it how they can all come together.
+
+Borrowed few concepts such as using Clustering Algorithm from Machine learning, Executing Machine Learning Algorithm in SAP S/4HANA from SAP HANA Platform Native development, Routing from Python, Hosting Applications from Cloud Platform, Cloud communication from Twilio, ABAP Real-time programming/event-driven/IoT from ABAP MQTT & ABAP Daemon.
+
+**Prototype:**
+
+Assume that, Payment Instructions have been sent to the SAP S/4HANA System where these records will be processed by creating documents and will send to Banks for Payments. While processing, we need to find an Anomaly records among these payment instructions based on payment amounts and to alert a user on WhatsApp. User should have an opportunity to decide whether the payment instruction can be stopped. If the user wants to stop the payment, they can simply respond on WhatsApp to act on that Payment Instructions in SAP S/4HANA.
+
+It’s not about the use case, Idea is to fit in different concepts to make it work. Prototype, only for learning and understanding the technical capabilities.
+
+**Flow: **
+
+**Output: **
+
+**Demo:**
+
+ 
+
+**Details:**
+
+**Possibility of calling Machine Learning Procedure:**
+
+In the past, have used some of these Algorithms in SAP HANA Native Programming. Now it’s possible to call the same Machine Learning procedures from ABAP, SQL wrapper is available for calling these algorithms from the ABAP Layer. I found it exciting to visualise the kind of things that we can do now. We can run any ABAP Program/Method/RFC/BADI which can run thru any available algorithm and bring the results.
+
+I think it’s a great advantage to use the data within SAP system, no need to download the data and feed to external programs or calling an SAP OData to get the data and run thru the algorithm in external applications for the results or to call algorithms while processing of the records itself.
+
+**ABAP MQTT:**
+
+Message Queuing Telemetry Transport is designed for machine-to-machine connectivity protocol. MQTT clients can subscribe/publish to topics and MQTT Broker will delivery messages to the client who are subscribed to those topics. In this case, I have created an ABAP MQTT client and subscribed to a topic so that it can receives messages and act on it.
+
+**Others:**
+
+HiveMQ to publish the messages to the topic subscribers. Python app hosted on cloud which acts as a router and Twilio is cloud communication platform and using it for sending and receiving messages on WhatsApp.
+
+**Code:**
+
+***Step 1:* Identify Anomalies**
+
+Create an AMDP method and pass the data in importing table “DATA_TAB” for which we want to find Anomalies in the data.  Following records is what we are passing to the Algorithm and saving the result to a different table. Prototyping reasons.
+
+SAP provides lot of Algorithms for preprocessing, supervised and unsupervised Algorithms.
+
+***ID: Payment ID; Amount: Payment Amount***
+
+```
+CALL _SYS_AFL.PAL_DBSCAN(P1 => :DATA_TAB,P2 => :PAL_CONTROL,P3 => :RESULT,P4 => :PAL_DB_MODEL_T,P5 => :STAT,P6 => :PLACEHOLDER);
+
+LT_RES = SELECT   SESSION_CONTEXT( 'CLIENT')  AS MANDT, ID, B.AMOUNT AS AMOUNT, 'Anomaly' AS SCORE FROM :RESULT AS An INNER JOIN ZDATA_TRAIN_2 AS B  ON A.ID = B.ID WHERE CLUSTER_ID  0;
+
+INSERT INTO ZDATA_RES_DB SELECT  MANDT, ID, SCORE FROM :LT_RES;
+```
+
+
+**Result after applying Machine Learning Procedure:**
+
+Algorithm has been tested with the same data in Python.
+
+If we plot the data set in a GRAPH this is how it looks. Green and Blue are Anomalies.
+
+***Step 2: Router***
+
+Once the anomalies are detected, ABAP will call the URL using cl_http_client=>create_by_url and the URL will be the URL of the app which is hosted on the cloud.
+
+
+```
+  lv_service = 'http://.com/alert/
+
+  cl_http_client=>create_by_url(
+    EXPORTING
+      url                = lv_service
+    IMPORTING
+      client             = lo_http_client
+    EXCEPTIONS
+      argument_not_found = 1
+      plugin_not_active  = 2
+      internal_error     = 3
+      OTHERS             = 4 ).
+```
+
+
+Wrote a small program in Python and hosted in Cloud. Idea is to use this app to route the calls. When the App is hosted an URL will be generated and will use this URL to call.
+
+We will call this URL [https://yourURL.com/alert/](https://yoururl.com/alert/)
+
+The below code will get executed (URL ending with “alert”) which will trigger a message to the WhatsApp.
+
+
+```
+@app.route("/alert/")
+def alert():
+id = request.args.get('id')
+amount = request.args.get('amount')
+resp = str('Alert- Anomaly Detected for ID: ' + ' ' + str(id) + ' ' + 'Amount: ' + str(amount))
+
+from twilio.rest import Client
+account_sid = 'ACa8xxxxxb10c368275713dbd44b'
+auth_token = '96ae6xxxxxx2df3a121b75cd68b'
+client = Client(account_sid, auth_token)
+message = client.messages.create(from_='whatsapp:+14155238886',body=resp,to='whatsapp:+61XXXX8208')
+```
+
+
+So far, we have executed an ABAP Program to identify Anomalies and called an URL after that. By this time, we will be receiving a message on WhatsApp.
+
+***Step 3: Responding to the alert***
+
+Once the alert/message is received on WhatsApp, user can respond to that message on WhasApp. Example: CANCEL {ID}
+
+Created a sandbox for WhatsApp in Twilio which will enable to call a URL whenever a message is received. I am pointing it to the same App, but the URL ends with /send/.
+
+The below code will read the messages and sends it to HIVEMQ to the topic “'abaptopic/tutorial/subscribe'’. Now whoever is subscribed to this topic will receive the message.
+
+In this case, we will be sending the message from WhatsApp as CANCEL {ID}.
+
+
+```
+@app.route('/send/', methods=['GET', 'POST'])
+def readdata():
+msg = request.form.get('Body')
+resp = MessagingResponse()resp.message("{}".format(msg))
+lv_ms = str(resp)
+import paho.mqtt.client as paho
+import timedef on_log(client, userdata, level, buf):print("log: "+buf)
+def on_connect(client, userdata, flags,rc):if rc==0:print('ok')else:print('bad')
+def on_disconnect(client, userdata,flags, rc=0):print('Disconnect'+str(rc))
+client = paho.Client()client.on_connect=on_connectclient.on_disconnect=on_disconnectclient.on_log=on_logprint('connecting')
+client.connect('broker.mqttdashboard.com', 1883)
+client.loop_start()client.publish('abaptopic/tutorial/subscribe', lv_ms)
+time.sleep(5)
+client.loop_stop()
+return str(resp)
+```
+
+
+ 
+
+***Step 4: Receiving the messages in SAP S/4HANA***
+
+Now we need to subscribe to MQTT broker by calling the method cl_mqtt_client_manager=>create_by_url which will call the URL 'ws://broker.hivemq.com:8000/mqtt'.
+
+IF_MQTT_CLIENT has a subscribe method where we can subscribe to the topic “'abaptopic/tutorial/subscribe'’ and keep this session alive using ABAP Daemon.
+
+Now we are good to receive messages from HiveMQ. Once this step is done, we will receive the message in SAP S/4HANA.
+
+Whenever a message is received, ON_MESSAGE will be triggered. Wrote a simple logic in ABAP to update the table.
+
+
+```
+      " retrieve message text and put received message into PCP format
+      DATA(lv_message) = i_message->get_text( ).
+      IF lv_message IS NOT INITIAL.
+        SPLIT lv_message AT space INTO lv_act lv_id.
+        IF lv_act = 'CANCEL'.
+          UPDATE zdata_res_db SET score = 'CANCEL' WHERE id = lv_id.
+        ENDIF.
+        COMMIT WORK.
+      ENDIF.
+
+```
+
+
+***Step 5: After acting on the response***
+
+Once the table is updated, ABAP will call the same Python URL using cl_http_client=>create_by_url and this time the URL will be ending [https://yourURL.com/act/](https://yoururl.com/act/)
+
+Logic is very similar to which what we have already wrote in ALERT but this time the message body is different.
+
+
+```
+  lv_service = 'http://.com/act/
+
+  cl_http_client=>create_by_url(
+    EXPORTING
+      url                = lv_service
+    IMPORTING
+      client             = lo_http_client
+    EXCEPTIONS
+      argument_not_found = 1
+      plugin_not_active  = 2
+      internal_error     = 3
+      OTHERS             = 4 ).
+```
+
+
+ 
+
+
+```
+@app.route('/about/')
+# WHEN SUCCESSFULLY EXECUTED
+def about():
+    id1 = request.args.get('id')
+    result1 = request.args.get('result')
+    resp = str('Acted on ID - ' + str(id1) + ' Status is now ' + str(result1))
+    from twilio.rest import Client
+    account_sid = 'ACaXXXXXXXXc4e32b10c368275713dbd44b'
+    auth_token = '96aeXXXXXX757fc2df3a121b75cd68b'
+    client = Client(account_sid, auth_token)
+
+    message = client.messages \
+        .create(
+             from_='whatsapp:+141XXXX8886',
+             body=resp,
+             to='whatsapp:+61XXXXX208'
+         )
+
+```
+
+
+ 
+
+**Final thoughts on Initial thoughts:**
+
+I came across some different technical possibilities while building this prototype. Now we have the possibility of applying Machine Learning Algorithms within SAP S/4HANA while processing which was a different experience when the data resides in one system and execution of Algorithms happens in a different system.
+
+The other thing was to establishing communication between SAP S/4HANA and Messaging Apps as and when an event is triggered, or block of code explicitly executed. Code in SAP S/4HANA, Python, ABAP MQTT and ABAP Daemon has a defined and individual job which just execute the code to call the API or send/receive messages or delegate the task or just keeps the session alive, they neither have do the polling for the update or worry about the outcome of the end task.
+
+ 
+
+**Sources:**
+
+Step 1: DBSCAN:
+
+[https://help.sap.com/viewer/2cfbc5cf2bc14f028cfbe2a2bba60a50/2.0.03/en-US/b2c55113763f4fcebd31a7486d...](https://help.sap.com/viewer/2cfbc5cf2bc14f028cfbe2a2bba60a50/2.0.03/en-US/b2c55113763f4fcebd31a7486daadd08.html)
+
+Step 2 & 3: Twilio:
+
+[https://www.twilio.com/docs/sms/whatsapp/quickstart](https://www.twilio.com/docs/sms/whatsapp/quickstart)
+
+Step 4: ABAP MQTT
+
+[https://developers.sap.com/group.abap-connectivity-mqtt-daemon.html](https://developers.sap.com/group.abap-connectivity-mqtt-daemon.html)

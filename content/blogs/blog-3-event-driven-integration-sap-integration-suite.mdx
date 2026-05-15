@@ -1,0 +1,299 @@
+---
+title: "Event Driven Integration Using SAP Integration Suite, Solace, HANA DB, and OpenAI Validation"
+author: "Shahid"
+published_at: "2025-11-20"
+tags: ["HANA", "Open AI Validation", "SAP Integration Suite", "solace"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/event-driven-integration-using-sap-integration-suite-solace-hana-db-and/ba-p/14273167"
+excerpt: "1. Introduction This prototype implements an event driven pattern using SAP Integration Suite and Solace. A JSON event is published to Solace and processed by an iFlow"
+---
+
+**1. Introduction**
+
+This prototype implements an event driven pattern using SAP Integration Suite and Solace. A JSON event is published to Solace and processed by an iFlow that applies AI based validation, routes the result, updates a HANA Cloud table, and records a structured log entry. The objective is to demonstrate event reception, AI assisted validation, routing logic, data extraction, and persistence on SAP BTP.
+
+**2. Overview**
+
+This prototype uses Solace as the event broker and SAP Integration Suite as the consumer and processing layer. A JSON event is published to a Solace topic, and SAP Integration Suite subscribes to this topic to receive each message. Once the event is received, the iFlow generates a trace identifier, captures the original JSON payload, applies an AI based validation step, and routes the message based on the validation result.
+
+Two HANA Cloud tables support the processing. One table stores the final validated record. The second table stores the audit entry containing the original JSON, processing status, trace identifier, and error information.
+
+Two iFlows are used in this prototype.
+One iFlow publishes a JSON event to Solace.One iFlow consumes the event, validates it, routes it, and updates the HANA tables.
+The end to end processing sequence is as follows.
+- A JSON event is published to Solace
+- SAP Integration Suite receives the event from the subscribed topic
+- A trace identifier is generated and the payload is captured
+- OpenAI validates the payload
+- Valid messages update the CITIZEN_MASTER table
+- All messages are written to NIXP_LOG
+
+
+**3 Demo**
+
+**4. Design Flow**
+
+Integration Flow design contains the following components.
+*4.1 CitizenCreated_Publisher*
+ 
+![pub iflow.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/pub iflow.jpg)
+4.1.1 Implementation Details for Publisher iFlow
+ 
+![iflow1.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/iflow1.jpg)
+ 
+*4.2 CitizenCreated_Consumer*
+ 
+*![consumer iflow.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/consumer iflow.jpg)*
+ 
+*4.2.1 Implementation Details for Consumer iFlow*
+
+4.2.1.1 GenerateTraceId Groovy
+
+Creates a unique identifier that is stored as a property and used in all logs and database operations.
+
+
+```
+String traceId = UUID.randomUUID().toString(); 
+```
+
+ 
+
+4.2.1.2 CaptureOriginalPayload Groovy
+
+Reads the incoming payload as a complete text string and stores it in ORIGINAL_PAYLOAD. This prevents streaming issues and ensures the original JSON is always available for validation, UPSERT, and logging.
+
+```
+message.setProperty("ORIGINAL_PAYLOAD", bodyAsString)
+```
+
+ 
+
+4.2.1.3 AIQualityCheck
+
+Constructs the OpenAI request by embedding the citizen JSON and instructing the model to return a structured validation result with fields valid and reason.
+
+```
+import com.sap.gateway.ip.core.customdev.util.Message
+import groovy.json.JsonOutput
+
+def Message processData(Message message) {
+    // Read the original JSON as string
+    String bodyString = ""
+    try {
+        bodyString = message.getBody(String)
+    } catch (Exception e) {
+        bodyString = ""
+    }
+    // explicit validation rules 
+    String systemPrompt = """
+You are a data quality validator for NIXP citizen registration events.
+You must validate ONLY the following rules on the JSON payload:
+1) citizenId must be present and a positive integer (e.g. 1, 2, 100).
+2) firstName must be present, non-empty, and primarily alphabetic characters (letters, spaces, simple punctuation allowed).
+3) lastName must be present, non-empty, and primarily alphabetic characters.
+Other fields (for example dateOfBirth, address, extra, etc.) MAY be present or absent and MUST NOT influence validity.
+You MUST NOT require any additional fields beyond citizenId, firstName, and lastName.
+If the payload satisfies all three rules, set:
+  valid = true
+  reason = short explanation such as "All required fields are present and correctly formatted."
+If any rule fails, set:
+  valid = false
+  reason = short explanation listing which rule(s) failed.
+You must return ONLY a JSON object with exactly two keys:
+  valid   (boolean)
+  reason  (string)
+""".stripIndent()
+    // message with the actual payload
+    String userContent = "Payload: " + bodyString
+    // Build the OpenAI chat completion request
+    def requestJson = [
+        model: "gpt-4.1-mini",
+        response_format: [ type: "json_object" ],
+        messages: [
+            [
+                role   : "system",
+                content: systemPrompt
+            ],
+            [
+                role   : "user",
+                content: userContent
+            ]
+        ]
+    ]
+    String jsonBody = JsonOutput.toJson(requestJson)
+    message.setBody(jsonBody)
+    return message
+}
+```
+
+4.2.1.4 BuildChatGPTReqheader Add message header Authorication and Content-type.
+
+4.2.1.5 Request Reply  HTTP = Address: [https://api.openai.com/v1/chat/completions](https://api.openai.com/v1/chat/completions) ; Method = Post
+
+4.2.1.6 AIQualityResultParser
+
+Parses the JSON response from OpenAI and extracts two fields “valid” and “reason”. These values are stored in AI_VALID and AI_REASON and determine the next routing step.
+
+4.2.1.7 Router
+
+The router evaluates AI_VALID. If AI_VALID is true the message continues to the UPSERT path. If AI_VALID is false the message moves to the controlled error path. 
+
+*Valid path*
+
+ExtractCitizenProps reads ORIGINAL_PAYLOAD and extracts the values citizenId, firstName, and lastName.
+
+4.2.1.8 SQLCreator
+
+Exchange Property: Name = Query; Type = Expression; Value = UPSERT CITIZEN_MASTER ( CITIZEN_ID, FIRST_NAME, LAST_NAME, REGISTRATION_TIMESTAMP, REGISTRATION_CHANNEL, REGISTRATION_STATUS ) VALUES ( ${property.CITIZEN_ID}, '${property.FIRST_NAME}', '${property.LAST_NAME}', CURRENT_UTCTIMESTAMP, '${property.REG_CHANNEL}', '${property.REG_STATUS}' ) WITH PRIMARY KEY;
+
+Message Body: Type = Expression; Body is ${property.Query}
+
+4.2.1.9 Request Reply
+
+A JDBC UPSERT updates CITIZEN_MASTER. A row with status Processed is written to NIXP_LOG.
+
+**![jdbc.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/jdbc.jpg) **
+
+*Invalid path*
+
+4.2.1.10 RaiseAIValidationError Sets status Error and writes AI_REASON to ERROR_MESSAGE.
+
+A row with status Error is written to NIXP_LOG using SQLCreatorLog (same settings as SQLCreator) Query is INSERT INTO NIXP_LOG ( CITIZEN_ID, RAW_JSON, STATUS, ERROR_MESSAGE, IFLOW_NAME, TRACE_ID, SOLACE_MESSAGE_ID ) VALUES ( ${property.CITIZEN_ID}, '${property.ORIGINAL_PAYLOAD}', '${property.STATUS}', '${property.ERROR_MESSAGE}', '${property.IFLOW_NAME}', '${property.TRACE_ID}', '${property.SOLACE_MESSAGE_ID}' );
+
+4.2.1.11 Exception Subprocess will trigger in case of exception and uses log table to save the error information.
+
+**5 JBDC Matiral**
+
+**![jdbc mat.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/jdbc mat.jpg) **
+
+**6 Solace Setup**
+
+Solace credentials are created in “Manage Security Material”.
+
+![sol_cred.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol_cred.jpg)
+
+**Create Queue** Messaging → Queues → Create Queue
+
+Queue name NIXP.CITIZEN.CREATED.Q
+
+**Add Topic Subscription to Queue** Open the queue Topic Subscriptions → Add
+
+Topic nixp/citizen/created
+
+This makes the queue receive all events published on that topic.
+
+**Create REST Delivery Point (RDP)** Messaging → Client -> REST
+
+Add REST Delivery Points
+
+Name: NIXP_RDP
+
+**Add REST Consumer** Inside NIXP_RDP → REST Consumers → Add
+
+Name: NIXP_REST_CONS Remote Host: consumer iflow endpoint….rt.cfapps.us10-001.hana.ondemand.com Port: 443 Method: POST Remote Path: /http/nixp/citizen/event TLS: Enabled
+
+Authentication: HTTP Basic Username: CPI client id Password: CPI client secret
+
+**Bind Queue to RDP** NIXP_RDP → Queue Bindings → Add
+
+Queue: NIXP.CITIZEN.CREATED.Q Post Request Target: /http/nixp/citizen/event Add header: Content-Type : application/json
+
+The Solace sender adapter is configured with a subscription to the NIXP topic. All events from this topic flow directly into SAP Integration Suite.
+
+![sol0.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol0.jpg) ![sol1.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol1.jpg) ![sol3.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol3.jpg) ![sol4.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol4.jpg) ![sol5.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol5.jpg) ![sol6.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol6.jpg) ![sol7.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol7.jpg) ![sol8.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/sol8.jpg)
+
+**7 OpenAI model**
+
+The validation layer uses OpenAI chat completions with model gpt 4 point 1 mini. The request contains the citizen JSON and a prompt that instructs the model to return a structured JSON response with two fields “valid” and “reason”. The response is processed by AIQualityResultParser which extracts AI_VALID and AI_REASON. These are simple boolean and string values that determine routing.
+
+Postman Test:
+
+```
+{
+    "model": "gpt-4.1-mini",
+    "response_format": {
+        "type": "json_object"
+    },
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a data quality validator for citizen registration events. Given a JSON payload you must decide if it is valid for processing. Return only JSON containing keys valid and reason."
+        },
+        {
+            "role": "user",
+            "content": "Payload: {\r\n \"citizenId\": null,\r\n \"firstName\": \"12345\",\r\n \"lastName\": \"\",\r\n \"extra\": \"junk data\"\r\n}\r\n"
+        }
+    ]
+}
+```
+
+Output:
+
+```
+{
+    "id": "chatcmpl-Cdn9NmTxljW2LKBsYGyArWMUXd779",
+    "object": "chat.completion",
+    "created": 1763599761,
+    "model": "gpt-4.1-mini-2025-04-14",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"valid\": false,\n  \"reason\": \"citizenId is null, lastName is empty, firstName contains numeric characters, extra field is not allowed\"\n}",
+                "refusal": null,
+                "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 79,
+        "completion_tokens": 36,
+        "total_tokens": 115,
+        "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+        }
+    },
+    "service_tier": "default",
+    "system_fingerprint": "fp_4c2851f862"
+}
+```
+
+**8  Execution results**
+
+Test 1 used a valid payload to create the record:
+{
+  "citizenId": 123,
+  "firstName": "Shahid",
+  "lastName": "Syed"
+}
+ 
+Test 2 used a payload in which the citizen ID was null to check whether the OpenAI model would validate the payload.
+{
+  "citizenId": null,
+  "firstName": "Shahid",
+  "lastName": "Syed"
+}
+ 
+Test Results:
+![t1.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/t1.jpg)![t2.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/t2.jpg)
+
+**9 References**
+
+**[https://community.sap.com/t5/technology-blog-posts-by-members/a-comprehensive-guide-to-using-the-jdb...](https://community.sap.com/t5/technology-blog-posts-by-members/a-comprehensive-guide-to-using-the-jdbc-adapter-in-sap-integration-suite/ba-p/13903154)**
+
+**10  Conclusion**
+
+This prototype demonstrates a event driven pattern with traceability, AI assisted validation, routing, and HANA persistence.
+
+**11  Disclaimer**
+
+This is a prototype created for learning purposes. SAP guidelines best practices coding standards authorisation requirements and performance considerations were not in scope. A real solution would require reviewing security, performance, and data privacy aspects.

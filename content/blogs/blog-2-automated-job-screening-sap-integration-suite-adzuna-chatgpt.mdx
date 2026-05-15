@@ -1,0 +1,123 @@
+---
+title: "Automated Job Screening Using SAP Integration Suite, Adzuna, and ChatGPT"
+author: "Shahid"
+published_at: "2025-11-16"
+tags: ["ChatGPT", "SAP Integration Suite"]
+canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/automated-job-screening-using-sap-integration-suite-adzuna-and-chatgpt/ba-p/14270454"
+excerpt: "Idea This exercise began as a practical way to explore SAP Integration Suite. Most job portals already provide alerts for new roles, but these alerts are usually driven"
+---
+
+**Idea**
+
+This exercise began as a practical way to explore SAP Integration Suite. Most job portals already provide alerts for new roles, but these alerts are usually driven by simple keyword matching. As a result, many of the recommended roles do not match the actual technical profile of the person receiving them.
+
+The goal was to design an automated process that runs every few hours, retrieves SAP related roles from a job API, and then filters them using a model that understands a specific candidate profile. Instead of relying on keywords in the job title, the screening logic is based on how well each role aligns with a predefined set of technical strengths and preferences.
+
+SAP Integration Suite acts as the orchestration layer. It calls the Adzuna job search API, identifies new job postings that were not seen in earlier runs, and sends each new role to a ChatGPT based classifier. That classifier has been configured using examples of roles that are a good fit and roles that are not, so its APPLY MAYBE and DO_NOT_APPLY decisions reflect the intended technical profile rather than generic matching. The integration flow then aggregates these outcomes into a single HTML formatted email with colour coding, making it easy to focus only on the roles that match that profile.
+
+** Overview**
+
+This prototype uses SAP Integration Suite to run a recurring process that retrieves SAP job postings, filters out previously seen entries, evaluates new roles with a classification model, and sends a summarized email after each run. The integration flow acts as the central engine that coordinates the API calls, manages state, and assembles the final output.
+
+The flow begins with a scheduled trigger inside SAP Integration Suite. A set of request parameters is prepared for the Adzuna API including job keywords location and pagination details. The integration flow calls the API and receives a JSON response containing job postings for the current page.
+
+The response is parsed to extract job attributes and job ids. A data store holds the list of job ids processed in earlier runs, and this list is used to filter out the roles already seen. Only new job entries continue through the rest of the flow.
+
+For each new job the integration flow creates a structured input message and sends it to a ChatGPT model. The model reviews the job context and returns a category that reflects how well the role matches the defined criteria. The integration flow captures this classification and converts the job details into an HTML formatted block with colour coding.
+
+As the run progresses, the integration flow builds a consolidated email body by appending one formatted block for each classified job. When all pages for the run have been processed or no more jobs are available, the integration flow updates the data store with the full set of seen job ids and sends the final email. If no new roles were identified during the run, the email contains a short message indicating that there were no new results.
+
+**Demo**
+
+[****](https://youtu.be/7kK4MsogJUw)
+
+ 
+
+**Design Flow**
+
+The design flow reflects how the integration flow executes each step during a run and how the components work together.
+A timer event triggers the integration flow at a defined schedule.The integration flow prepares Adzuna request parameters including keywords location and the current page number.The integration flow calls the Adzuna API and receives a JSON response.A Groovy script parses the response and extracts the job details.A data store entry is read to determine which job ids were processed earlier.The integration flow filters the jobs and keeps only the ids that were not seen before.For each new job the integration flow builds a structured classification request and sends it to the ChatGPT model.The classification result is captured and formatted into an HTML block with colour coding.The integration flow appends each formatted block to a single email body.After all pages are processed the integration flow updates the data store with the latest job ids.The integration flow sends a consolidated summary email that contains either the classified jobs or a message indicating no new results.
+This design provides a repeatable cycle of fetch, filter, classify, and notify. It combines API connectivity, persistence, and model based evaluation without manual intervention.
+
+** Technical implementation**
+
+![p1.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p1.jpg)
+
+![p2.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p2.jpg)
+
+ 
+
+![p3.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p3.jpg)
+
+ 
+
+# Main flow
+1. Start Timer A timer event triggers the flow according to the schedule. The event carries no payload. All runtime values are set in the next step.
+2. Init A content modifier provides the initial control values for the run. This includes • Adzuna request parameters such as what, what_or, where, results_per_page • The initial page number stored in header pagenumber • Technical properties such as emailBody, emailIndex, and the state entry id seen_entry_id These values guide the entire flow and are passed into the PageLoop.
+3. Get 1 Reads the adzuna_state data store using the key seen_entry_id. If a state record exists, it contains a JSON list of previously processed job ids. If no record exists, the body is empty and NormalizeSeen handles that case.
+4. NormalizeSeen A Groovy script reads the data store body and converts it into a consistent JSON array. The script sets the output as a property called seen_json. This ensures all later steps read the stored state in the same structure regardless of whether it is the first run or a continued run.
+5. Looping Process Call 2 Invokes the PageLoop subprocess repeatedly. The loop continues as long as the PageLoop sets the property hasMore to true. Each execution of PageLoop handles exactly one page of Adzuna results.
+6. SetMailBody After PageLoop finishes, the final emailBody property is moved into the message body. At this point emailBody contains either the full list of formatted jobs for this run or a single line stating that there were no new jobs.
+7. Mail Sends the email using HTML content type. The message body created in SetMailBody is delivered to the configured recipient.
+
+
+# PageLoop
+1. Start 1 Receives runtime properties from the main flow such as pagenumber, results_per_page, and seen_json. These control how the page is fetched and how new job ids are detected.
+2. Request Reply 2 Calls the Adzuna endpoint for the current page using • pagenumber • what and what_or keywords • results_per_page • Adzuna credentials The response is a JSON payload containing a list of job entries for this page.
+3. DecideAndNext A Groovy script that performs page processing. It • Parses the Adzuna JSON • Extracts job fields such as id, title, company, location, redirect URL, and description • Compares each id with the seen_json list from earlier • Creates a per page job queue containing only the new job entries • Updates seen_json to include all ids from this page • Determines if more pages exist based on results_per_page and the number of entries returned • Sets hasMore to control whether PageLoop should execute again
+4. JobLoop A local process that iterates over job_queue_json created by DecideAndNext. Each job in the queue is classified by the model. When job_queue_index reaches job_queue_size, JobLoop ends.
+5. PAGE STORAGE Writes the CSV representation of this page into the adzuna_jobs data store. The entry id is based on run_id and the current page number. This allows keeping a historical snapshot of the raw Adzuna response.
+6. SeenToBody A Groovy script that moves the updated seen_json into the message body. This prepares the body for the next data store write.
+7. STATE STORAGE Writes the updated seen_json list back into the adzuna_state data store under seen_entry_id. This allows the next scheduled run to continue with the correct state of previously processed job ids.
+8. End 1 PageLoop finishes and returns control to the Looping Process in the main flow. If hasMore is true, PageLoop is invoked again for the next page. If hasMore is false, the loop exits.
+
+
+# JobLoop
+1. Start 2 Begins with the properties populated in DecideAndNext. job_queue_json contains all new jobs that were found on this page. job_queue_index starts at zero.
+2. NextJobFromQueue A Groovy script that reads job_queue_json, extracts the next job based on job_queue_index, and exposes the job fields as one_job_id one_job_title one_job_company one_job_location one_job_description one_job_url If job_queue_index equals job_queue_size, the script signals the loop to exit.
+3. BuildChatGPTRequest A content modifier builds a full JSON request body using the job fields and the classification prompt. The structure includes system and user messages and instructs the model to return APPLY, DO_NOT_APPLY, or MAYBE.
+4. HTTP to ChatGPT The HTTP receiver sends the request to the OpenAI endpoint with the Authorization header set to the configured API key. The response contains the generated classification in the field choices[0].message.content.
+5. ExtractChatGPTResponse A Groovy script parses the model response, trims the content, and standardises it into one of the three valid categories. The output is written into the property classification.
+6. AppendToEmailBody A Groovy script formats the job and classification into an HTML block. The classification is colour coded based on the returned category. The block is appended to emailBody and emailIndex is incremented.
+7. BuildClassifiedRecord A script or content modifier builds a compact representation of the classified job. Common fields include id, title, company, location, classification, and redirect URL.
+8. write_adzuna_classified Writes the classified job into the adzuna_classified data store using id as the key. Overwrite is enabled so that if the same id appears again, the new classification replaces the old one.
+9. End 2 Returns control to the JobLoop wrapper. If job_queue_index is less than job_queue_size, JobLoop runs again for the next job. If all jobs are processed, JobLoop ends and PageLoop continues with state updates.
+
+
+ 
+
+**ChatGPT Model:**
+
+![p4.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p4.jpg)
+
+{"messages":[ {"role":"system","content":"You are a strict classifier for a senior SAP technical professional. Their skills include ABAP, Fiori, BTP, CAP, RAP, CDS, AMDP, CPI, HANA, S4, and technical leadership. They want SAP developer, development architect, or technical lead roles, not functional or business analyst roles. When the user sends job text, respond with exactly one of these three words and nothing else: APPLY, DO_NOT_APPLY, MAYBE."}, {"role":"user","content":"Job description: SAP SuccessFactors functional consultant focusing on employee central and talent modules. The role is focused on HR processes and configuration rather than technical development."}, {"role":"assistant","content":"DO_NOT_APPLY"} ]}
+
+{"messages":[ {"role":"system","content":"You are a strict classifier for a senior SAP technical professional. Their skills include ABAP, Fiori, BTP, CAP, RAP, CDS, AMDP, CPI, HANA, S4, and technical leadership. They want SAP developer, development architect, or technical lead roles, not functional or business analyst roles. When the user sends job text, respond with exactly one of these three words and nothing else: APPLY, DO_NOT_APPLY, MAYBE."}, {"role":"user","content":"Job description: Senior SAP BTP architect focusing on CAP, RAP, CDS, event driven integration, and leading a team of developers."}, {"role":"assistant","content":"APPLY"} ]}
+
+This is a fine tuning training sample for an OpenAI model. Each line in the JSONL file represents one supervised example. It contains a system instruction, a user input, and the expected assistant output.
+
+The system message defines the rules for classification, the user message contains a job description, and the assistant message holds the correct category. A full training file contains many such examples, which helps the model learn how to consistently return the categories APPLY, DO_NOT_APPLY, or MAYBE.
+
+**Result**
+
+Jobs are classified according to the profile.
+
+![p5.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p5.jpg)
+
+**![p6.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p6.jpg) **
+
+**References**
+
+Adzuna Job Search API: [https://developer.adzuna.com/activedocs#!/adzuna/search](https://developer.adzuna.com/activedocs#!/adzuna/search)
+
+[https://community.sap.com/t5/technology-blog-posts-by-members/cpi-gmail-smtp-integration/ba-p/134571...](https://community.sap.com/t5/technology-blog-posts-by-members/cpi-gmail-smtp-integration/ba-p/13457193)
+
+**Conclusion**
+
+This prototype shows how SAP Integration Suite an external job search API and a classification model can work together to create a repeatable automated process. The integration flow retrieves new SAP roles filters out previously seen entries evaluates each role through a lightweight model and sends a clear summary after every run. It gives a practical example of scheduled processing state management and controlled use of generative AI inside an integration flow.
+
+The exercise helped in understanding how the integration flow behaves when combined with external APIs and model based logic and how small design adjustments influence stability and accuracy. It shows how integration tools and AI techniques can complement each other in a simple and maintainable way.
+
+**Disclaimer**
+
+This is a prototype created for learning purposes. Functional gaps and bugs may exist. SAP guidelines best practices coding standards authorisation requirements and performance considerations were not in scope. A real solution would require proper error handling security checks resilience measures and alignment with enterprise development standards.
