@@ -29,6 +29,7 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   alternates: { canonical: BASE_URL },
+  verification: { google: 'iVerc_ENyHTDAKIwC6iLnxyv653f4nlsN-cCRuoKtoU' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
