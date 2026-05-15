@@ -104,12 +104,27 @@ async function handleRescore(): Promise<string> {
   return `🔄 Reset ${data.reset ?? 0} job scores — run /run to rescore`
 }
 
+async function handleAll(): Promise<string> {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/jobs?select=title,company,match_score,status,fetched_at&order=fetched_at.desc&limit=25`,
+    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+  )
+  if (!res.ok) return '❌ Failed to fetch jobs'
+  const jobs = await res.json()
+  if (jobs.length === 0) return '📭 No jobs in database'
+  const lines = jobs.map((j: { title: string; company: string; match_score: number | null; status: string }, i: number) =>
+    `${i + 1}. *${esc(j.title)}* — ${esc(j.company)}\n   Score: ${j.match_score ?? '—'} | ${j.status}`
+  )
+  return `📋 *All Jobs (latest 25 by date)*\n\n${lines.join('\n\n')}`
+}
+
 const HELP = `*AI Career Hub Bot*
 
 /run — fetch new jobs + score them
 /stats — job pipeline stats
 /top — top 5 high-match jobs (score ≥ 75)
 /jobs — last 10 fetched jobs
+/all — latest 25 jobs sorted by date
 /rescore — reset all scores (then use /run)
 /help — this message`
 
@@ -130,6 +145,7 @@ export async function POST(req: NextRequest) {
     case '/stats':  reply = await handleStats(); break
     case '/top':    reply = await handleTop(); break
     case '/jobs':   reply = await handleJobs(); break
+    case '/all':    reply = await handleAll(); break
     case '/rescore': reply = await handleRescore(); break
     case '/help':
     default:        reply = HELP

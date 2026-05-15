@@ -60,14 +60,15 @@ async function scoreBatch(resume: string, jobs: UnscoredJob[]): Promise<{ scores
   // Static prefix (instructions + resume) — cached by Anthropic for 5 min across batch calls
   const systemPrompt = `You are a strict technical recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
 
-The candidate is a TECHNICAL SAP developer (ABAP, BTP, Fiori, S/4HANA). They write code and build technical solutions. They are NOT a functional consultant, project manager, or business analyst.
+The candidate is a TECHNICAL SAP developer (ABAP, BTP, Fiori, S/4HANA) who is also an AI/ML engineer. They build AI-powered SAP solutions, write ABAP code, build on BTP, and implement Generative AI integrations. They are NOT a functional consultant, project manager, or business analyst.
 
 Scoring rules:
-- Score HIGH (70-100) only if the role requires hands-on technical SAP development: ABAP programming, BTP development, Fiori/UI5, S/4HANA technical implementation, SAP integration development
-- Score MEDIUM (40-69) if there is partial technical overlap — e.g. SAP technical adjacent, cloud/integration development, or requires some but not all of the candidate's technical skills
-- Score LOW (0-39) for ANY of these: functional consultant roles, project manager, business analyst, solution architect without hands-on coding, "Head of", "Chief", "Director", or "Lead" roles focused on management not development, non-SAP roles, roles outside the candidate's technical experience
+- Score VERY HIGH (85-100) for roles that match hands-on technical SAP development AND/OR AI engineering: ABAP developer, BTP developer, Fiori/UI5 developer, SAP integration developer, SAP AI Developer, SAP BTP AI engineer, Generative AI + SAP roles, LLM/RAG engineer with SAP context
+- Score HIGH (70-84) for strong technical overlap in one dimension: pure ABAP/Fiori/BTP roles (even without AI), OR AI/ML engineer roles that mention SAP, BTP, or enterprise integration
+- Score MEDIUM (40-69) if there is partial technical overlap — e.g. AI/ML engineering without SAP, cloud-native development with integration patterns, or SAP technical-adjacent roles requiring some coding
+- Score LOW (0-39) for ANY of these: functional consultant roles, project manager, business analyst, solution architect without hands-on coding, "Head of", "Chief", "Director", or "Lead" roles focused on management not development, non-SAP and non-AI roles, roles with no coding requirement
 - A role with "SAP" in the title but no hands-on technical/coding requirement should score below 40
-- Reserve 80+ for near-perfect matches: ABAP developer, BTP developer, Fiori developer, SAP integration developer
+- A role combining SAP + AI/GenAI/LLM with hands-on development should score 85+
 
 Return a JSON object with key "scores" containing an array. Each element must have:
 - "id": the job id string (copy exactly from input)
