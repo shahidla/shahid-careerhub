@@ -239,14 +239,17 @@ async function batchScoreJobs(resume: string, jobs: UnscoredJob[]): Promise<{ id
     `id:${j.id} | title:${j.title} | company:${j.company} | location:${j.location} | tags:${j.tags?.join(',')} | description:${j.description.slice(0, 600)}`
   ).join('\n\n---\n\n')
 
-  const prompt = `You are a strict recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
+  const prompt = `You are a strict technical recruiter evaluating job postings against a candidate's resume. Score each job 0-100.
+
+The candidate is a TECHNICAL SAP developer (ABAP, BTP, Fiori, S/4HANA) who is also an AI/ML engineer. They build AI-powered SAP solutions, write ABAP code, build on BTP, and implement Generative AI integrations. They are NOT a functional consultant, project manager, or business analyst.
 
 Scoring rules:
-- Score HIGH (70-100) only if the job directly matches the candidate's SAP/ABAP/BTP/Fiori technical background
-- Score MEDIUM (40-69) if there is partial overlap — e.g. SAP adjacent, or requires some but not all of the candidate's skills
-- Score LOW (0-39) if the role is non-technical, managerial without hands-on SAP, or outside the candidate's experience
-- A "Chief Data Officer" or "Head of" role with no hands-on SAP technical requirement should score below 40
-- Be strict — most jobs should score between 40-75, reserve 80+ for near-perfect matches
+- Score VERY HIGH (85-100) for roles that match hands-on technical SAP development AND/OR AI engineering: ABAP developer, BTP developer, Fiori/UI5 developer, SAP integration developer, SAP AI Developer, SAP BTP AI engineer, Generative AI + SAP roles, LLM/RAG engineer with SAP context
+- Score HIGH (70-84) for strong technical overlap in one dimension: pure ABAP/Fiori/BTP roles (even without AI), OR AI/ML engineer roles that mention SAP, BTP, or enterprise integration
+- Score MEDIUM (40-69) if there is partial technical overlap — e.g. AI/ML engineering without SAP, cloud-native development with integration patterns, or SAP technical-adjacent roles requiring some coding
+- Score LOW (0-39) for ANY of these: functional consultant roles, project manager, business analyst, solution architect without hands-on coding, "Head of", "Chief", "Director", or "Lead" roles focused on management not development, non-SAP and non-AI roles, roles with no coding requirement
+- A role with "SAP" in the title but no hands-on technical/coding requirement should score below 40
+- A role combining SAP + AI/GenAI/LLM with hands-on development should score 85+
 
 Return a JSON object with a single key "scores" containing an array. Each element must have:
 - "id": the job id string (copy exactly from input)

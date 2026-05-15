@@ -36,12 +36,31 @@ async function getCount(table: string, filter = ''): Promise<number> {
 
 async function handleRun(): Promise<string> {
   const res = await fetch(`${BASE_URL}/api/pipeline/run`, { method: 'POST' })
-  if (!res.ok) return '❌ Pipeline failed'
+  if (!res.ok) {
+    const errText = await res.text().catch(() => 'unknown')
+    return `❌ Pipeline failed (HTTP ${res.status})\n${errText.slice(0, 300)}`
+  }
   const data = await res.json()
+  if ('error' in data) return `❌ Pipeline failed: ${String(data.error).slice(0, 300)}`
+
   const modelLine = data.model ? `\nModel: ${data.model}` : ''
   const errorLine = data.scoreError ? `\n⚠️ Score error: ${String(data.scoreError).slice(0, 200)}` : ''
   const patchLine = data.patchErrors ? `\n⚠️ Patch failures: ${data.patchErrors}` : ''
-  return `✅ *Pipeline complete*\nFetched: ${data.fetched ?? 0}\nScored: ${data.scored ?? 0}${modelLine}${errorLine}${patchLine}`
+  const header = `✅ *Pipeline complete*\nFetched: ${data.fetched ?? 0}\nScored: ${data.scored ?? 0}${modelLine}${errorLine}${patchLine}`
+
+  // Fetch top 5 scored jobs and append
+  const topRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/jobs?match_score=gte.60&status=eq.new&select=title,company,match_score,url&order=match_score.desc&limit=5`,
+    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+  )
+  if (!topRes.ok) return header
+  const topJobs = await topRes.json()
+  if (topJobs.length === 0) return `${header}\n\n📭 No jobs scoring ≥ 60`
+
+  const lines = topJobs.map((j: { title: string; company: string; match_score: number; url: string }, i: number) =>
+    `${i + 1}. *${esc(j.title)}* — ${esc(j.company)}\n   Score: ${j.match_score} | [View](${j.url})`
+  )
+  return `${header}\n\n🏆 *Top Jobs*\n\n${lines.join('\n\n')}`
 }
 
 async function handleStats(): Promise<string> {
