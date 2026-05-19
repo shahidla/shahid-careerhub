@@ -521,7 +521,7 @@ This is the master dev task list. Always update this when a task is done. This s
 38. ⬜ Job match scorecard: skills %, seniority, location, rate
 39. ✅ LLM-as-judge: scores job match with reasoning — prompt improved to distinguish technical vs functional SAP roles — AI concept: Zero-shot Chain-of-Thought
 40. ⬜ Skill gap analyzer: aggregate missing skills across unmatched jobs
-41. ⚠️ Scoring calibration — SAP+AI hybrid roles scoring too low (~40% when should be 80+%); scoring prompt needs tuning to recognise AI engineering as a primary qualifier alongside SAP
+41. ⚠️ Scoring calibration — prompt exists with SAP+AI rules (SAP dev + AI/GenAI hands-on → 85+; functional/non-tech SAP → below 40) but real-world scores for hybrid roles still come in too low (~40% when should be 80+%); needs live testing and prompt tuning
 
 ### Phase 6 — Agents (AI concepts: ReAct, tool use, MCP, multi-agent, LangGraph, self-reflection)
 42. ✅ Pipeline: `/api/pipeline/run` — fetch + score loop in one callable backend endpoint; FetchButton simplified to call it; agent will reuse these as tools
@@ -536,7 +536,7 @@ This is the master dev task list. Always update this when a task is done. This s
 49. ⬜ Chain of Verification: validate proposal claims against resume before showing to user
 
 ### Phase 8 — Memory (AI concepts: short-term memory, long-term memory, semantic caching, delta search)
-50. ⬜ Track jobs acted on (Apply / Pass / Save) in Supabase — AI concept: short-term memory
+50. ✅ Track jobs acted on (Save / Apply / Ignore / Interviewing) — JobFeed.tsx status buttons call PATCH /api/jobs/status which writes to Supabase; whitelist-validated, 6 statuses — AI concept: short-term memory
 51. ⬜ Long-term memory via Mem0 or Zep: learn from accepted/rejected jobs — AI concept: long-term memory
 52. ⬜ Semantic caching for repeated job searches via GPTCache or Redis — AI concept: semantic caching
 53. ⬜ Delta search — only return new jobs since last run — AI concept: delta tracking
@@ -588,7 +588,7 @@ This is the master dev task list. Always update this when a task is done. This s
 ### Phase 14 — Content & Data
 82. ⬜ AI Skills taxonomy in Supabase — update `skills` table: replace "AI (Exploration)" with proper categories (LLM Apps, RAG, Agents, Enterprise AI, Observability)
 83. ⬜ Certifications expansion — run `20260508_certifications_expand.sql` migration; source 73-cert CSV from user; build `/certifications` full page
-84. ⬜ Remaining ~15 blog posts — convert SAP Community HTML to MDX; add to `content/blogs/`
+84. ✅ All 24 blog posts converted — MDX files in `content/blogs/` covering blog-1 through blog-24
 
 ### Phase 15 — Custom Domain & Email
 85. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain
