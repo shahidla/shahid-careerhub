@@ -14,10 +14,10 @@ export const dynamic = 'force-dynamic'
 export const metadata = {
   title: 'Shahid M Syed — SAP Development Architect',
   description:
-    'SAP Development Architect with 19 years experience in S/4HANA modernisation, ABAP on HANA, BTP, and AI-assisted SAP automation.',
+    'SAP Development Architect specialising in S/4HANA modernisation, ABAP on HANA, BTP, and AI-assisted SAP automation.',
   openGraph: {
     title: 'Shahid M Syed — SAP Development Architect',
-    description: 'SAP Development Architect with 19 years experience in S/4HANA modernisation, ABAP on HANA, BTP, and AI-assisted SAP automation.',
+    description: 'SAP Development Architect specialising in S/4HANA modernisation, ABAP on HANA, BTP, and AI-assisted SAP automation.',
     url: 'https://shahid-careerhub.vercel.app/resume',
     type: 'profile',
   },
@@ -94,7 +94,7 @@ export default async function ResumePage() {
                 <li key={item.id}>
                   <a
                     href={`#${item.id}`}
-                    className={`block text-sm py-1 pl-3 border-l-2 border-transparent hover:border-blue-500 transition-colors ${item.id === 'ai-work' ? 'text-purple-600 hover:text-purple-900' : 'text-gray-500 hover:text-gray-900'}`}
+                    className="block text-sm py-1 pl-3 border-l-2 border-transparent hover:border-blue-500 transition-colors text-gray-500 hover:text-gray-900"
                   >
                     {item.label}
                   </a>
@@ -193,7 +193,7 @@ export default async function ResumePage() {
                 <h2 className="text-lg font-bold text-gray-900">SAP + AI — real delivery, not just theory</h2>
                 <p className="mt-2 text-sm text-gray-600 max-w-xl">
                   MCP server for AI-assisted SAP execution · ML models at SAP Labs · anomaly detection in production ·
-                  7 published AI blogs · building RAG pipelines, embeddings, and agents hands-on right now.
+                  {aiBlogs.length} published AI blogs · building RAG pipelines, embeddings, and agents hands-on right now.
                 </p>
               </div>
               <div className="flex flex-col gap-2 shrink-0 justify-center">
@@ -293,7 +293,7 @@ export default async function ResumePage() {
           <hr className="border-gray-100" />
 
           <section id="blogs">
-            <h2 className="section-heading">Blog Posts</h2>
+            <h2 className="section-heading">Blogs</h2>
             <p className="mt-2 text-sm text-gray-500">Thought leadership on SAP BTP, event-driven architecture, AI-assisted workflows, and integration patterns.</p>
             <ul className="mt-5 space-y-3">
               {topBlogs.map((b) => {
