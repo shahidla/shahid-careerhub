@@ -90,6 +90,12 @@ export function getAllBlogs(): BlogMeta[] {
     .sort((a, b) => b.published_at.localeCompare(a.published_at))
 }
 
+export function getCanonicalToSlugMap(): Record<string, string> {
+  return Object.fromEntries(
+    getAllBlogs().map((b) => [b.canonical, b.slug])
+  )
+}
+
 export function getBlog(slug: string): Blog | null {
   const file = path.join(BLOGS_DIR, `${slug}.mdx`)
   if (!fs.existsSync(file)) return null

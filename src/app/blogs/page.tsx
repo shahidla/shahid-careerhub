@@ -24,6 +24,7 @@ export default function BlogsPage() {
         <p className="mt-3 text-lg text-gray-600">
           Articles on SAP, AI engineering, and event-driven architecture — originally published on SAP Community.
         </p>
+        <p className="mt-2 text-sm text-gray-400">{blogs.length} posts</p>
       </section>
 
       {/* Featured / AI+SAP */}

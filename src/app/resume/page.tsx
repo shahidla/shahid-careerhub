@@ -7,6 +7,7 @@ import {
   getBlogs,
   getAchievements,
 } from '@/lib/db'
+import { getCanonicalToSlugMap } from '@/lib/blogs'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,6 +47,8 @@ export default async function ResumePage() {
       getBlogs(),
       getAchievements(),
     ])
+
+  const canonicalToSlug = getCanonicalToSlugMap()
 
   const patent = achievements.find((a) => a.description.includes('US10304013B2'))
   const awards = achievements.filter((a) => !a.description.includes('US10304013B2'))
@@ -286,14 +289,21 @@ export default async function ResumePage() {
             <div className="mt-8 space-y-4">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">AI Blogs — SAP Community</h3>
               <ul className="space-y-3">
-                {aiBlogs.map((b) => (
-                  <li key={b.id} className="border-l-2 border-purple-200 pl-5">
-                    <a href={b.url} target="_blank" rel="noopener noreferrer"
-                      className="text-sm text-purple-700 hover:underline font-medium">
-                      {b.title}
-                    </a>
-                  </li>
-                ))}
+                {aiBlogs.map((b) => {
+                  const slug = canonicalToSlug[b.url]
+                  return (
+                    <li key={b.id} className="border-l-2 border-purple-200 pl-5">
+                      <a
+                        href={slug ? `/blogs/${slug}` : b.url}
+                        target={slug ? undefined : '_blank'}
+                        rel={slug ? undefined : 'noopener noreferrer'}
+                        className="text-sm text-purple-700 hover:underline font-medium"
+                      >
+                        {b.title}
+                      </a>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
 
@@ -330,23 +340,30 @@ export default async function ResumePage() {
 
           {/* Blogs */}
           <section id="blogs">
-            <h2 className="section-heading">SAP Community Blogs</h2>
+            <h2 className="section-heading">Blog Posts</h2>
             <p className="mt-2 text-sm text-gray-500">Thought leadership on SAP BTP, event-driven architecture, AI-assisted workflows, and integration patterns.</p>
             <ul className="mt-5 space-y-4">
-              {blogs.map((b) => (
-                <li key={b.id} className={`border-l-2 pl-5 ${b.is_ai ? 'border-purple-200' : 'border-gray-100'}`}>
-                  <a href={b.url} target="_blank" rel="noopener noreferrer"
-                    className={`text-sm font-medium hover:underline ${b.is_ai ? 'text-purple-700' : 'text-blue-700'}`}>
-                    {b.title}
-                  </a>
-                  {b.is_ai && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
-                  <div className="flex flex-wrap gap-1 mt-1.5">
-                    {b.tags.map((t) => (
-                      <span key={t} className="tag-sm">{t}</span>
-                    ))}
-                  </div>
-                </li>
-              ))}
+              {blogs.map((b) => {
+                const slug = canonicalToSlug[b.url]
+                return (
+                  <li key={b.id} className={`border-l-2 pl-5 ${b.is_ai ? 'border-purple-200' : 'border-gray-100'}`}>
+                    <a
+                      href={slug ? `/blogs/${slug}` : b.url}
+                      target={slug ? undefined : '_blank'}
+                      rel={slug ? undefined : 'noopener noreferrer'}
+                      className={`text-sm font-medium hover:underline ${b.is_ai ? 'text-purple-700' : 'text-blue-700'}`}
+                    >
+                      {b.title}
+                    </a>
+                    {b.is_ai && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {b.tags.map((t) => (
+                        <span key={t} className="tag-sm">{t}</span>
+                      ))}
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           </section>
 
