@@ -576,7 +576,7 @@ This is the master dev task list. Always update this when a task is done. This s
 77. ✅ Footer — "Resume Chat" label for `/chat`; `/chat` footer-only (not in main nav)
 78. ✅ Schema.org JSON-LD on `/resume`; SEO metadata on all public pages
 79. ✅ `getCanonicalToSlugMap()` — bridges Supabase SAP Community URLs to local MDX slugs for cross-linking
-80. ⬜ Dashboard "Demo" label + explanatory intro (deferred — focus on job engine first)
+80. ✅ Dashboard "Demo" label + explanatory intro — "Live Prototype" banner with "AI Job Dashboard Demo" heading and explanatory paragraph
 81. ⬜ Blog categories / filter UI on `/blogs`
 
 ### Phase 14 — Content & Data
