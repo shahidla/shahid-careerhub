@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Learning & Courses — Shahid M Syed',
-  description: '65 completed courses and certifications covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.',
+  description: '69 completed courses and certifications covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.',
   alternates: { canonical: 'https://shahid-careerhub.vercel.app/learning' },
 }
 
@@ -21,6 +21,9 @@ const NEED_REVIEW = [
 ]
 
 const VERIFIED = [
+  { title: 'Discovering DevOps with SAP BTP', url: 'https://www.credly.com/badges/035b2032-8e72-43b3-b01e-2f6bad138d7f/linked_in_profile' },
+  { title: 'Getting Started with In-App Extensibility in SAP S/4HANA', url: 'https://www.credly.com/badges/2593cf46-e02e-454c-9bf4-58c3fb14e051/linked_in_profile' },
+  { title: 'Getting Started with Creating an SAP Fiori Elements App Based on an OData V4 RAP Service', url: 'https://www.credly.com/badges/18418051-df5e-4c6d-817f-1130952f4686/linked_in_profile' },
   { title: 'Introduction to Software Development on SAP HANA' },
   { title: 'Introduction to Mobile Solution Development for the Enterprise' },
   { title: 'Introduction to SAP HANA Cloud Platform' },
@@ -72,6 +75,7 @@ const THIRD_PARTY = [
   { title: 'The Complete Node.js Developer Course',                         url: 'http://ude.my/UC-XDL8U3N2',                                                                        provider: 'Udemy',   year: '2017', ai: false },
   { title: 'AWS Concepts',                                                  url: 'https://www.udemy.com/certificate/UC-W6XGQEOQ/',                                                   provider: 'Udemy',   year: '2018', ai: false },
   { title: 'AWS Essentials',                                                url: 'https://www.udemy.com/certificate/UC-9HKXA8T6/',                                                   provider: 'Udemy',   year: '2018', ai: false },
+  { title: 'Git Started with GitHub',                                       url: 'https://www.udemy.com/certificate/UC-O22JBE5C/',                                                   provider: 'Udemy',   year: '2015', ai: false },
 ]
 
 export default async function LearningPage() {
@@ -148,10 +152,16 @@ export default async function LearningPage() {
         <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">Records of Achievement — OpenSAP</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {VERIFIED.map((c) => (
-            <div key={c.title} className="border border-gray-100 rounded-lg p-4 bg-white hover:border-gray-300 transition-colors">
-              <p className="text-sm font-medium text-gray-900 leading-snug">{c.title}</p>
-              <p className="mt-1 text-xs text-gray-400">Record of Achievement · OpenSAP</p>
-            </div>
+            c.url
+              ? <a key={c.title} href={c.url} target="_blank" rel="noopener noreferrer"
+                  className="border border-gray-100 rounded-lg p-4 bg-white hover:border-gray-300 transition-colors block">
+                  <p className="text-sm font-medium text-gray-900 leading-snug hover:text-blue-700">{c.title}</p>
+                  <p className="mt-1 text-xs text-gray-400">Record of Achievement · OpenSAP</p>
+                </a>
+              : <div key={c.title} className="border border-gray-100 rounded-lg p-4 bg-white hover:border-gray-300 transition-colors">
+                  <p className="text-sm font-medium text-gray-900 leading-snug">{c.title}</p>
+                  <p className="mt-1 text-xs text-gray-400">Record of Achievement · OpenSAP</p>
+                </div>
           ))}
         </div>
       </section>
