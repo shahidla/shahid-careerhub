@@ -547,8 +547,14 @@ This is the master dev task list. Always update this when a task is done. This s
 ### Phase 10 — Email & Scheduler
 55. ✅ Vercel Cron — daily at 9am UTC, now calls `/api/pipeline/run` (fetch + score in one shot); sends Telegram notification on completion
 56. ⚠️ Daily digest email via Resend — route built, cron wired (10am UTC), Langfuse tracing added — BLOCKED: requires a custom domain for Resend sender verification. Revisit when domain is available.
-57. ✅ Telegram bot — /run, /stats, /top, /jobs (numbered list), /rescore, /help commands; replaces email digest while domain is pending; webhook registered and live
-58. ⬜ Telegram `/all` command — list all jobs regardless of score (currently only high-match shown)
+57. ✅ Telegram bot — /run, /stats, /top, /jobs, /all, /rescore, /help commands; webhook registered and live; replaces email digest while domain is pending
+    - `/run` — triggers full pipeline, returns top 5 results (score ≥ 60)
+    - `/stats` — counts by status, score tier, unscored, resume chunks
+    - `/top` — top 5 new jobs with score ≥ 75
+    - `/jobs` — 10 most recently fetched jobs
+    - `/all` — 25 most recently fetched jobs regardless of score
+    - `/rescore` — nulls all scores, forces fresh scoring on next /run
+    - `/help` — lists all commands
 
 ### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
 59. ✅ Langfuse LLM tracing — traces visible in us.cloud.langfuse.com, input/output/tokens captured for /api/chat and /api/score-batch
