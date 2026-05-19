@@ -563,7 +563,139 @@ This is the master dev task list. Always update this when a task is done. This s
 
 ---
 
-### Phase 0 — Foundation ✅
+### Objective 1 — Public Profile
+
+#### Done ✅
+- Scaffold /resume + /dashboard in Next.js (ph0)
+- Supabase project created, env vars set (ph0)
+- profile, projects, certifications migrated to Supabase (ph0)
+- Resume data gaps fixed — experience descriptions, cert codes (ph0)
+- /resume built from Supabase with sticky side nav, AI banner (ph1)
+- /ai page built — projects, skills, certs, blogs, AI Concepts Built checklist (ph1)
+- Schema.org JSON-LD on /resume; SEO metadata on all pages (ph1)
+- AI-generated project summaries stored in Supabase (ph1)
+- Shared SiteHeader + SiteFooter across all public pages (ph13)
+- Homepage redesign — career landing page (ph13)
+- Blog infrastructure — 24 MDX posts, /blogs listing, /blogs/[slug] detail (ph13)
+- /ai "On this page" anchor nav (ph13)
+- /resume AI banner, blog highlights, certifications callout (ph13)
+- /learning page — 69 courses across 4 sections (ph13/14)
+- Accessibility — skip link, aria-current, semantic landmarks (ph13)
+- Footer — Resume Chat label, /chat footer-only (ph13)
+- sitemap.ts — 6 static pages + 24 blog slugs (ph13)
+- getCanonicalToSlugMap() — SAP Community URLs → local MDX slugs (ph13)
+- Dashboard "Demo" / "Live Prototype" banner (ph13)
+- All 24 blog posts as MDX in content/blogs/ (ph14)
+- AI Skills taxonomy updated in Supabase — "AI Engineering" (ph14)
+- 69 certs fully in Supabase (9 SAP + 15 third-party + 45 OpenSAP) (ph14)
+- /learning fully data-driven from Supabase (ph14)
+- MJ blog added to Supabase with is_ai=true (ph14b)
+- /ai roadmap → "AI Concepts Built" checklist (ph14b)
+- /resume duplicate AI Work section removed (ph14b)
+- Homepage blog count + email data-driven (ph14b)
+- /resume blogs section data-driven from Supabase (ph14b)
+- Google Search Console verified, sitemap submitted (ph13)
+- Supabase ↔ Vercel integration done (ph13)
+
+#### Pending ⬜
+- O1-A: Blog filter/category UI on /blogs (ph13 item 81)
+- O1-B: Full /certifications page — all 69 filterable in one place (ph14 item 83)
+- O1-C: Re-embed resume chunks — skills updated, chunks now stale (ph2 item 12)
+- O1-D: Profile completeness score widget on dashboard (ph1 item 10)
+- O1-E: Confirm projects in Supabase match CV exactly — close item 100 (ph14b)
+
+---
+
+### Objective 2 — Dashboard Demo
+
+#### Done ✅
+- Job feed with AI scoring + Save/Ignore/Apply/Interviewing buttons (ph4/8)
+- RSS + API fetchers: SAP Contractors, Remotive, Adzuna AU (ph4)
+- Unified job schema, deduplication, delta tracking in Supabase (ph4)
+- LLM-as-judge scoring with Zero-shot CoT reasoning (ph5)
+- Pipeline endpoint /api/pipeline/run — fetch + score loop (ph6)
+- Daily Vercel cron — 9am pipeline, 10am email digest (ph10)
+- Telegram bot — /run /stats /top /jobs /all /rescore /help (ph10)
+- Telegram daily notification enriched with top 10 jobs (ph14b)
+- Short-term memory — job status tracked in Supabase (ph8)
+- /admin page — job counts, resume health, observability links (ph11)
+
+#### Pending ⬜
+- O2-A: Manual job entry — paste URL or text → Claude extracts → save (ph4b items 32–34)
+- O2-B: Dashboard UX — filter stale/low-match by default, fix "N new" label (ph5)
+- O2-C: Scoring calibration — SAP+AI hybrid roles too low (ph5 item 41)
+- O2-D: Embed job descriptions for semantic similarity scoring (ph5 item 35)
+- O2-E: Job match scorecard — skills %, seniority, location breakdown (ph5 item 38)
+- O2-F: Skill gap analyzer — aggregate missing skills across unmatched jobs (ph5 item 40)
+- O2-G: Cover letter generator — pick job → RAG → Claude drafts → human reviews (ph7)
+- O2-H: Interview prep — given job → RAG → likely questions + answers (ph9)
+- O2-I: Custom domain (shahidmsyed.com) → unblocks Resend email (ph15 items 86–88)
+- O2-J: Upwork OAuth — keys applied 2026-05-07, check approval (ph12 items 65–68)
+
+---
+
+### Objective 3 — AI Learning (concepts to implement)
+
+#### Done ✅
+- ETL pipeline — fetch, normalise, deduplicate (ph4) · concept: ETL
+- Chunking — resume split into 49 chunks across 7 tables (ph2) · concept: chunking
+- Embeddings — text-embedding-3-small, 49 chunks in pgvector (ph2) · concept: embeddings
+- Vector DB — Supabase pgvector (ph2) · concept: vector search
+- RAG pipeline — embed → vector search → rerank → LLM (ph2) · concept: RAG
+- Reranking — Cohere Rerank on retrieved chunks (ph2) · concept: reranking
+- Streaming — Claude + OpenAI token-by-token to UI (ph2) · concept: streaming
+- Prompt caching — 90% cost reduction on system prompt (ph2) · concept: prompt caching
+- LLM fallback — Claude primary, OpenAI fallback, env-flag switchable (ph2) · concept: LLM routing (basic)
+- LLM-as-judge — Zero-shot CoT job scoring (ph5) · concept: LLM-as-judge
+- Langfuse tracing — input/output/cache tokens per call (ph11) · concept: observability
+- Token + cost tracking per run (ph11) · concept: cost tracking
+- Short-term memory — job status in Supabase (ph8) · concept: memory
+- Agentic loop — Telegram bot + Vercel cron daily pipeline (ph6/10) · concept: agents
+- MCP server — Node.js, SAP RAP OData as tools (CommBank, live) · concept: MCP
+
+#### Pending ⬜ (in order of complexity)
+- O3-A: Hybrid search — BM25 + vector for /chat (ph2 item 20) · concept: hybrid retrieval
+- O3-B: Context window management — truncate/summarise at token limit (ph2 item 22)
+- O3-C: Structured output — Instructor pattern, reliable JSON from Claude (ph3 item 25)
+- O3-D: AI Resume Editor — plain English → diff → approve → write to Supabase (ph3 items 23–26)
+- O3-E: Tool use / function calling — score_job, get_profile, search_jobs (ph6 item 43)
+- O3-F: Self-reflection — agent reviews own output before sending (ph6 item 44)
+- O3-G: Expose job DB as MCP server (ph6 item 45) · concept: MCP
+- O3-H: Multi-agent — LangGraph Fetcher + Scorer + Notifier (ph6 item 46) · concept: multi-agent
+- O3-I: Human-in-the-loop — approve before any write action (ph6 item 47)
+- O3-J: Long-term memory — Mem0/Zep, learn from accepted/rejected (ph8 item 51)
+- O3-K: Semantic caching — GPTCache or Redis (ph8 item 52)
+- O3-L: DeepEval or RAGAs evals on retrieval quality (ph11 item 63)
+- O3-M: LLM-as-judge evals — Claude scores its own job matches (ph11 item 64)
+- O3-N: LLM routing — Haiku for simple, Opus for complex (ph16 item 90)
+- O3-O: Guardrails — NeMo + Presidio for PII + input validation (ph16 item 91)
+- O3-P: GraphRAG — knowledge graph over job market (ph16 item 92)
+- O3-Q: Fine-tuning prep — collect accepted/rejected dataset (ph16 item 93)
+- O3-R: Multimodal — parse job PDFs/screenshots with Claude vision (ph16 item 94)
+
+---
+
+### Objective 4 — Infrastructure
+
+#### Done ✅
+- Vercel cron wired — 9am pipeline, 10am email digest (ph10)
+- Supabase ↔ Vercel integration (session 16)
+- Google Search Console verified + sitemap submitted (ph13)
+- All content data-driven from Supabase — no hardcoded arrays (ph14)
+- Corporate npm proxy fix (.npmrc), Vercel build fix (vercel.json) (ph0)
+
+#### Pending ⬜
+- O4-A: Custom domain — shahidmsyed.com; update BASE_URL everywhere (ph15 item 86)
+- O4-B: Resend email — blocked until custom domain live (ph15 items 87–88)
+- O4-C: Upwork OAuth — keys pending since 2026-05-07 (ph12 items 65–68)
+- O4-D: Re-embed resume chunks — skills table updated, chunks stale (ph2 item 12)
+- O4-E: Scoring prompt tuning — test with real hybrid SAP+AI jobs (ph5 item 41)
+- O4-F: Delta search — only return new jobs since last run (ph8 item 53)
+
+---
+
+### Archive — Old Phase History (for reference only, superseded by objectives above)
+
 1. ✅ Scaffold `/resume` public route + `/dashboard` private route in Next.js
 2. ✅ Create Supabase project, add connection string to `.env.local` and Vercel
 3. ✅ Migrate `profile.json`, `projects.json`, `certifications.json` into Supabase tables
