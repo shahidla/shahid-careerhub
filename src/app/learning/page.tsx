@@ -10,54 +10,54 @@ export const metadata: Metadata = {
 }
 
 const NEED_REVIEW = [
-  { code: 'abap1',     title: 'Introduction to ABAP in the Cloud',                             type: 'Confirmation' },
-  { code: 'cp13',      title: 'Building Apps with ABAP RESTful Application Programming Model', type: 'Confirmation' },
-  { code: 'btpt1',     title: 'Business Technology Platform Tutorials',                        type: 'Achievement' },
-  { code: 'di1',       title: 'SAP Data Intelligence for Enterprise AI',                       type: 'Confirmation' },
-  { code: 's4h27',     title: 'SAP S/4HANA Embedded Analytics',                               type: 'Confirmation' },
-  { code: 'fiori-ea1', title: 'Developing and Extending SAP Fiori Elements Apps',              type: 'Confirmation' },
-  { code: 'kyma1',     title: 'Kyma — A Flexible Way to Connect and Extend Applications',     type: 'Confirmation' },
-  { code: 's4h7',      title: 'Extending SAP S/4HANA Cloud and SAP S/4HANA',                  type: 'Confirmation' },
+  { code: 'abap1',     title: 'Introduction to ABAP in the Cloud',                             type: 'Confirmation', url: 'https://drive.google.com/uc?export=download&id=1dEJOSBqrqa48IV9Q9Pehf6gHm0_QMHk3' },
+  { code: 'cp13',      title: 'Building Apps with ABAP RESTful Application Programming Model', type: 'Confirmation', url: 'https://drive.google.com/uc?export=download&id=19AwZyWrIFOOnS-bVTAJwTEypA1JqB5XA' },
+  { code: 'btpt1',     title: 'Business Technology Platform Tutorials',                        type: 'Achievement',  url: 'https://drive.google.com/uc?export=download&id=1gKxfdcOPuod23Md-2nYnS5NCWGYd-owo' },
+  { code: 'di1',       title: 'SAP Data Intelligence for Enterprise AI',                       type: 'Confirmation', url: 'https://drive.google.com/uc?export=download&id=1bKJPGIf9TK4psE_0t1QqQS8Oq01WVLBI' },
+  { code: 's4h27',     title: 'SAP S/4HANA Embedded Analytics',                               type: 'Confirmation', url: 'https://drive.google.com/uc?export=download&id=1lnFqXdLMQ2ivNw31JskJbvZoHyeDSF3D' },
+  { code: 'fiori-ea1', title: 'Developing and Extending SAP Fiori Elements Apps',              type: 'Confirmation', url: 'https://drive.google.com/uc?export=download&id=1L_XxPTBvecqR4P20NhhhgVA9fpoveZU2' },
+  { code: 'kyma1',     title: 'Kyma — A Flexible Way to Connect and Extend Applications',     type: 'Confirmation', url: 'https://drive.google.com/uc?export=download&id=1qr3AikErvW3UE3tOTUyJlDkFqH1iGsPD' },
+  { code: 's4h7',      title: 'Extending SAP S/4HANA Cloud and SAP S/4HANA',                  type: 'Confirmation', url: 'https://drive.google.com/uc?export=download&id=14Vyh1QuuWxxRg9_db_YpvM4okEenOBQV' },
 ]
 
 const VERIFIED = [
   { title: 'Discovering DevOps with SAP BTP', url: 'https://www.credly.com/badges/035b2032-8e72-43b3-b01e-2f6bad138d7f/linked_in_profile' },
   { title: 'Getting Started with In-App Extensibility in SAP S/4HANA', url: 'https://www.credly.com/badges/2593cf46-e02e-454c-9bf4-58c3fb14e051/linked_in_profile' },
   { title: 'Getting Started with Creating an SAP Fiori Elements App Based on an OData V4 RAP Service', url: 'https://www.credly.com/badges/18418051-df5e-4c6d-817f-1130952f4686/linked_in_profile' },
-  { title: 'Introduction to Software Development on SAP HANA' },
-  { title: 'Introduction to Mobile Solution Development for the Enterprise' },
-  { title: 'Introduction to SAP HANA Cloud Platform' },
-  { title: 'ABAP Development for SAP HANA' },
-  { title: "SAP's UX Strategy in a Nutshell by Sam Yen" },
-  { title: 'Software Development on SAP HANA (Delta SPS 09)' },
-  { title: 'Touch IoT with SAP Leonardo' },
-  { title: 'Full-Text Search with SAP HANA Platform' },
-  { title: 'Big Data with SAP Vora — Engines and Tools' },
-  { title: 'SAP Cloud Platform Essentials (Update Q3/2017)' },
-  { title: 'Enterprise Machine Learning in a Nutshell' },
-  { title: 'Software Development on SAP HANA (Update Q4/2017)' },
-  { title: 'Data Science in Action — Building a Predictive Churn Model' },
-  { title: 'Enterprise Deep Learning with TensorFlow' },
-  { title: 'SAP Leonardo Design-Led Engagements Demystified' },
-  { title: 'Developing Web Apps with SAPUI5' },
-  { title: 'Big Data with SAP HANA Vora' },
-  { title: 'Software Development on SAP HANA (Update Q4/2016)' },
-  { title: 'In-Memory Data Management In a Nutshell' },
-  { title: 'Extending SAP S/4HANA Cloud and SAP S/4HANA' },
-  { title: 'Understanding SAP Fiori Launchpad' },
-  { title: 'Getting Started with SAP Lumira' },
-  { title: 'SAP Cloud Platform Version Control with Git' },
-  { title: 'Cloud-Native Development with SAP Cloud Platform' },
-  { title: 'Introduction to SAP HANA Dynamic Tiering' },
-  { title: 'Analytics with SAP Cloud Platform' },
-  { title: 'Analyzing Connected Data with SAP HANA Graph' },
-  { title: 'SAP Leonardo Design-Led Engagements Basics' },
-  { title: 'SAP Leonardo — Enabling the Intelligent Enterprise' },
-  { title: 'SAP HANA Data Management Suite' },
-  { title: 'SAP Cloud Platform API Management' },
-  { title: 'Building Applications with SAP Cloud Application Programming Model' },
-  { title: 'Software Development on SAP HANA (Update Q1/2019)' },
-  { title: 'Business Process Automation in SAP S/4HANA with SAP Intelligent RPA' },
+  { title: 'Introduction to Software Development on SAP HANA',                    url: 'https://drive.google.com/uc?export=download&id=1DX44eleP_L9Mflw5vVg6_siamX_eK4Nk' },
+  { title: 'Introduction to Mobile Solution Development for the Enterprise',       url: 'https://drive.google.com/uc?export=download&id=1VMrMHpF_tXHiABCebuuBV1bHQjK3dj7b' },
+  { title: 'Introduction to SAP HANA Cloud Platform',                             url: 'https://drive.google.com/uc?export=download&id=1JY-OWnhXItnIZFQ3c3-Yp_fQOfbHxveL' },
+  { title: 'ABAP Development for SAP HANA',                                       url: 'https://drive.google.com/uc?export=download&id=1jk7x8ooeepE5fqJ5n-QhwnWMXU1WXt0f' },
+  { title: "SAP's UX Strategy in a Nutshell by Sam Yen",                          url: 'https://drive.google.com/uc?export=download&id=1guKgUY1_c1zPu38MubnORc9sL9PpL6o5' },
+  { title: 'Software Development on SAP HANA (Delta SPS 09)',                     url: 'https://drive.google.com/uc?export=download&id=1_AryGTrAcSS20FjoSGlVJhVEJsrF2RKI' },
+  { title: 'Touch IoT with SAP Leonardo',                                         url: 'https://drive.google.com/uc?export=download&id=19BC1vp2sTwOafIsltXAEO5Y9l83lTjpY' },
+  { title: 'Full-Text Search with SAP HANA Platform',                             url: 'https://drive.google.com/uc?export=download&id=1YwRNH0H325E-h0ylMkdyM9IlZxb--9Wf' },
+  { title: 'Big Data with SAP Vora — Engines and Tools',                          url: 'https://drive.google.com/uc?export=download&id=18KI-0rQx0eRdkzBuwKKCo-_IlrJkntOC' },
+  { title: 'SAP Cloud Platform Essentials (Update Q3/2017)',                      url: 'https://drive.google.com/uc?export=download&id=1kYSUP1BPKEe91KHZqIgLYveppK1-z0r_' },
+  { title: 'Enterprise Machine Learning in a Nutshell',                           url: 'https://drive.google.com/uc?export=download&id=147fbc7XBr1k5xu6SR7KKxqEnAaRnn2Ql' },
+  { title: 'Software Development on SAP HANA (Update Q4/2017)',                   url: 'https://drive.google.com/uc?export=download&id=19qViaBbC0ro06cuEiw7NEmxMvNYN4TF1' },
+  { title: 'Data Science in Action — Building a Predictive Churn Model',          url: 'https://drive.google.com/uc?export=download&id=1AWuPst3zrmbXt1yA2KJP_86L6GOVT7eN' },
+  { title: 'Enterprise Deep Learning with TensorFlow',                            url: 'https://drive.google.com/uc?export=download&id=1o3IL9jbfXYPKHwQEke-g2dxLNb4jmLOL' },
+  { title: 'SAP Leonardo Design-Led Engagements Demystified',                     url: 'https://drive.google.com/uc?export=download&id=13otDNCaYM76LB7ThaP-mWbWpGPhcHP1t' },
+  { title: 'Developing Web Apps with SAPUI5',                                     url: 'https://drive.google.com/uc?export=download&id=1YADgUVD6hXLlOl-3cTcFt-cOzKIfut-K' },
+  { title: 'Big Data with SAP HANA Vora',                                         url: 'https://drive.google.com/uc?export=download&id=135fPskPN3hLA8VLr72vZgGE4IUot2afA' },
+  { title: 'Software Development on SAP HANA (Update Q4/2016)',                   url: 'https://drive.google.com/uc?export=download&id=1PSWl18E8XHTUR6APYxB1Qnak77SlMncA' },
+  { title: 'In-Memory Data Management In a Nutshell',                             url: 'https://drive.google.com/uc?export=download&id=1gr2fp3W88ZA3FwFUbuDEjV17sTvKo3Hh' },
+  { title: 'Extending SAP S/4HANA Cloud and SAP S/4HANA',                         url: 'https://drive.google.com/uc?export=download&id=1qsjW55EDmzynALCYeyrhNhYCQdRqZ2JW' },
+  { title: 'Understanding SAP Fiori Launchpad',                                   url: 'https://drive.google.com/uc?export=download&id=1RxsB44N07ubToXTazux95rPcTs_Xsat6' },
+  { title: 'Getting Started with SAP Lumira',                                     url: 'https://drive.google.com/uc?export=download&id=1m54homwn-J2m566wrsVCQfrwaNGpjaWB' },
+  { title: 'SAP Cloud Platform Version Control with Git',                         url: 'https://drive.google.com/uc?export=download&id=1ybn4PDItwrsCoYfv4NXVY0yxU-Tw13kw' },
+  { title: 'Cloud-Native Development with SAP Cloud Platform',                    url: 'https://drive.google.com/uc?export=download&id=1ILMbfEk_UQZylzSPDaAkABci4tfXihau' },
+  { title: 'Introduction to SAP HANA Dynamic Tiering',                            url: 'https://drive.google.com/uc?export=download&id=1v_eAu8TOUwHXE1Ng3fZ4PpFB5GFAqR9R' },
+  { title: 'Analytics with SAP Cloud Platform',                                   url: 'https://drive.google.com/uc?export=download&id=1kDm35bjDC6VR7qldSyoxbrKhDV-ibtHM' },
+  { title: 'Analyzing Connected Data with SAP HANA Graph',                        url: 'https://drive.google.com/uc?export=download&id=1wun-jhwgayTh0gobOcD6MEtIM2GWAlpQ' },
+  { title: 'SAP Leonardo Design-Led Engagements Basics',                          url: 'https://drive.google.com/uc?export=download&id=1yJQd-gcPzHom0z9SfFozhjytcZIcPsHx' },
+  { title: 'SAP Leonardo — Enabling the Intelligent Enterprise',                  url: 'https://drive.google.com/uc?export=download&id=17aMu562i_gv-jcy-DMCWDZxbLIDTQA0A' },
+  { title: 'SAP HANA Data Management Suite',                                      url: 'https://drive.google.com/uc?export=download&id=15UDf3dWLCXt_n3o8s7RUYgLN0_hP2zY9' },
+  { title: 'SAP Cloud Platform API Management',                                   url: 'https://drive.google.com/uc?export=download&id=1xZODCyAvtqrj4vxL02gjI8kBTIRCbUCz' },
+  { title: 'Building Applications with SAP Cloud Application Programming Model',  url: 'https://drive.google.com/uc?export=download&id=135dyPHdxiOzQEJlnqrr_ATvPFPErgD5O' },
+  { title: 'Software Development on SAP HANA (Update Q1/2019)',                   url: 'https://drive.google.com/uc?export=download&id=1dzX8RkVhL7LzDaPCr--BMLuBXiVV8uXZ' },
+  { title: 'Business Process Automation in SAP S/4HANA with SAP Intelligent RPA', url: 'https://drive.google.com/uc?export=download&id=1Cilm1_hb28X3jLSf0QfFiLdcl9xfG3WQ' },
 ]
 
 const THIRD_PARTY = [
@@ -139,10 +139,11 @@ export default async function LearningPage() {
         <h2 className="text-xs font-semibold text-purple-500 uppercase tracking-widest mb-5">Confirmations</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {NEED_REVIEW.map((c) => (
-            <div key={c.code} className="border border-purple-100 rounded-lg p-4 bg-white">
-              <p className="text-sm font-medium text-gray-900 leading-snug">{c.title}</p>
-              <p className="mt-1 text-xs text-purple-600">{c.type}</p>
-            </div>
+            <a key={c.code} href={c.url} target="_blank" rel="noopener noreferrer"
+              className="border border-purple-100 rounded-lg p-4 bg-white hover:border-purple-300 transition-colors block">
+              <p className="text-sm font-medium text-gray-900 leading-snug hover:text-purple-700">{c.title}</p>
+              <p className="mt-1 text-xs text-purple-600">{c.type} · OpenSAP</p>
+            </a>
           ))}
         </div>
       </section>
