@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Learning & Courses — Shahid M Syed',
-  description: '56 completed courses covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.',
+  description: '65 completed courses and certifications covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.',
   alternates: { canonical: 'https://shahid-careerhub.vercel.app/learning' },
 }
 
@@ -76,7 +76,8 @@ const THIRD_PARTY = [
 
 export default async function LearningPage() {
   const certifications = await getCertifications()
-  const total = NEED_REVIEW.length + VERIFIED.length + THIRD_PARTY.length
+  const sapCerts = certifications.filter(c => c.issuer === 'SAP')
+  const total = sapCerts.length + THIRD_PARTY.length + NEED_REVIEW.length + VERIFIED.length
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
@@ -85,18 +86,18 @@ export default async function LearningPage() {
         <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-2">Continuous Learning</p>
         <h1 className="text-4xl font-bold tracking-tight">Learning &amp; Courses</h1>
         <p className="mt-3 text-lg text-gray-600">
-          {total} completed courses covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.
+          {total} completed courses and certifications covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.
         </p>
         <div className="mt-6 flex flex-wrap gap-6 text-sm text-gray-500">
-          <span><strong className="text-gray-900">{certifications.filter(c => c.issuer === 'SAP').length}</strong> SAP certifications</span>
-          <span><strong className="text-gray-900">{THIRD_PARTY.length}</strong> third-party certificates</span>
-          <span><strong className="text-gray-900">{VERIFIED.length}</strong> OpenSAP records of achievement</span>
-          <span><strong className="text-gray-900">{NEED_REVIEW.length}</strong> OpenSAP confirmations</span>
+          <a href="#sap-certifications" className="hover:text-gray-700"><strong className="text-gray-900">{sapCerts.length}</strong> SAP certifications</a>
+          <a href="#third-party" className="hover:text-gray-700"><strong className="text-gray-900">{THIRD_PARTY.length}</strong> third-party certificates</a>
+          <a href="#confirmations" className="hover:text-gray-700"><strong className="text-gray-900">{NEED_REVIEW.length}</strong> OpenSAP confirmations</a>
+          <a href="#records-of-achievement" className="hover:text-gray-700"><strong className="text-gray-900">{VERIFIED.length}</strong> OpenSAP records of achievement</a>
         </div>
       </section>
 
       {/* SAP Certifications */}
-      <section>
+      <section id="sap-certifications">
         <h2 className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-5">SAP Certifications</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {certifications.map((c) => (
@@ -112,21 +113,8 @@ export default async function LearningPage() {
         </div>
       </section>
 
-      {/* Recent / notable */}
-      <section>
-        <h2 className="text-xs font-semibold text-purple-500 uppercase tracking-widest mb-5">Confirmations</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {NEED_REVIEW.map((c) => (
-            <div key={c.code} className="border border-purple-100 rounded-lg p-4 bg-white">
-              <p className="text-sm font-medium text-gray-900 leading-snug">{c.title}</p>
-              <p className="mt-1 text-xs text-purple-600">{c.type}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Third-party certificates */}
-      <section>
+      <section id="third-party">
         <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">Third-Party Certificates</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {THIRD_PARTY.map((c) => (
@@ -142,8 +130,21 @@ export default async function LearningPage() {
         </div>
       </section>
 
-      {/* All verified courses */}
-      <section>
+      {/* Confirmations */}
+      <section id="confirmations">
+        <h2 className="text-xs font-semibold text-purple-500 uppercase tracking-widest mb-5">Confirmations</h2>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {NEED_REVIEW.map((c) => (
+            <div key={c.code} className="border border-purple-100 rounded-lg p-4 bg-white">
+              <p className="text-sm font-medium text-gray-900 leading-snug">{c.title}</p>
+              <p className="mt-1 text-xs text-purple-600">{c.type}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Records of Achievement */}
+      <section id="records-of-achievement">
         <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">Records of Achievement — OpenSAP</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {VERIFIED.map((c) => (
