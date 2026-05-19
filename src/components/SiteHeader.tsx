@@ -7,6 +7,7 @@ const NAV = [
   { href: '/resume',    label: 'Resume' },
   { href: '/ai',        label: 'AI Portfolio' },
   { href: '/blogs',     label: 'Blog' },
+  { href: '/learning',  label: 'Learning' },
   { href: '/dashboard', label: 'Dashboard Demo' },
 ]
 
