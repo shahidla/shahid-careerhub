@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import { getCertifications } from '@/lib/db'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Learning & Courses — Shahid M Syed',
@@ -71,7 +74,8 @@ const THIRD_PARTY = [
   { title: 'AWS Essentials',                                                url: 'https://www.udemy.com/certificate/UC-9HKXA8T6/',                                                   provider: 'Udemy',   year: '2018', ai: false },
 ]
 
-export default function LearningPage() {
+export default async function LearningPage() {
+  const certifications = await getCertifications()
   const total = NEED_REVIEW.length + VERIFIED.length + THIRD_PARTY.length
 
   return (
@@ -84,10 +88,27 @@ export default function LearningPage() {
           {total} completed courses covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.
         </p>
         <div className="mt-6 flex flex-wrap gap-6 text-sm text-gray-500">
-          <span><strong className="text-gray-900">{total}</strong> courses completed</span>
+          <span><strong className="text-gray-900">{certifications.length}</strong> SAP certifications</span>
+          <span><strong className="text-gray-900">{THIRD_PARTY.length}</strong> third-party certificates</span>
           <span><strong className="text-gray-900">{VERIFIED.length}</strong> OpenSAP records of achievement</span>
           <span><strong className="text-gray-900">{NEED_REVIEW.length}</strong> OpenSAP confirmations</span>
-          <span><strong className="text-gray-900">{THIRD_PARTY.length}</strong> third-party certificates</span>
+        </div>
+      </section>
+
+      {/* SAP Certifications */}
+      <section>
+        <h2 className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-5">SAP Certifications</h2>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {certifications.map((c) => (
+            <a key={c.id} href={c.credential_url} target="_blank" rel="noopener noreferrer"
+              className="border border-blue-100 rounded-lg p-4 bg-white hover:border-blue-300 transition-colors block">
+              <p className="text-sm font-medium text-gray-900 leading-snug hover:text-blue-700">{c.title}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <p className="text-xs text-gray-400">{c.issuer}{c.code ? ` · ${c.code}` : ''}</p>
+                {c.is_ai && <span className="text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
+              </div>
+            </a>
+          ))}
         </div>
       </section>
 
