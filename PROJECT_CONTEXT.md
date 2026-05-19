@@ -591,6 +591,14 @@ This is the master dev task list. Always update this when a task is done. This s
 84. ✅ All 24 blog posts converted — MDX files in `content/blogs/` covering blog-1 through blog-24
 85. ⬜ Content audit — projects on /resume and /ai pages don't match actual CV; review and update project descriptions, titles, impacts, and technologies in Supabase to align with real resume
 
+### Phase 14b — /ai and /resume Page Fixes
+95. ⬜ /ai page — Add MJ blog (blog-20) to Supabase blogs table with is_ai=true so it appears in AI Writing section
+96. ⬜ /ai page — Remove "AI Engineering Learning Roadmap" section (not appropriate for a portfolio page)
+97. ⬜ /resume page — Remove duplicate "AI Work" section (AI projects already shown in Key Projects with purple badge); keep the SAP+AI highlight banner
+98. ⬜ /resume page — Fix "42 completed OpenSAP courses" stat — now 69 total (9 SAP + 15 third-party + 45 OpenSAP)
+99. ⬜ /resume + /ai — Full review pass after fixes 95–98 are done
+100. ⬜ /resume + /ai — Replace Supabase projects with actual CV projects (task 6 — user to provide project list first)
+
 ### Phase 15 — Custom Domain & Email
 86. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain
 87. ⬜ Resend sender verification — unblocked once custom domain is live
