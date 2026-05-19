@@ -5,7 +5,7 @@ const FOOTER_LINKS = [
   { href: '/blogs',     label: 'Blog' },
   { href: '/dashboard', label: 'Dashboard Demo' },
   { href: '/learning',  label: 'Learning' },
-  { href: '/chat',      label: 'Chat' },
+  { href: '/chat',      label: 'Resume Chat' },
 ]
 
 const SOCIAL_LINKS = [

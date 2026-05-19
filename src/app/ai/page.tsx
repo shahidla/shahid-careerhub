@@ -36,6 +36,21 @@ export default async function AiPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
 
+      {/* On this page */}
+      <nav aria-label="On this page" className="flex flex-wrap gap-2 text-xs border border-gray-200 rounded-lg px-4 py-3 bg-white">
+        <span className="text-gray-400 font-semibold uppercase tracking-widest mr-2 self-center">On this page</span>
+        {[
+          { href: '#building',  label: 'Currently Building' },
+          { href: '#projects',  label: 'AI Projects' },
+          { href: '#skills',    label: 'Skills' },
+          { href: '#certs',     label: 'Certifications' },
+          { href: '#writing',   label: 'Writing' },
+          { href: '#roadmap',   label: 'Roadmap' },
+        ].map(({ href, label }) => (
+          <a key={href} href={href} className="text-purple-600 hover:text-purple-800 hover:underline px-1">{label}</a>
+        ))}
+      </nav>
+
       {/* Hero */}
       <section>
         <p className="text-sm font-semibold text-purple-600 uppercase tracking-widest mb-2">AI Engineering Portfolio</p>
@@ -52,7 +67,7 @@ export default async function AiPage() {
       </section>
 
       {/* Currently Building */}
-      <section>
+      <section id="building">
         <h2 className="section-heading">Currently Building</h2>
         <div className="mt-4 border border-purple-200 rounded-xl p-5 bg-purple-50">
           <div className="flex flex-wrap justify-between gap-2">
@@ -79,7 +94,7 @@ export default async function AiPage() {
       </section>
 
       {/* AI Projects */}
-      <section>
+      <section id="projects">
         <h2 className="section-heading">AI Projects</h2>
         <div className="mt-4 space-y-6">
           {projects.map((p) => (
@@ -114,7 +129,7 @@ export default async function AiPage() {
       </section>
 
       {/* AI Skills */}
-      <section>
+      <section id="skills">
         <h2 className="section-heading">AI Skills</h2>
         <div className="mt-4 space-y-4">
           {skills.map((s) => (
@@ -131,7 +146,7 @@ export default async function AiPage() {
       </section>
 
       {/* AI Certifications */}
-      <section>
+      <section id="certs">
         <h2 className="section-heading">AI Certifications</h2>
         <div className="mt-4 grid sm:grid-cols-2 gap-3">
           {certifications.map((c) => (
@@ -151,7 +166,7 @@ export default async function AiPage() {
       </section>
 
       {/* AI Blogs */}
-      <section>
+      <section id="writing">
         <h2 className="section-heading">AI Writing — SAP Community</h2>
         <ul className="mt-4 space-y-3">
           {blogs.map((b) => (
@@ -174,7 +189,7 @@ export default async function AiPage() {
       </section>
 
       {/* Learning Roadmap */}
-      <section>
+      <section id="roadmap">
         <h2 className="section-heading">AI Engineering Learning Roadmap</h2>
         <p className="mt-2 text-sm text-gray-500">Structured progression — each phase being implemented in the AI Career Hub.</p>
         <div className="mt-4 space-y-3">
