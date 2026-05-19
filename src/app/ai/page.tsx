@@ -11,17 +11,26 @@ export const dynamic = 'force-dynamic'
 export const metadata = {
   title: 'Shahid M Syed — AI Engineering Portfolio',
   description:
-    '19 years of enterprise SAP engineering, now building AI systems — RAG, agents, embeddings, MCP, and LLM integration.',
+    'SAP Development Architect building AI systems — RAG, agents, embeddings, MCP, and LLM integration on SAP BTP.',
 }
 
-const LEARNING_ROADMAP = [
-  { phase: '1', label: 'Data Foundation', items: ['ETL pipeline', 'Chunking strategy', 'Data normalisation'] },
-  { phase: '2', label: 'Embeddings & Vector Search', items: ['text-embedding-3-small', 'Supabase pgvector', 'Hybrid search + reranking'] },
-  { phase: '3', label: 'LLM & Prompting', items: ['RAG pipeline', 'Structured output', 'Prompt caching'] },
-  { phase: '4', label: 'Agents', items: ['ReAct pattern', 'Tool use / function calling', 'MCP server', 'Multi-agent orchestration'] },
-  { phase: '5', label: 'Memory', items: ['Short-term + long-term memory', 'Delta search', 'Semantic caching'] },
-  { phase: '6', label: 'Observability & Evals', items: ['Langfuse tracing', 'Token + cost tracking', 'LLM-as-judge evals'] },
-  { phase: '7', label: 'Advanced', items: ['GraphRAG', 'Fine-tuning', 'Guardrails', 'LLM routing'] },
+const AI_BUILT = [
+  { concept: 'RAG Pipeline',        detail: 'Resume data chunked → pgvector → Cohere rerank → Claude',           done: true },
+  { concept: 'Embeddings',          detail: 'OpenAI text-embedding-3-small, 49 chunks, Supabase pgvector',        done: true },
+  { concept: 'Streaming',           detail: 'Claude + OpenAI responses streamed token-by-token to UI',            done: true },
+  { concept: 'Prompt Caching',      detail: 'System prompt cached — 90% cost reduction on repeated calls',        done: true },
+  { concept: 'LLM Fallback',        detail: 'Claude primary, OpenAI GPT-4o mini fallback, env-flag switchable',   done: true },
+  { concept: 'Reranking',           detail: 'Cohere Rerank improves chunk ordering before LLM injection',          done: true },
+  { concept: 'LLM-as-Judge',        detail: 'Claude scores job-to-profile match with structured reasoning',        done: true },
+  { concept: 'ETL Pipeline',        detail: 'Fetch → normalise → deduplicate across Remotive, Adzuna, SAP Contractors', done: true },
+  { concept: 'Observability',       detail: 'Langfuse tracing — input/output/cache tokens per call, cost tracking', done: true },
+  { concept: 'MCP Server',          detail: 'Node.js MCP server exposing SAP RAP OData services (CommBank, live)', done: true },
+  { concept: 'Agentic Workflow',    detail: 'Telegram bot + Vercel cron — daily fetch → score → notify loop',     done: true },
+  { concept: 'Short-term Memory',   detail: 'Job status tracking: Save / Apply / Ignore / Interviewing in Supabase', done: true },
+  { concept: 'Tool Use',            detail: 'Agent tools: search_jobs, score_job, send_notification',              done: false },
+  { concept: 'Multi-agent',         detail: 'LangGraph orchestration of Fetcher + Scorer + Email agents',         done: false },
+  { concept: 'Long-term Memory',    detail: 'Mem0/Zep — learn from accepted/rejected jobs over time',             done: false },
+  { concept: 'Hybrid Search',       detail: 'BM25 + vector combined retrieval for /chat',                         done: false },
 ]
 
 export default async function AiPage() {
@@ -45,7 +54,7 @@ export default async function AiPage() {
           { href: '#skills',    label: 'Skills' },
           { href: '#certs',     label: 'Certifications' },
           { href: '#writing',   label: 'Writing' },
-          { href: '#roadmap',   label: 'Roadmap' },
+          { href: '#built',     label: 'AI Concepts Built' },
         ].map(({ href, label }) => (
           <a key={href} href={href} className="text-purple-600 hover:text-purple-800 hover:underline px-1">{label}</a>
         ))}
@@ -56,7 +65,7 @@ export default async function AiPage() {
         <p className="text-sm font-semibold text-purple-600 uppercase tracking-widest mb-2">AI Engineering Portfolio</p>
         <h1 className="text-4xl font-bold tracking-tight">{profile.name}</h1>
         <p className="mt-3 text-lg text-gray-600 max-w-2xl">
-          19 years of enterprise SAP engineering — now building AI systems.
+          SAP Development Architect — now building AI systems hands-on.
           RAG pipelines, agentic workflows, MCP servers, embeddings, and LLM integration.
         </p>
         <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
@@ -188,23 +197,19 @@ export default async function AiPage() {
         </ul>
       </section>
 
-      {/* Learning Roadmap */}
-      <section id="roadmap">
-        <h2 className="section-heading">AI Engineering Learning Roadmap</h2>
-        <p className="mt-2 text-sm text-gray-500">Structured progression — each phase being implemented in the AI Career Hub.</p>
-        <div className="mt-4 space-y-3">
-          {LEARNING_ROADMAP.map((r) => (
-            <div key={r.phase} className="flex gap-4 items-start">
-              <span className="shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center mt-0.5">
-                {r.phase}
+      {/* AI Concepts Built */}
+      <section id="built">
+        <h2 className="section-heading">AI Concepts Built</h2>
+        <p className="mt-2 text-sm text-gray-500">Implemented hands-on in the AI Career Hub — each concept shipped, not planned.</p>
+        <div className="mt-4 space-y-2">
+          {AI_BUILT.map((r) => (
+            <div key={r.concept} className="flex gap-3 items-start text-sm">
+              <span className={`shrink-0 mt-0.5 font-bold ${r.done ? 'text-green-500' : 'text-gray-300'}`}>
+                {r.done ? '✓' : '○'}
               </span>
               <div>
-                <span className="text-sm font-semibold text-gray-900">{r.label}</span>
-                <div className="flex flex-wrap gap-1.5 mt-1">
-                  {r.items.map((item) => (
-                    <span key={item} className="tag-sm">{item}</span>
-                  ))}
-                </div>
+                <span className={`font-semibold ${r.done ? 'text-gray-900' : 'text-gray-400'}`}>{r.concept}</span>
+                <span className={`ml-2 ${r.done ? 'text-gray-600' : 'text-gray-400'}`}>— {r.detail}</span>
               </div>
             </div>
           ))}

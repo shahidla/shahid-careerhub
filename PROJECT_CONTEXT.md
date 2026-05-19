@@ -592,13 +592,48 @@ This is the master dev task list. Always update this when a task is done. This s
 85. ⬜ Content audit — projects on /resume and /ai pages don't match actual CV; review and update project descriptions, titles, impacts, and technologies in Supabase to align with real resume
 
 ### Phase 14b — /ai and /resume Page Fixes
-95. ⬜ /ai page — Add MJ blog (blog-20) to Supabase blogs table with is_ai=true so it appears in AI Writing section
-96. ⬜ /ai page — Remove "AI Engineering Learning Roadmap" section (not appropriate for a portfolio page)
-97. ⬜ /resume page — Remove duplicate "AI Work" section (AI projects already shown in Key Projects with purple badge); keep the SAP+AI highlight banner
-98. ⬜ /resume page — Fix "42 completed OpenSAP courses" stat — now 69 total (9 SAP + 15 third-party + 45 OpenSAP)
-99. ⬜ /resume + /ai — Full review pass after fixes 95–98 are done
-100. ⬜ /resume + /ai — Replace Supabase projects with actual CV projects (task 6 — user to provide project list first)
+95. ⬜ /ai page — Add MJ blog (blog-20) to Supabase blogs table with is_ai=true so it appears in AI Writing section (SQL ready — run in Supabase)
+96. ✅ /ai page — Removed "AI Engineering Learning Roadmap" section; replaced with "AI Concepts Built" checklist (✓ done / ○ planned)
+97. ✅ /resume page — Removed duplicate "AI Work" section; AI projects still shown in Key Projects with purple badge; SAP+AI banner kept
+98. ✅ /resume page — Fixed "42 completed OpenSAP courses" → "69 completed" to match /learning page
+99. ⬜ /resume + /ai — Full review pass after item 95 (MJ blog SQL) is run
+100. ⬜ /resume + /ai — Replace Supabase projects with actual CV projects — projects seed SQL ready (see Phase 14c)
 101. ✅ Telegram daily cron — enriched pipeline completion message to include top 10 jobs (score ≥ 60) with title, company, score, and match reasoning, matching email digest content
+102. ✅ Homepage — blog count now data-driven (was hardcoded "24"); email from profile table (was hardcoded syedsm@gmail.com)
+103. ✅ /resume blogs section — now data-driven from Supabase (was hardcoded 5 static slugs); "View all N posts" count is live
+104. ⬜ AI Skills taxonomy — run SQL to update skills table (SQL ready — see below)
+
+### Phase 14c — Supabase SQL to run
+Run these in the Supabase SQL Editor:
+
+**SQL 1 — Add MJ blog (item 95):**
+```sql
+INSERT INTO blogs (title, url, tags, is_ai, sort_order) VALUES (
+  'Michael Jackson: AI Cognitive Pipeline on SAP BTP, SAP CAP, ElevenLabs, Claude, HANA DB, Solace',
+  'https://community.sap.com/t5/technology-blogs-by-members/michael-jackson-ai-cognitive-pipeline-on-sap-btp-sap-cap-elevenlabs-claude/ba-p/14278241',
+  ARRAY['SAP BTP','CAP','Claude','ElevenLabs','HANA','Solace','AI'],
+  true,
+  0
+);
+```
+
+**SQL 2 — Update AI Skills taxonomy (item 82/104):**
+```sql
+UPDATE skills SET
+  category = 'AI Engineering',
+  items = ARRAY[
+    'RAG pipelines (pgvector, Cohere rerank, prompt caching)',
+    'LLM integration — Claude API, OpenAI, streaming, fallback',
+    'Agentic workflows — Telegram bot, Vercel cron, tool use',
+    'MCP server — Node.js, SAP RAP OData as AI-controlled tools',
+    'Embeddings — text-embedding-3-small, Supabase pgvector',
+    'Observability — Langfuse tracing, token/cost tracking',
+    'Machine learning — PAL, APL, R (Decision Tree, Random Forest, Regression)',
+    'AI-assisted automation — data scrambling, anomaly detection'
+  ],
+  is_ai = true
+WHERE category = 'AI (Exploration)';
+```
 
 ### Phase 15 — Custom Domain & Email
 86. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain

@@ -28,7 +28,6 @@ const NAV = [
   { id: 'profile',        label: 'Profile' },
   { id: 'experience',     label: 'Experience' },
   { id: 'projects',       label: 'Projects' },
-  { id: 'ai-work',        label: 'AI Work' },
   { id: 'certifications', label: 'Certifications' },
   { id: 'blogs',          label: 'Blogs' },
   { id: 'patent',         label: 'Patent' },
@@ -52,8 +51,8 @@ export default async function ResumePage() {
 
   const patent = achievements.find((a) => a.description.includes('US10304013B2'))
   const awards = achievements.filter((a) => !a.description.includes('US10304013B2'))
-  const aiProjects = projects.filter((p) => p.is_ai)
   const aiBlogs = blogs.filter((b) => b.is_ai)
+  const topBlogs = [...aiBlogs, ...blogs.filter((b) => !b.is_ai)].slice(0, 5)
 
   return (
     <div className="min-h-screen bg-white">
@@ -267,55 +266,6 @@ export default async function ResumePage() {
 
           <hr className="border-gray-100" />
 
-          {/* C — AI Work section */}
-          <section id="ai-work">
-            <div className="flex items-center gap-3 border-b border-gray-200 pb-2">
-              <h2 className="text-xl font-bold text-gray-900">AI Work</h2>
-              <span className="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">SAP + AI</span>
-            </div>
-            <p className="mt-2 text-sm text-gray-500">AI delivery within SAP, exploration through prototypes, and published thought leadership.</p>
-
-            <div className="mt-6 space-y-4">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">AI Projects</h3>
-              {aiProjects.map((p) => (
-                <div key={p.id} className="border-l-2 border-purple-200 pl-5">
-                  <span className="font-semibold text-gray-900 text-sm">{p.name}</span>
-                  <span className="text-gray-500 text-sm"> · {p.client}</span>
-                  <p className="mt-0.5 text-sm text-purple-700 font-medium">{p.impact}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 space-y-4">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">AI Blogs — SAP Community</h3>
-              <ul className="space-y-3">
-                {aiBlogs.map((b) => {
-                  const slug = canonicalToSlug[b.url]
-                  return (
-                    <li key={b.id} className="border-l-2 border-purple-200 pl-5">
-                      <a
-                        href={slug ? `/blogs/${slug}` : b.url}
-                        target={slug ? undefined : '_blank'}
-                        rel={slug ? undefined : 'noopener noreferrer'}
-                        className="text-sm text-purple-700 hover:underline font-medium"
-                      >
-                        {b.title}
-                      </a>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-
-            <div className="mt-8">
-              <a href="/ai" className="inline-block bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
-                Full AI Portfolio →
-              </a>
-            </div>
-          </section>
-
-          <hr className="border-gray-100" />
-
           {/* Certifications */}
           <section id="certifications">
             <h2 className="section-heading">Certifications</h2>
@@ -335,7 +285,7 @@ export default async function ResumePage() {
               ))}
             </div>
             <div className="mt-5 flex items-center gap-3 text-sm border-t border-gray-100 pt-4">
-              <span className="text-gray-500">+ 42 completed OpenSAP courses covering SAP HANA, BTP, ABAP, AI/ML, and Fiori</span>
+              <span className="text-gray-500">+ 69 completed OpenSAP courses covering SAP HANA, BTP, ABAP, AI/ML, and Fiori</span>
               <a href="/learning" className="text-blue-600 hover:underline font-medium shrink-0">View all →</a>
             </div>
           </section>
@@ -346,23 +296,25 @@ export default async function ResumePage() {
             <h2 className="section-heading">Blog Posts</h2>
             <p className="mt-2 text-sm text-gray-500">Thought leadership on SAP BTP, event-driven architecture, AI-assisted workflows, and integration patterns.</p>
             <ul className="mt-5 space-y-3">
-              {[
-                { slug: 'blog-20-mj-ai-cognitive-pipeline-sap-btp',                          title: 'Michael Jackson: AI Cognitive Pipeline on SAP BTP, SAP CAP, ElevenLabs, Claude, HANA DB, Solace', ai: true },
-                { slug: 'blog-1-event-driven-sap-cap-kyma-agentic-ai',                       title: 'Event Driven SAP CAP on Kyma with Agentic AI and UI Auto Refresh', ai: true },
-                { slug: 'blog-3-event-driven-integration-sap-integration-suite',             title: 'Event Driven Integration Using SAP Integration Suite, Solace, HANA DB, and OpenAI Validation', ai: true },
-                { slug: 'blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt', title: 'Automated Job Screening Using SAP Integration Suite, Adzuna, and ChatGPT', ai: true },
-                { slug: 'blog-4-multi-service-payg-sap-btp-kyma-docker-ethereum',            title: 'Multi-Service PAYG Application: SAP BTP Kyma Runtime, Docker, Ethereum, SAP AI Business Services', ai: false },
-              ].map((b) => (
-                <li key={b.slug} className={`border-l-2 pl-5 ${b.ai ? 'border-purple-200' : 'border-gray-100'}`}>
-                  <a href={`/blogs/${b.slug}`} className={`text-sm font-medium hover:underline ${b.ai ? 'text-purple-700' : 'text-blue-700'}`}>
-                    {b.title}
-                  </a>
-                  {b.ai && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
-                </li>
-              ))}
+              {topBlogs.map((b) => {
+                const slug = canonicalToSlug[b.url]
+                return (
+                  <li key={b.id} className={`border-l-2 pl-5 ${b.is_ai ? 'border-purple-200' : 'border-gray-100'}`}>
+                    <a
+                      href={slug ? `/blogs/${slug}` : b.url}
+                      target={slug ? undefined : '_blank'}
+                      rel={slug ? undefined : 'noopener noreferrer'}
+                      className={`text-sm font-medium hover:underline ${b.is_ai ? 'text-purple-700' : 'text-blue-700'}`}
+                    >
+                      {b.title}
+                    </a>
+                    {b.is_ai && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
+                  </li>
+                )
+              })}
             </ul>
             <div className="mt-5">
-              <a href="/blogs" className="text-sm text-blue-600 hover:underline font-medium">View all 24 posts →</a>
+              <a href="/blogs" className="text-sm text-blue-600 hover:underline font-medium">View all {blogs.length} posts →</a>
             </div>
           </section>
 

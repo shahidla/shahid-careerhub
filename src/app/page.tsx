@@ -1,4 +1,9 @@
-export default function HomePage() {
+import { getAllBlogs } from '@/lib/blogs'
+import { getProfile } from '@/lib/db'
+
+export default async function HomePage() {
+  const [blogs, profile] = await Promise.all([getAllBlogs(), getProfile()])
+
   return (
     <main className="max-w-4xl mx-auto px-6 py-16">
 
@@ -39,7 +44,7 @@ export default function HomePage() {
         </a>
         <a href="/blogs" className="group block border border-gray-200 rounded-xl p-6 bg-white hover:border-gray-400 hover:shadow-sm transition-all">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Technical Writing</p>
-          <h2 className="text-base font-semibold text-gray-900 group-hover:text-gray-700">24 SAP Community Posts</h2>
+          <h2 className="text-base font-semibold text-gray-900 group-hover:text-gray-700">{blogs.length} SAP Community Posts</h2>
           <p className="mt-2 text-sm text-gray-500">Event-driven architecture, AI workflows, BTP, HANA — published on SAP Community.</p>
         </a>
       </section>
@@ -52,7 +57,7 @@ export default function HomePage() {
           <a href="/learning" className="text-gray-600 hover:text-gray-900">Learning &amp; Courses →</a>
           <a href="https://www.linkedin.com/in/shahidmsyed/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">LinkedIn →</a>
           <a href="https://github.com/shahidla" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">GitHub →</a>
-          <a href="mailto:syedsm@gmail.com" className="text-gray-600 hover:text-gray-900">Email →</a>
+          <a href={`mailto:${profile.contact.email}`} className="text-gray-600 hover:text-gray-900">Email →</a>
         </div>
       </section>
 
