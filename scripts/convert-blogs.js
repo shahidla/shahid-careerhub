@@ -36,6 +36,10 @@ const SLUG_MAP = {
   'SAP RIVER': 'blog-17-sap-river',
   'SAP TechEd': 'blog-18-sap-teched',
   'SAP UI Logging': 'blog-19-sap-ui-logging',
+  'MJ': 'blog-20-mj-ai-cognitive-pipeline-sap-btp',
+  'SAP HANA & Canvas - Exp1': 'blog-21-sap-hana-canvas-exp1',
+  'SAP HANA & Canvas - Exp2': 'blog-22-sap-hana-canvas-exp2',
+  'Chrome Speech Input in SAPUI5HANA Application - Exp3': 'blog-23-chrome-speech-input-sapui5-exp3',
 }
 
 function extract(html, pattern) {
@@ -60,7 +64,7 @@ function extractMeta(html) {
   // Normalize date to YYYY-MM-DD
   const published_at = date ? date.slice(0, 10) : '2024-01-01'
 
-  return { title, published_at, tags, canonical, excerpt: excerpt.slice(0, 300) }
+  return { title: decode(title), published_at, tags, canonical, excerpt: excerpt.slice(0, 300) }
 }
 
 function extractBody(html) {
@@ -190,8 +194,12 @@ function convertBlog(folderName) {
   const slug = SLUG_MAP[folderName]
   if (!slug) { console.log(`  SKIP (no slug): ${folderName}`); return }
 
-  // Skip blog-1, already done
-  if (slug === 'blog-1-event-driven-sap-cap-kyma-agentic-ai') {
+  // Skip already-converted blogs
+  const ALREADY_DONE = [
+    'blog-1-event-driven-sap-cap-kyma-agentic-ai',
+    'blog-18-sap-teched',
+  ]
+  if (ALREADY_DONE.includes(slug)) {
     console.log(`  SKIP (already converted): ${folderName}`)
     return
   }
