@@ -589,16 +589,17 @@ This is the master dev task list. Always update this when a task is done. This s
 82. ⬜ AI Skills taxonomy in Supabase — update `skills` table: replace "AI (Exploration)" with proper categories (LLM Apps, RAG, Agents, Enterprise AI, Observability)
 83. ⬜ Certifications expansion — run `20260508_certifications_expand.sql` migration; source 73-cert CSV from user; build `/certifications` full page
 84. ✅ All 24 blog posts converted — MDX files in `content/blogs/` covering blog-1 through blog-24
+85. ⬜ Content audit — projects on /resume and /ai pages don't match actual CV; review and update project descriptions, titles, impacts, and technologies in Supabase to align with real resume
 
 ### Phase 15 — Custom Domain & Email
-85. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain
-86. ⬜ Resend sender verification — unblocked once custom domain is live
-87. ⬜ Switch daily digest from Telegram-only to Resend email + Telegram
+86. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain
+87. ⬜ Resend sender verification — unblocked once custom domain is live
+88. ⬜ Switch daily digest from Telegram-only to Resend email + Telegram
 
 ### Phase 16 — Advanced (AI concepts: LLM routing, streaming, GraphRAG, fine-tuning, multimodal, guardrails)
-88. ⬜ Streaming: stream AI responses to dashboard in real time — AI concept: streaming output
-89. ⬜ LLM routing: Haiku for simple tasks, Opus for complex scoring — AI concept: model routing
-90. ⬜ Guardrails: NeMo Guardrails + Presidio for PII + input validation — AI concept: guardrails
-91. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
-92. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
-93. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
+89. ⬜ Streaming: stream AI responses to dashboard in real time — AI concept: streaming output
+90. ⬜ LLM routing: Haiku for simple tasks, Opus for complex scoring — AI concept: model routing
+91. ⬜ Guardrails: NeMo Guardrails + Presidio for PII + input validation — AI concept: guardrails
+92. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
+93. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
+94. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
