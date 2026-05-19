@@ -598,6 +598,7 @@ This is the master dev task list. Always update this when a task is done. This s
 98. ⬜ /resume page — Fix "42 completed OpenSAP courses" stat — now 69 total (9 SAP + 15 third-party + 45 OpenSAP)
 99. ⬜ /resume + /ai — Full review pass after fixes 95–98 are done
 100. ⬜ /resume + /ai — Replace Supabase projects with actual CV projects (task 6 — user to provide project list first)
+101. ✅ Telegram daily cron — enriched pipeline completion message to include top 10 jobs (score ≥ 60) with title, company, score, and match reasoning, matching email digest content
 
 ### Phase 15 — Custom Domain & Email
 86. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain
