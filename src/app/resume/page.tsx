@@ -342,29 +342,25 @@ export default async function ResumePage() {
           <section id="blogs">
             <h2 className="section-heading">Blog Posts</h2>
             <p className="mt-2 text-sm text-gray-500">Thought leadership on SAP BTP, event-driven architecture, AI-assisted workflows, and integration patterns.</p>
-            <ul className="mt-5 space-y-4">
-              {blogs.map((b) => {
-                const slug = canonicalToSlug[b.url]
-                return (
-                  <li key={b.id} className={`border-l-2 pl-5 ${b.is_ai ? 'border-purple-200' : 'border-gray-100'}`}>
-                    <a
-                      href={slug ? `/blogs/${slug}` : b.url}
-                      target={slug ? undefined : '_blank'}
-                      rel={slug ? undefined : 'noopener noreferrer'}
-                      className={`text-sm font-medium hover:underline ${b.is_ai ? 'text-purple-700' : 'text-blue-700'}`}
-                    >
-                      {b.title}
-                    </a>
-                    {b.is_ai && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {b.tags.map((t) => (
-                        <span key={t} className="tag-sm">{t}</span>
-                      ))}
-                    </div>
-                  </li>
-                )
-              })}
+            <ul className="mt-5 space-y-3">
+              {[
+                { slug: 'blog-20-mj-ai-cognitive-pipeline-sap-btp',                          title: 'Michael Jackson: AI Cognitive Pipeline on SAP BTP, SAP CAP, ElevenLabs, Claude, HANA DB, Solace', ai: true },
+                { slug: 'blog-1-event-driven-sap-cap-kyma-agentic-ai',                       title: 'Event Driven SAP CAP on Kyma with Agentic AI and UI Auto Refresh', ai: true },
+                { slug: 'blog-3-event-driven-integration-sap-integration-suite',             title: 'Event Driven Integration Using SAP Integration Suite, Solace, HANA DB, and OpenAI Validation', ai: true },
+                { slug: 'blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt', title: 'Automated Job Screening Using SAP Integration Suite, Adzuna, and ChatGPT', ai: true },
+                { slug: 'blog-4-multi-service-payg-sap-btp-kyma-docker-ethereum',            title: 'Multi-Service PAYG Application: SAP BTP Kyma Runtime, Docker, Ethereum, SAP AI Business Services', ai: false },
+              ].map((b) => (
+                <li key={b.slug} className={`border-l-2 pl-5 ${b.ai ? 'border-purple-200' : 'border-gray-100'}`}>
+                  <a href={`/blogs/${b.slug}`} className={`text-sm font-medium hover:underline ${b.ai ? 'text-purple-700' : 'text-blue-700'}`}>
+                    {b.title}
+                  </a>
+                  {b.ai && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
+                </li>
+              ))}
             </ul>
+            <div className="mt-5">
+              <a href="/blogs" className="text-sm text-blue-600 hover:underline font-medium">View all 24 posts →</a>
+            </div>
           </section>
 
           <hr className="border-gray-100" />
