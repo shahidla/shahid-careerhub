@@ -88,7 +88,7 @@ export default async function LearningPage() {
           {total} completed courses covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.
         </p>
         <div className="mt-6 flex flex-wrap gap-6 text-sm text-gray-500">
-          <span><strong className="text-gray-900">{certifications.length}</strong> SAP certifications</span>
+          <span><strong className="text-gray-900">{certifications.filter(c => c.issuer === 'SAP').length}</strong> SAP certifications</span>
           <span><strong className="text-gray-900">{THIRD_PARTY.length}</strong> third-party certificates</span>
           <span><strong className="text-gray-900">{VERIFIED.length}</strong> OpenSAP records of achievement</span>
           <span><strong className="text-gray-900">{NEED_REVIEW.length}</strong> OpenSAP confirmations</span>
@@ -114,7 +114,7 @@ export default async function LearningPage() {
 
       {/* Recent / notable */}
       <section>
-        <h2 className="text-xs font-semibold text-purple-500 uppercase tracking-widest mb-5">Recent &amp; Notable</h2>
+        <h2 className="text-xs font-semibold text-purple-500 uppercase tracking-widest mb-5">Confirmations</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {NEED_REVIEW.map((c) => (
             <div key={c.code} className="border border-purple-100 rounded-lg p-4 bg-white">
