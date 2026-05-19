@@ -334,11 +334,14 @@ export default async function ResumePage() {
                 </div>
               ))}
             </div>
+            <div className="mt-5 flex items-center gap-3 text-sm border-t border-gray-100 pt-4">
+              <span className="text-gray-500">+ 42 completed OpenSAP courses covering SAP HANA, BTP, ABAP, AI/ML, and Fiori</span>
+              <a href="/learning" className="text-blue-600 hover:underline font-medium shrink-0">View all →</a>
+            </div>
           </section>
 
           <hr className="border-gray-100" />
 
-          {/* Blogs */}
           <section id="blogs">
             <h2 className="section-heading">Blog Posts</h2>
             <p className="mt-2 text-sm text-gray-500">Thought leadership on SAP BTP, event-driven architecture, AI-assisted workflows, and integration patterns.</p>
