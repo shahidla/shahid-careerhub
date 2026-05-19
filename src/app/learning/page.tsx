@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Learning & Courses — Shahid M Syed',
-  description: '42 completed OpenSAP courses covering SAP HANA, BTP, ABAP, AI, ML, Fiori, Kyma, and more.',
+  description: '56 completed courses covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.',
   alternates: { canonical: 'https://shahid-careerhub.vercel.app/learning' },
 }
 
@@ -54,8 +54,25 @@ const VERIFIED = [
   { title: 'Business Process Automation in SAP S/4HANA with SAP Intelligent RPA' },
 ]
 
+const THIRD_PARTY = [
+  { title: 'Introduction to Generative AI',                                  url: 'https://www.skills.google/public_profiles/b9acc2a0-d77f-460e-8563-8dcf38f9aa18/badges/23949633', provider: 'Google',  year: '2026', ai: true },
+  { title: 'Machine Learning A-Z™: Hands-On Python & R In Data Science',    url: 'https://www.udemy.com/certificate/UC-XU3VQC5S/',                                                  provider: 'Udemy',   year: '2017', ai: true },
+  { title: 'Deep Learning A-Z™: Hands-On Artificial Neural Networks',       url: 'https://www.udemy.com/certificate/UC-Q3M00N4Z/',                                                   provider: 'Udemy',   year: '2017', ai: true },
+  { title: 'Deep Learning and NLP A-Z™: How to create a ChatBot',           url: 'https://www.udemy.com/certificate/UC-25OY7LT2/',                                                   provider: 'Udemy',   year: '2018', ai: true },
+  { title: 'SAP Data Services (BODS) Extraction, Transformation and Loading', url: 'https://www.udemy.com/certificate/UC-HR6KIVZ0/',                                                 provider: 'Udemy',   year: '2018', ai: false },
+  { title: 'SAPUI5, Fiori® and new UX (2018)',                              url: 'https://www.credential.net/m2t7h77f',                                                               provider: 'UI5CN',   year: '2018', ai: false },
+  { title: 'SAP® Netweaver Gateway for SAPUI5, Fiori and HANA',             url: 'https://www.credential.net/11745242',                                                              provider: 'UI5CN',   year: '2018', ai: false },
+  { title: 'SAP - Learn SAPUI5 Professional Development',                   url: 'https://www.udemy.com/certificate/UC-GE9HPPNM/',                                                   provider: 'Udemy',   year: '2018', ai: false },
+  { title: 'SAP CPI for Beginners with Hands-On',                           url: 'https://www.udemy.com/certificate/UC-89fb1c02-44fe-4905-844a-feac1f1f7fa2/',                       provider: 'Udemy',   year: '2025', ai: false },
+  { title: 'SAP BRFplus',                                                   url: 'https://www.udemy.com/certificate/UC-16X74S0K',                                                    provider: 'Udemy',   year: '2018', ai: false },
+  { title: 'HADOOP Starter Kit',                                            url: 'https://ude.my/UC-380MKF9F',                                                                       provider: 'Udemy',   year: '2017', ai: false },
+  { title: 'The Complete Node.js Developer Course',                         url: 'http://ude.my/UC-XDL8U3N2',                                                                        provider: 'Udemy',   year: '2017', ai: false },
+  { title: 'AWS Concepts',                                                  url: 'https://www.udemy.com/certificate/UC-W6XGQEOQ/',                                                   provider: 'Udemy',   year: '2018', ai: false },
+  { title: 'AWS Essentials',                                                url: 'https://www.udemy.com/certificate/UC-9HKXA8T6/',                                                   provider: 'Udemy',   year: '2018', ai: false },
+]
+
 export default function LearningPage() {
-  const total = NEED_REVIEW.length + VERIFIED.length
+  const total = NEED_REVIEW.length + VERIFIED.length + THIRD_PARTY.length
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
@@ -64,12 +81,13 @@ export default function LearningPage() {
         <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-2">Continuous Learning</p>
         <h1 className="text-4xl font-bold tracking-tight">Learning &amp; Courses</h1>
         <p className="mt-3 text-lg text-gray-600">
-          {total} completed OpenSAP courses covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, and cloud-native development.
+          {total} completed courses covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.
         </p>
-        <div className="mt-6 flex gap-6 text-sm text-gray-500">
+        <div className="mt-6 flex flex-wrap gap-6 text-sm text-gray-500">
           <span><strong className="text-gray-900">{total}</strong> courses completed</span>
-          <span><strong className="text-gray-900">{VERIFIED.length}</strong> records of achievement</span>
-          <span><strong className="text-gray-900">{NEED_REVIEW.length}</strong> confirmations of participation</span>
+          <span><strong className="text-gray-900">{VERIFIED.length}</strong> OpenSAP records of achievement</span>
+          <span><strong className="text-gray-900">{NEED_REVIEW.length}</strong> OpenSAP confirmations</span>
+          <span><strong className="text-gray-900">{THIRD_PARTY.length}</strong> third-party certificates</span>
         </div>
       </section>
 
@@ -86,9 +104,26 @@ export default function LearningPage() {
         </div>
       </section>
 
+      {/* Third-party certificates */}
+      <section>
+        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">Third-Party Certificates</h2>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {THIRD_PARTY.map((c) => (
+            <a key={c.title} href={c.url} target="_blank" rel="noopener noreferrer"
+              className="border border-gray-100 rounded-lg p-4 bg-white hover:border-gray-300 transition-colors block">
+              <p className="text-sm font-medium text-gray-900 leading-snug hover:text-blue-700">{c.title}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <p className="text-xs text-gray-400">{c.provider} · {c.year}</p>
+                {c.ai && <span className="text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded">AI</span>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* All verified courses */}
       <section>
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">Records of Achievement</h2>
+        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">Records of Achievement — OpenSAP</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {VERIFIED.map((c) => (
             <div key={c.title} className="border border-gray-100 rounded-lg p-4 bg-white hover:border-gray-300 transition-colors">

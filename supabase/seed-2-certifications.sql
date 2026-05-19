@@ -9,4 +9,5 @@ INSERT INTO certifications (title, code, issuer, year, credential_url, is_ai, so
   ('SAP Certified Associate - SAP Fiori Application Developer', 'C_FIORD', 'SAP', '', 'https://www.credly.com/badges/17111628-1cf3-4590-bff4-6bdec88d58a2/public_url', false, 6),
   ('SAP Certified Associate - SAP Build Developer (Low-Code/No-Code)', 'C_LCNC_2406', 'SAP', '', 'https://www.credly.com/earner/earned/badge/4e91341f-8c8d-4a5d-a025-7a2d228ec96e', false, 7),
   ('SAP Certified Development Associate - SAP HANA 2.0', 'C_HANADEV_13', 'SAP', '', 'https://www.credly.com/badges/7db66b04-736e-4453-b4ee-4284df03f334/public_url', false, 8),
-  ('SAP Certified Development Specialist - ABAP for SAP HANA 2.0', 'E_HANAAW_18', 'SAP', '', 'https://www.credly.com/badges/0a7276d8-d49a-4109-af75-eea0d2b5fa88/public_url', false, 9);
+  ('SAP Certified Development Specialist - ABAP for SAP HANA 2.0', 'E_HANAAW_18', 'SAP', '', 'https://www.credly.com/badges/0a7276d8-d49a-4109-af75-eea0d2b5fa88/public_url', false, 9),
+  ('Introduction to Generative AI', '23949633', 'Google', '2026', 'https://www.skills.google/public_profiles/b9acc2a0-d77f-460e-8563-8dcf38f9aa18/badges/23949633', true, 10);
