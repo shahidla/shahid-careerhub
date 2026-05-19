@@ -468,6 +468,101 @@ git push origin main
 
 This is the master dev task list. Always update this when a task is done. This section is always last.
 
+---
+
+### 🎯 Objectives (added session 16)
+
+**Objective 1 — Public Profile** · Recruiter-facing. Resume, AI portfolio, blogs, learning — complete and accurate.
+**Objective 2 — Dashboard Demo** · Job scoring, manual job entry, paste-and-validate, notifications.
+**Objective 3 — AI Learning** · Implement AI engineering concepts hands-on in this project.
+**Objective 4 — Infrastructure** · Domain, email, Supabase data quality, scoring calibration.
+
+---
+
+### Objective 1 — Public Profile
+
+#### Done ✅
+- /resume, /ai, /blogs, /learning, /chat all live
+- All pages data-driven from Supabase (no hardcoded arrays)
+- 69 certs in Supabase (9 SAP + 15 third-party + 8 confirmations + 37 ROA)
+- 24 blog posts as MDX, hosted on-site
+- AI Skills taxonomy updated (was "AI Exploration", now "AI Engineering")
+- /ai roadmap replaced with "AI Concepts Built" checklist
+- Blog count, email, cert count all live from DB
+
+#### Pending ⬜
+- O1-A: Verify MJ blog appears in /ai Writing section (SQL was run — check live site)
+- O1-B: Blog filter UI on /blogs (filter by tag/category)
+- O1-C: Full /certifications page (all 69 in one place, filterable)
+- O1-D: Re-embed resume chunks after skills update (chatbot uses stale AI skills data)
+
+---
+
+### Objective 2 — Dashboard Demo
+
+#### Done ✅
+- Job feed with AI scoring, Save/Ignore/Apply/Interviewing status buttons
+- Daily pipeline cron — fetch → score → Telegram notification with top 10 jobs
+- Email digest route built (blocked on custom domain)
+- Telegram bot with /run, /stats, /top, /jobs, /rescore, /help
+
+#### Pending ⬜
+- O2-A: Manual job entry — paste URL or raw text → Claude extracts fields → save to Supabase
+- O2-B: Dashboard UX — filter stale/low-match jobs by default; fix "N new" label
+- O2-C: Scoring calibration — SAP+AI hybrid roles scoring too low (~40%, should be 80+)
+- O2-D: Job match scorecard — skills %, seniority, location breakdown per job
+- O2-E: Skill gap analyzer — aggregate missing skills across unmatched jobs
+- O2-F: Cover letter generator — pick job → RAG → Claude drafts → human reviews
+- O2-G: Interview prep — given job → RAG → likely questions + answers
+
+---
+
+### Objective 3 — AI Learning (concepts to implement)
+
+#### Done ✅
+- RAG pipeline, embeddings, pgvector, Cohere rerank
+- Streaming (Claude + OpenAI token-by-token)
+- Prompt caching (90% cost reduction)
+- LLM fallback (Claude primary, OpenAI fallback, env-flag switchable)
+- LLM-as-judge scoring with Zero-shot CoT
+- ETL pipeline (fetch, normalise, deduplicate)
+- Langfuse observability (tracing, token/cost tracking)
+- Short-term memory (job status tracking in Supabase)
+- MCP server (Node.js, live at CommBank)
+- Agentic loop (Telegram bot + Vercel cron)
+
+#### Pending ⬜ (in order of complexity)
+- O3-A: Hybrid search — BM25 + vector combined for /chat
+- O3-B: Tool use / function calling — agent tools: score_job, get_profile, search_jobs
+- O3-C: Structured output — Instructor pattern for reliable JSON from Claude
+- O3-D: Long-term memory — Mem0/Zep, learn from accepted/rejected jobs
+- O3-E: Multi-agent — LangGraph orchestration of Fetcher + Scorer + Notifier
+- O3-F: Evals — DeepEval or RAGAs on retrieval quality
+- O3-G: LLM routing — Haiku for simple, Opus for complex scoring
+- O3-H: Guardrails — NeMo + Presidio for PII and input validation
+- O3-I: GraphRAG — knowledge graph over job market
+- O3-J: Fine-tuning prep — collect accepted/rejected dataset
+- O3-K: Multimodal — parse job PDFs or screenshots with Claude vision
+
+---
+
+### Objective 4 — Infrastructure
+
+#### Done ✅
+- Vercel cron wired (9am pipeline, 10am email digest)
+- Supabase ↔ Vercel integration done
+- Google Search Console verified and sitemap submitted
+- All data moved to Supabase (no hardcoded content)
+
+#### Pending ⬜
+- O4-A: Custom domain (shahidmsyed.com) — unblocks Resend email + cleaner brand
+- O4-B: Resend email — blocked until custom domain live
+- O4-C: Upwork OAuth — keys applied 2026-05-07, check approval status
+- O4-D: Re-embed resume chunks — skills table updated, chunks now stale
+- O4-E: Scoring prompt tuning — test with real hybrid SAP+AI jobs, adjust thresholds
+
+---
+
 ### Phase 0 — Foundation ✅
 1. ✅ Scaffold `/resume` public route + `/dashboard` private route in Next.js
 2. ✅ Create Supabase project, add connection string to `.env.local` and Vercel
