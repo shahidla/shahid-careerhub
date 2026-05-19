@@ -20,17 +20,14 @@ Next.js 14 portfolio site for Shahid M Syed. Deployed on Vercel at https://shahi
 - Always add `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>`
 - Commit and push after each logical unit of work
 
-## Current UX work in progress
-Implementing all items from careerhub-ux-recommendations.html:
-1. Shared public layout (header + footer) across all public pages
-2. Homepage redesign — proper career landing page, remove dev status content
-3. Dashboard — label as "Demo", add explanatory intro
-4. Blog — add categories, "Start here" featured section
-5. Accessibility — skip link, aria-current, focus rings, semantic landmarks
-6. /chat stays password-protected, add to footer only (not main nav)
+## Current focus
+- Blog categories / filter UI on `/blogs`
+- Content audit — align projects on site with actual CV (update Supabase)
+- AI Skills taxonomy — replace "AI (Exploration)" in Supabase skills table
+- Scoring calibration — SAP+AI hybrid roles scoring too low
 
 ## Public pages
-/ /resume /ai /blogs /blogs/[slug] /dashboard /chat
+/ /resume /ai /blogs /blogs/[slug] /dashboard /chat /learning
 ## Private pages  
 /admin — do not link from public nav
 /api/* — do not link from public nav
