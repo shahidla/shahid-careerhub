@@ -1,7 +1,7 @@
 # AI Career Hub — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-19 (session 15)
+Last updated: 2026-05-19 (session 16)
 
 ---
 
@@ -601,7 +601,12 @@ This is the master dev task list. Always update this when a task is done. This s
 101. ✅ Telegram daily cron — enriched pipeline completion message to include top 10 jobs (score ≥ 60) with title, company, score, and match reasoning, matching email digest content
 102. ✅ Homepage — blog count now data-driven (was hardcoded "24"); email from profile table (was hardcoded syedsm@gmail.com)
 103. ✅ /resume blogs section — now data-driven from Supabase (was hardcoded 5 static slugs); "View all N posts" count is live
-104. ⬜ AI Skills taxonomy — run SQL to update skills table (SQL ready — see below)
+104. ✅ AI Skills taxonomy — updated in Supabase (category renamed from 'AI (Exploration)' to 'AI Engineering' with real skills)
+105. ✅ certifications table — ran migration (added category, platform, issued_date, expires_date, is_featured, subcategory columns)
+106. ✅ 15 third-party certs migrated to Supabase (Udemy, Google, UI5CN)
+107. ✅ 8 OpenSAP Confirmations migrated to Supabase
+108. ✅ 37 OpenSAP Records of Achievement migrated to Supabase
+109. ✅ /learning page fully data-driven — no hardcoded arrays; all 4 sections query Supabase by issuer/category; total count live
 
 ### Phase 14c — Supabase SQL to run
 Run these in the Supabase SQL Editor:

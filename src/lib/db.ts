@@ -56,6 +56,8 @@ export type Certification = {
   year: string
   credential_url: string
   is_ai: boolean
+  category: string | null
+  platform: string | null
   sort_order: number
 }
 
