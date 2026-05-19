@@ -1,7 +1,7 @@
 # AI Career Hub — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-19 (session 16)
+Last updated: 2026-05-19 (session 17)
 
 ---
 
@@ -603,6 +603,23 @@ This is the master dev task list. Always update this when a task is done. This s
 - O1-C: Re-embed resume chunks — skills updated, chunks now stale (ph2 item 12)
 - O1-D: Profile completeness score widget on dashboard (ph1 item 10)
 - O1-E: Confirm projects in Supabase match CV exactly — close item 100 (ph14b)
+- O1-F: Fix resume PDF vs Supabase data mismatches (session 16 audit) — see details below
+
+#### O1-F Detail — PDF vs Supabase Gaps (session 16 audit)
+
+**HIGH priority — data is wrong:**
+- `experience` DyFlex row: role is `'Contractor'` → should be `'Senior SAP Technical Consultant'`
+- `experience` CBA row: role is `'Contractor'` → should be `'Development Architect'`
+- `experience` Stockland: missing second stint Apr 2018–Nov 2018 (currently only one Stockland row); add `'Analysis for Office'` to technologies
+- `profile` proof_points: contains `'TechEd speaker'` — NOT in PDF; needs user confirmation before keeping or removing
+
+**MED priority — data is missing:**
+- `projects` Stockland project: add `'Analysis for Office'` to technologies array
+
+**MED priority — pending user decision (do not change until decided):**
+- SAP Labs has 4 sub-projects (Mohawk, Mosaic, Kronos, Galileo) currently bundled into one experience row — keep bundled or split into individual rows?
+- MCP project: keep as standalone project row, or fold into CBA experience entry?
+- Patent: currently in `achievements` only — should it also appear as a `projects` row?
 
 ---
 
