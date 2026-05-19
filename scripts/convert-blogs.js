@@ -40,6 +40,7 @@ const SLUG_MAP = {
   'SAP HANA & Canvas - Exp1': 'blog-21-sap-hana-canvas-exp1',
   'SAP HANA & Canvas - Exp2': 'blog-22-sap-hana-canvas-exp2',
   'Chrome Speech Input in SAPUI5HANA Application - Exp3': 'blog-23-chrome-speech-input-sapui5-exp3',
+  'SAP HANA & Twitter - Find your leads': 'blog-24-sap-hana-twitter-find-your-leads',
 }
 
 function extract(html, pattern) {
