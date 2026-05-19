@@ -73,15 +73,12 @@ export default async function ResumePage() {
       />
 
       {/* Top bar */}
-      <header className="border-b border-gray-200 px-6 py-3 flex items-center gap-6 text-sm sticky top-0 bg-white z-20">
-        <a href="/" className="text-gray-400 hover:text-gray-700">Home</a>
+      <header className="border-b border-gray-200 px-6 py-3 flex items-center gap-6 text-sm sticky top-[49px] bg-white z-10">
         <span className="text-gray-900 font-medium">SAP Profile</span>
         <div className="ml-auto flex items-center gap-4">
           <a href="/chat" className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-1.5 rounded-full transition-colors">
             Chat with my resume
           </a>
-          <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio →</a>
-          <a href="/blogs" className="text-gray-600 hover:text-gray-900">Blog →</a>
         </div>
       </header>
 

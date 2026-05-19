@@ -35,6 +35,7 @@ export default function BlogPage({ params }: Props) {
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
+      <a href="/blogs" className="text-sm text-gray-500 hover:text-gray-900 mb-8 inline-block">← All Blogs</a>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -48,13 +49,6 @@ export default function BlogPage({ params }: Props) {
           keywords: blog.tags.join(', '),
         })}}
       />
-
-      <nav className="flex gap-4 text-sm border-b border-gray-200 pb-4 mb-10">
-        <a href="/" className="text-gray-500 hover:text-gray-900">Home</a>
-        <a href="/resume" className="text-blue-600 hover:text-blue-800">SAP Profile →</a>
-        <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio →</a>
-        <a href="/blogs" className="text-gray-500 hover:text-gray-900">← All Blogs</a>
-      </nav>
 
       <header className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight leading-snug">{blog.title}</h1>

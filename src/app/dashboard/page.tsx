@@ -5,7 +5,8 @@ import FetchButton from './FetchButton'
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
-  title: 'Dashboard — Job Feed',
+  title: 'Dashboard Demo — Job Feed',
+  description: 'A live prototype showing AI-assisted job matching, scoring, and review workflows for SAP + AI roles.',
 }
 
 export default async function DashboardPage() {
@@ -18,20 +19,23 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* Header */}
-      <header className="border-b border-gray-200 px-6 py-3 flex items-center gap-4 text-sm bg-white sticky top-0 z-20">
-        <a href="/" className="text-gray-400 hover:text-gray-700">Home</a>
-        <a href="/resume" className="text-gray-500 hover:text-gray-900">Resume</a>
-        <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio</a>
-        <span className="ml-auto text-gray-900 font-medium">Dashboard</span>
-      </header>
-
       <div className="max-w-4xl mx-auto px-6 py-10">
+
+        {/* Demo banner */}
+        <div className="mb-8 border border-blue-200 bg-blue-50 rounded-xl p-5">
+          <p className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-1">Live Prototype</p>
+          <h1 className="text-xl font-bold text-gray-900">AI Job Dashboard Demo</h1>
+          <p className="mt-2 text-sm text-gray-600 max-w-2xl">
+            This is a live prototype showing how I use job feeds, AI-assisted scoring, and match reasoning
+            to identify relevant SAP + AI opportunities. It demonstrates data ingestion, job normalisation,
+            LLM-based match scoring, filtering, and review workflows.
+          </p>
+        </div>
 
         {/* Title row */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Job Feed</h1>
+            <h2 className="text-2xl font-bold text-gray-900">Job Feed</h2>
             <div className="flex gap-4 mt-1 text-sm text-gray-500">
               <span>{newCount} new</span>
               {savedCount > 0 && <span>{savedCount} saved</span>}

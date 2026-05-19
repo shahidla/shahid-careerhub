@@ -1,54 +1,61 @@
 export default function HomePage() {
-  const callbackPath = '/api/auth/upwork/callback'
-  const productionCallbackUrl = `https://shahid-careerhub.vercel.app${callbackPath}`
-
   return (
-    <main className="max-w-2xl mx-auto px-6 py-16">
-      <h1 className="text-3xl font-bold mb-2">AI Career Hub</h1>
-      <p className="text-green-600 font-medium mb-10">Status: App is running</p>
+    <main className="max-w-4xl mx-auto px-6 py-16">
 
-      <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4 mb-8">
-        <h2 className="text-lg font-semibold">Pages</h2>
-        <div className="flex flex-col gap-3">
-          <a href="/resume" className="inline-block bg-gray-900 hover:bg-gray-700 text-white font-medium px-6 py-3 rounded-lg transition-colors">
-            /resume — SAP Architect Profile
+      {/* Hero */}
+      <section className="mb-14">
+        <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-3">Portfolio</p>
+        <h1 className="text-4xl font-bold tracking-tight leading-snug">Shahid M Syed</h1>
+        <p className="mt-3 text-xl text-gray-600 max-w-2xl">
+          SAP Development Architect with 19 years experience — now building AI systems with RAG, agents, MCP servers, and LLM integration on BTP.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <a href="/ai"
+            className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-5 py-2.5 rounded-lg transition-colors">
+            AI Portfolio →
           </a>
-          <a href="/ai" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors">
-            /ai — AI Engineering Portfolio
+          <a href="/resume"
+            className="inline-block bg-gray-900 hover:bg-gray-700 text-white font-medium px-5 py-2.5 rounded-lg transition-colors">
+            SAP Resume →
           </a>
-          <a href="/dashboard" className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-colors">
-            /dashboard — Job Feed &amp; AI Tools
+          <a href="/chat"
+            className="inline-block border border-blue-200 text-blue-700 hover:bg-blue-50 font-medium px-5 py-2.5 rounded-lg transition-colors">
+            Chat with my resume
           </a>
         </div>
       </section>
 
-      <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
-        <div>
-          <h2 className="text-lg font-semibold mb-4">Connect your Upwork account</h2>
-          <a
-            href="/api/auth/upwork/login"
-            className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
-          >
-            Connect Upwork
-          </a>
-        </div>
+      {/* Cards */}
+      <section className="grid sm:grid-cols-3 gap-5 mb-14">
+        <a href="/resume" className="group block border border-gray-200 rounded-xl p-6 bg-white hover:border-blue-300 hover:shadow-sm transition-all">
+          <p className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-2">SAP Experience</p>
+          <h2 className="text-base font-semibold text-gray-900 group-hover:text-blue-700">19 Years · Architect</h2>
+          <p className="mt-2 text-sm text-gray-500">S/4HANA, ABAP, BTP, Fiori, Kyma — full development lifecycle.</p>
+        </a>
+        <a href="/ai" className="group block border border-purple-200 rounded-xl p-6 bg-white hover:border-purple-400 hover:shadow-sm transition-all">
+          <p className="text-xs font-semibold text-purple-500 uppercase tracking-widest mb-2">AI Engineering</p>
+          <h2 className="text-base font-semibold text-gray-900 group-hover:text-purple-700">RAG · Agents · MCP</h2>
+          <p className="mt-2 text-sm text-gray-500">Hands-on AI systems — embeddings, pipelines, LLM integration on SAP BTP.</p>
+        </a>
+        <a href="/blogs" className="group block border border-gray-200 rounded-xl p-6 bg-white hover:border-gray-400 hover:shadow-sm transition-all">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Technical Writing</p>
+          <h2 className="text-base font-semibold text-gray-900 group-hover:text-gray-700">24 SAP Community Posts</h2>
+          <p className="mt-2 text-sm text-gray-500">Event-driven architecture, AI workflows, BTP, HANA — published on SAP Community.</p>
+        </a>
+      </section>
 
-        <div className="border-t pt-4 space-y-3">
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">OAuth Callback URLs</h3>
-          <div>
-            <p className="text-sm text-gray-500 mb-1">Local development:</p>
-            <code className="block bg-gray-100 rounded px-3 py-2 text-sm break-all">
-              http://localhost:3000{callbackPath}
-            </code>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 mb-1">Production:</p>
-            <code className="block bg-gray-100 rounded px-3 py-2 text-sm break-all">
-              {productionCallbackUrl}
-            </code>
-          </div>
+      {/* Quick links */}
+      <section className="border-t border-gray-100 pt-10">
+        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">More</h2>
+        <div className="flex flex-wrap gap-4 text-sm">
+          <a href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard Demo →</a>
+          <a href="/learning" className="text-gray-600 hover:text-gray-900">Learning &amp; Courses →</a>
+          <a href="https://www.linkedin.com/in/shahidmsyed/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">LinkedIn →</a>
+          <a href="https://github.com/shahidla" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">GitHub →</a>
+          <a href="mailto:syedsm@gmail.com" className="text-gray-600 hover:text-gray-900">Email →</a>
         </div>
       </section>
+
     </main>
   )
 }
