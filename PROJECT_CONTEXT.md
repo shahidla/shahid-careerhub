@@ -681,59 +681,27 @@ This is the master dev task list. Always update this when a task is done. This s
 81. ⬜ Blog categories / filter UI on `/blogs`
 
 ### Phase 14 — Content & Data
-82. ⬜ AI Skills taxonomy in Supabase — update `skills` table: replace "AI (Exploration)" with proper categories (LLM Apps, RAG, Agents, Enterprise AI, Observability)
-83. ⬜ Certifications expansion — run `20260508_certifications_expand.sql` migration; source 73-cert CSV from user; build `/certifications` full page
+82. ✅ AI Skills taxonomy — updated in Supabase (see item 104)
+83. ✅ Certifications migration run; all 69 certs in Supabase (see items 105–109)
 84. ✅ All 24 blog posts converted — MDX files in `content/blogs/` covering blog-1 through blog-24
 85. ⬜ Content audit — projects on /resume and /ai pages don't match actual CV; review and update project descriptions, titles, impacts, and technologies in Supabase to align with real resume
 
 ### Phase 14b — /ai and /resume Page Fixes
-95. ⬜ /ai page — Add MJ blog (blog-20) to Supabase blogs table with is_ai=true so it appears in AI Writing section (SQL ready — run in Supabase)
-96. ✅ /ai page — Removed "AI Engineering Learning Roadmap" section; replaced with "AI Concepts Built" checklist (✓ done / ○ planned)
-97. ✅ /resume page — Removed duplicate "AI Work" section; AI projects still shown in Key Projects with purple badge; SAP+AI banner kept
-98. ✅ /resume page — Fixed "42 completed OpenSAP courses" → "69 completed" to match /learning page
-99. ⬜ /resume + /ai — Full review pass after item 95 (MJ blog SQL) is run
-100. ⬜ /resume + /ai — Replace Supabase projects with actual CV projects — projects seed SQL ready (see Phase 14c)
-101. ✅ Telegram daily cron — enriched pipeline completion message to include top 10 jobs (score ≥ 60) with title, company, score, and match reasoning, matching email digest content
-102. ✅ Homepage — blog count now data-driven (was hardcoded "24"); email from profile table (was hardcoded syedsm@gmail.com)
-103. ✅ /resume blogs section — now data-driven from Supabase (was hardcoded 5 static slugs); "View all N posts" count is live
-104. ✅ AI Skills taxonomy — updated in Supabase (category renamed from 'AI (Exploration)' to 'AI Engineering' with real skills)
-105. ✅ certifications table — ran migration (added category, platform, issued_date, expires_date, is_featured, subcategory columns)
-106. ✅ 15 third-party certs migrated to Supabase (Udemy, Google, UI5CN)
+95. ✅ MJ blog added to Supabase blogs table with is_ai=true
+96. ✅ /ai page — Roadmap replaced with "AI Concepts Built" checklist
+97. ✅ /resume page — Duplicate "AI Work" section removed
+98. ✅ /resume page — Fixed "42 completed OpenSAP courses" → "69 completed"
+99. ✅ /resume + /ai — Review pass complete (session 16)
+100. ⬜ /resume + /ai — Replace Supabase projects with actual CV projects (projects in CV already match — confirm and close)
+101. ✅ Telegram daily cron — enriched with top 10 jobs matching email digest
+102. ✅ Homepage — blog count and email now data-driven
+103. ✅ /resume blogs section — data-driven from Supabase
+104. ✅ AI Skills taxonomy updated in Supabase
+105. ✅ certifications table migration run (category, platform, issued_date etc.)
+106. ✅ 15 third-party certs migrated to Supabase
 107. ✅ 8 OpenSAP Confirmations migrated to Supabase
 108. ✅ 37 OpenSAP Records of Achievement migrated to Supabase
-109. ✅ /learning page fully data-driven — no hardcoded arrays; all 4 sections query Supabase by issuer/category; total count live
-
-### Phase 14c — Supabase SQL to run
-Run these in the Supabase SQL Editor:
-
-**SQL 1 — Add MJ blog (item 95):**
-```sql
-INSERT INTO blogs (title, url, tags, is_ai, sort_order) VALUES (
-  'Michael Jackson: AI Cognitive Pipeline on SAP BTP, SAP CAP, ElevenLabs, Claude, HANA DB, Solace',
-  'https://community.sap.com/t5/technology-blogs-by-members/michael-jackson-ai-cognitive-pipeline-on-sap-btp-sap-cap-elevenlabs-claude/ba-p/14278241',
-  ARRAY['SAP BTP','CAP','Claude','ElevenLabs','HANA','Solace','AI'],
-  true,
-  0
-);
-```
-
-**SQL 2 — Update AI Skills taxonomy (item 82/104):**
-```sql
-UPDATE skills SET
-  category = 'AI Engineering',
-  items = ARRAY[
-    'RAG pipelines (pgvector, Cohere rerank, prompt caching)',
-    'LLM integration — Claude API, OpenAI, streaming, fallback',
-    'Agentic workflows — Telegram bot, Vercel cron, tool use',
-    'MCP server — Node.js, SAP RAP OData as AI-controlled tools',
-    'Embeddings — text-embedding-3-small, Supabase pgvector',
-    'Observability — Langfuse tracing, token/cost tracking',
-    'Machine learning — PAL, APL, R (Decision Tree, Random Forest, Regression)',
-    'AI-assisted automation — data scrambling, anomaly detection'
-  ],
-  is_ai = true
-WHERE category = 'AI (Exploration)';
-```
+109. ✅ /learning page fully data-driven from Supabase
 
 ### Phase 15 — Custom Domain & Email
 86. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain
