@@ -1,7 +1,7 @@
-# Upwork AI Job Assistant — Project Context
+# AI Career Hub — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-09 (session 10)
+Last updated: 2026-05-19 (session 15)
 
 ---
 
@@ -99,51 +99,76 @@ Set in Vercel project settings AND `.env.local` for local dev. Never commit `.en
 
 ```
 C:/Dev/upwork/
+├── content/
+│   └── blogs/                                  # 24 MDX blog files (blog-1 through blog-24)
+│       └── blog-N-slug.mdx                     # frontmatter: title, author, published_at, tags, canonical, excerpt
+├── public/
+│   └── blogs/                                  # 24 subdirs, one per blog, containing images
+│       └── blog-N-slug/
+├── scripts/
+│   ├── convert-blogs.js                        # converts SAP Community HTML to MDX (node script)
+│   ├── embed-resume.mjs                        # embeds resume data into pgvector (ESM, runnable)
+│   └── embed-resume.ts                         # TypeScript source of embed script
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx                          # Home page
+│   │   ├── layout.tsx                          # Root layout — SiteHeader, SiteFooter, skip link, flex body
+│   │   ├── page.tsx                            # / — Homepage: hero, 3 feature cards, quick links
 │   │   ├── globals.css
+│   │   ├── sitemap.ts                          # Dynamic sitemap: 6 static pages + 24 blog slugs
+│   │   ├── robots.ts
 │   │   ├── resume/
-│   │   │   └── page.tsx                      # /resume — public SAP profile
+│   │   │   └── page.tsx                        # /resume — full SAP profile from Supabase, side nav, AI banner
 │   │   ├── ai/
-│   │   │   └── page.tsx                      # /ai — AI portfolio page
+│   │   │   └── page.tsx                        # /ai — AI portfolio: projects, skills, certs, blogs, roadmap + On this page nav
+│   │   ├── blogs/
+│   │   │   ├── page.tsx                        # /blogs — listing: "Start Here AI+SAP" + "All Posts", 24-post count
+│   │   │   └── [slug]/
+│   │   │       └── page.tsx                    # /blogs/[slug] — MDX blog post rendered to HTML
+│   │   ├── learning/
+│   │   │   └── page.tsx                        # /learning — 42 OpenSAP courses (8 confirmations + 34 achievements)
 │   │   ├── chat/
-│   │   │   └── page.tsx                      # /chat — RAG chatbot UI (streaming)
+│   │   │   └── page.tsx                        # /chat — RAG chatbot UI (streaming, password protected)
 │   │   ├── dashboard/
-│   │   │   ├── page.tsx                      # /dashboard — job feed (server component)
-│   │   │   ├── JobFeed.tsx                   # Job cards with status buttons (client component)
-│   │   │   └── FetchButton.tsx               # Fetch now + Re-score all buttons (client component)
+│   │   │   ├── page.tsx                        # /dashboard — job feed server component + demo banner
+│   │   │   ├── JobFeed.tsx                     # Job cards with Save/Ignore/Apply buttons (client)
+│   │   │   └── FetchButton.tsx                 # Fetch now + Re-score all buttons (client)
+│   │   ├── admin/
+│   │   │   └── page.tsx                        # /admin — private: job counts, resume health, observability links
 │   │   └── api/
-│   │       ├── health/route.ts               # GET /api/health → { ok: true }
-│   │       ├── chat/route.ts                 # POST /api/chat — RAG + LLM streaming
-│   │       ├── embed/route.ts                # GET /api/embed — embed all resume data into pgvector
-│   │       ├── generate-summaries/route.ts   # GET /api/generate-summaries — AI summaries per project
+│   │       ├── health/route.ts                 # GET /api/health → { ok: true }
+│   │       ├── chat/route.ts                   # POST /api/chat — RAG + LLM streaming
+│   │       ├── embed/route.ts                  # GET /api/embed — embed all resume data into pgvector
+│   │       ├── generate-summaries/route.ts     # GET /api/generate-summaries — AI summaries per project
+│   │       ├── email-digest/route.ts           # GET /api/email-digest — daily digest email via Resend
 │   │       ├── telegram/
-│   │       │   ├── webhook/route.ts          # POST /api/telegram/webhook — Telegram bot commands
-│   │       │   └── register/route.ts         # GET /api/telegram/register — register webhook with Telegram
+│   │       │   ├── webhook/route.ts            # POST /api/telegram/webhook — bot commands
+│   │       │   └── register/route.ts           # GET /api/telegram/register — register webhook
 │   │       ├── pipeline/
-│   │       │   └── run/route.ts              # POST /api/pipeline/run — fetch + score in one call
-│   │       ├── fetch-jobs/route.ts           # GET /api/fetch-jobs — fetch+insert from all sources
-│   │       ├── score-batch/route.ts          # POST /api/score-batch — score 10 unscored jobs per call
-│   │       ├── rescore-jobs/route.ts         # POST /api/rescore-jobs — null all scores (triggers rescore)
+│   │       │   └── run/route.ts                # POST /api/pipeline/run — fetch + score in one call
+│   │       ├── fetch-jobs/route.ts             # GET /api/fetch-jobs — fetch+insert from all sources
+│   │       ├── score-batch/route.ts            # POST /api/score-batch — score 10 unscored jobs per call
+│   │       ├── rescore-jobs/route.ts           # POST /api/rescore-jobs — null all scores (triggers rescore)
 │   │       ├── jobs/
-│   │       │   └── status/route.ts           # PATCH /api/jobs/status — update job status
+│   │       │   └── status/route.ts             # PATCH /api/jobs/status — update job status
 │   │       └── auth/upwork/
 │   │           ├── login/route.ts
 │   │           └── callback/route.ts
+│   ├── components/
+│   │   ├── SiteHeader.tsx                      # Global sticky nav: Home, Resume, AI Portfolio, Blog, Learning, Dashboard Demo
+│   │   └── SiteFooter.tsx                      # Global footer: page links + LinkedIn, GitHub, SAP Community, Email
 │   └── lib/
-│       ├── db.ts                             # Supabase fetch helpers + all TypeScript types
-│       └── supabase.ts                       # supabase clients
+│       ├── blogs.ts                            # MDX reader: getAllBlogs, getBlog, getCanonicalToSlugMap, markdownToHtml
+│       ├── db.ts                               # Supabase fetch helpers + all TypeScript types
+│       └── supabase.ts                         # supabase (anon) + supabaseAdmin (service role) clients
 ├── supabase/
 │   ├── schema.sql
 │   ├── match-chunks-function.sql
-│   ├── add-ai-summary.sql                    # alter table projects add column ai_summary text
-│   ├── add-jobs-columns.sql                  # add source_id, posted_at, salary, job_type + unique index
+│   ├── add-ai-summary.sql
+│   ├── add-jobs-columns.sql
 │   ├── migrations/
-│   │   └── 20260508_certifications_expand.sql  # adds issued_date, expires_date, category, subcategory, is_featured, platform — RUN IN SUPABASE SQL EDITOR
+│   │   └── 20260508_certifications_expand.sql  # adds issued_date, expires_date, category, subcategory, is_featured, platform
 │   ├── seed-1-profile.sql
-│   ├── seed-2-certifications.sql             # 9 certs (old schema) — will be replaced with 73-cert seed after CSV is finalised
+│   ├── seed-2-certifications.sql
 │   ├── seed-3-skills.sql
 │   ├── seed-4-blogs.sql
 │   ├── seed-5-achievements.sql
@@ -152,7 +177,8 @@ C:/Dev/upwork/
 ├── docs/
 │   └── resume.pdf
 ├── .npmrc
-├── vercel.json                               # installCommand + daily crons: pipeline/run (9am UTC), email-digest (10am UTC)
+├── vercel.json                                 # installCommand + daily crons: pipeline/run (9am UTC), email-digest (10am UTC)
+├── CLAUDE.md                                   # Claude Code instructions + pre-approved permissions
 ├── .env.example
 ├── next.config.js
 ├── tailwind.config.ts
@@ -167,72 +193,59 @@ C:/Dev/upwork/
 
 ### Live at https://shahid-careerhub.vercel.app
 
-| Route | Status |
-|---|---|
-| `/resume` | ✅ Live — full SAP profile from Supabase, AI summaries per project |
-| `/ai` | ✅ Live — AI portfolio page |
-| `/chat` | ✅ Live — RAG chatbot (Claude + OpenAI fallback, Cohere rerank, streaming) |
-| `/dashboard` | ✅ Live — job feed with scoring, status management, fetch+rescore buttons |
-| `/api/fetch-jobs` | ✅ Live — fetches Remotive (SAP filtered), SAP Contractors, Adzuna AU. Cron daily 9am UTC |
-| `/api/score-batch` | ✅ Live — scores 10 jobs per call using resume chunks + LLM (batched to avoid Hobby 10s timeout) |
-| `/api/rescore-jobs` | ✅ Live — nulls all scores to trigger full rescore |
-| `/api/embed` | ✅ Live — embeds all resume data into pgvector |
-| `/api/generate-summaries` | ✅ Live — one-time AI summary generation per project |
+| Route | Status | Notes |
+|---|---|---|
+| `/` | ✅ Live | Hero, 3 feature cards, quick links. Clean career landing page. |
+| `/resume` | ✅ Live | Full SAP profile from Supabase. Sticky side nav, AI Work section, blog highlights (top 5), "View all 24 posts" link, learning callout. |
+| `/ai` | ✅ Live | AI portfolio. "On this page" section nav. Projects, skills, certs, blogs, roadmap. |
+| `/blogs` | ✅ Live | 24 MDX posts hosted on-site. "Start Here — AI+SAP" featured section + "All Posts". |
+| `/blogs/[slug]` | ✅ Live | 24 individual blog pages rendered from MDX. Canonical link to SAP Community. |
+| `/learning` | ✅ Live | 42 completed OpenSAP courses (8 confirmations + 34 achievements). |
+| `/chat` | ✅ Live | RAG chatbot (Claude primary + OpenAI fallback, Cohere rerank, streaming, password protected). |
+| `/dashboard` | ✅ Live | Job feed with AI scoring, status buttons, fetch+rescore, demo banner. |
+| `/admin` | ✅ Live | Private page: job counts, resume chunk health, observability links. Not in public nav. |
+| `/api/fetch-jobs` | ✅ Live | Fetches Remotive, SAP Contractors, Adzuna AU. Cron daily 9am UTC. |
+| `/api/score-batch` | ✅ Live | Scores 10 jobs per call via LLM. Batched to avoid Vercel 10s timeout. |
+| `/api/pipeline/run` | ✅ Live | Fetch + score loop in one call. Sends Telegram notification on completion. |
+| `/api/rescore-jobs` | ✅ Live | Nulls all scores to trigger full rescore. |
+| `/api/embed` | ✅ Live | Embeds all resume data into pgvector (49 chunks). |
+| `/api/generate-summaries` | ✅ Live | One-time AI summary generation per project. |
+| `/api/telegram/webhook` | ✅ Live | /run, /stats, /top, /jobs, /rescore, /help commands. |
+| `/api/email-digest` | ⚠️ Blocked | Route built, cron wired (10am UTC). Blocked: requires custom domain for Resend sender. |
+
+### UX / Public Site — Completed (sessions 11–15)
+
+- [x] Shared `SiteHeader` + `SiteFooter` components across all public pages
+- [x] Homepage rewritten — proper career landing page, removed dev/OAuth content
+- [x] Dashboard labelled as "Live Prototype" with explanatory banner
+- [x] Blog categories — "Start Here — AI+SAP" featured section, 24-post count
+- [x] `/learning` page — 42 OpenSAP courses in two sections
+- [x] Accessibility — skip link, `aria-current="page"`, semantic landmarks
+- [x] Resume sub-nav sits below global header (`top-[49px]`)
+- [x] AI Portfolio — "On this page" section nav with anchor links
+- [x] Blog posts hosted on-site as MDX (24 posts, `content/blogs/`)
+- [x] Blog images copied to `public/blogs/`
+- [x] `scripts/convert-blogs.js` — automated HTML-to-MDX converter
+- [x] Resume `#blogs` — replaced full list with top-5 highlights + "View all 24 posts →"
+- [x] Resume `#certifications` — added "42 OpenSAP courses" callout + "View all →" link to `/learning`
+- [x] Resume blog links now point to `/blogs/[slug]` (on-site), fall back to SAP Community if no match
+- [x] Footer "Chat" renamed to "Resume Chat" everywhere
+- [x] `sitemap.ts` — covers all 6 static pages + 24 blog slugs
+- [x] `CLAUDE.md` created — pre-approved permissions, project context for Claude Code
 
 ### Known Issues / Pending
-- Scoring prompt needs tuning — LLM doesn't distinguish functional vs technical SAP roles
-- Resume chunks may need enrichment — candidate is a **technical SAP developer** not a functional consultant
-- Vercel Hobby 10s timeout workaround — scoring batched into 10-job client-side loops
-- Anthropic API key invalid — get personal key from console.anthropic.com (sk-ant-api03-...). OpenAI fallback active.
-- Upwork API key applied 2026-05-07 — check approval status (was 1-3 business days)
-- Email digest sending from `onboarding@resend.dev` (Resend shared domain) — can only send to registered Resend email. Working fine for personal use. Custom domain needed to send to others.
-- certifications table needs expanding — migration `supabase/migrations/20260508_certifications_expand.sql` created, run in Supabase SQL Editor
-- certifications CSV being prepared by user — once shared, seed SQL + /certifications page to be built
 
-### Done (session 1-6)
-- [x] Next.js 14 app with TypeScript + Tailwind scaffolded
-- [x] Home page with Connect Upwork button and callback URLs displayed
-- [x] `/api/auth/upwork/login` — OAuth redirect with CSRF state cookie
-- [x] `/api/auth/upwork/callback` — code exchange, token stored in httpOnly cookie
-- [x] `/api/health` — health check endpoint
-- [x] Deployed to Vercel — https://shahid-careerhub.vercel.app
-- [x] GitHub → Vercel auto-deploy connected
-- [x] Personal images purged from git history (`git filter-branch`)
-- [x] `.npmrc` + `vercel.json` fixes applied for Vercel build
-- [x] Supabase project created — `https://nlklhnptshxtywojmsed.supabase.co`
-- [x] `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` added to `.env.local` and Vercel
-- [x] `schema.sql` written and run in Supabase SQL Editor — all 9 tables created with correct columns
-- [x] `src/lib/supabase.ts` created — `supabase` (anon) and `supabaseAdmin` (service role) clients
-- [x] 7 SQL seed files created in `supabase/` — ready to run in Supabase SQL Editor one at a time:
-  - `seed-1-profile.sql` — profile (1 row)
-  - `seed-2-certifications.sql` — 9 SAP + AI certifications
-  - `seed-3-skills.sql` — 5 skill categories
-  - `seed-4-blogs.sql` — 7 SAP Community blogs
-  - `seed-5-achievements.sql` — 8 awards and recognitions
-  - `seed-6-experience.sql` — 9 roles from 2007 to present
-  - `seed-7-projects.sql` — 10 key projects
-- [x] PDF resume saved to `docs/resume.pdf` for reference
-
-### Pending — Run seed files in Supabase SQL Editor
-Run these in order at https://supabase.com/dashboard/project/nlklhnptshxtywojmsed/sql/new :
-1. `supabase/seed-1-profile.sql`
-2. `supabase/seed-2-certifications.sql`
-3. `supabase/seed-3-skills.sql`
-4. `supabase/seed-4-blogs.sql`
-5. `supabase/seed-5-achievements.sql`
-6. `supabase/seed-6-experience.sql`
-7. `supabase/seed-7-projects.sql`
-
-### Pending — session 10 tasks
-- [ ] Run `supabase/migrations/20260508_certifications_expand.sql` in Supabase SQL Editor
-- [ ] User to share certifications CSV → generate seed SQL + build /certifications page
-- [ ] Build `/certifications` page — all 73 certs with filters (category, platform, year)
-- [ ] Update `/resume` certifications section — show is_featured only + "View all 73" link to /certifications
-- [ ] Blog hosting — copy 20 SAP Community blogs as MDX files (use MarkDownload Chrome extension), build /blogs listing + /blogs/[slug] pages
-- [ ] Get personal Anthropic API key from console.anthropic.com — fix /chat primary LLM
-- [ ] Check Upwork API key approval (applied 2026-05-07) — wire up if approved
-- [ ] Task 23 — Plain English resume editor (Phase 3)
-- [ ] SEO / Schema.org — after domain is set up
+- Scoring prompt needs tuning — LLM doesn't distinguish functional vs technical SAP roles well; "SAP AI Developer" roles scoring ~40% when they should be 80+
+- Resume chunks may need enrichment — candidate is a **technical SAP developer**, not a functional consultant
+- Vercel Hobby 10s timeout — scoring batched into 10-job client-side loops (workaround in place)
+- Anthropic API key — check if personal key (sk-ant-api03-...) is set in Vercel; OpenAI fallback active if not
+- Upwork API key — applied 2026-05-07, check approval status at developer.upwork.com
+- Email digest — blocked on custom domain for Resend. Telegram bot is active replacement.
+- Certifications table migration (`20260508_certifications_expand.sql`) — written, needs to be run in Supabase SQL Editor
+- Certifications CSV — user to provide full 73-cert list; once shared, seed SQL + `/certifications` page to be built
+- AI Skills wording in Supabase — `skills` table still contains "AI (Exploration)" category label; should be updated to reflect actual AI engineering work (RAG, agents, MCP, LLM APIs, observability)
+- Dashboard UX — "98 new" label should say "98 jobs found"; stale/low-match jobs not yet filtered by default; duplicates not yet collapsed
+- `src/lib/blogs.ts` — custom markdown-to-HTML parser is basic; code blocks, tables, ordered/unordered lists may not render perfectly
 
 ---
 
@@ -465,11 +478,11 @@ This is the master dev task list. Always update this when a task is done. This s
 5. ✅ Build `/resume` page in Next.js rendering from Supabase (replaces GitHub Pages)
 6. ✅ Build `/ai` page — AI portfolio: AI projects, AI certs, AI blogs, this app as live demo, learning roadmap
 7. ✅ Style both pages with Tailwind — sticky side nav, AI badges, AI work section, chat CTAs
-8. ⬜ Add Schema.org JSON-LD for SEO on `/resume`
+8. ✅ Add Schema.org JSON-LD for SEO on `/resume`
 9. ✅ AI-generated executive summaries per project (Claude, approved once, stored)
 10. ⬜ Profile completeness score widget on dashboard
 
-### Phase 2 — RAG Chatbot (AI concepts: ETL, chunking, embeddings, vector DB, RAG, prompt engineering)
+### Phase 2 — RAG Chatbot (AI concepts: ETL, chunking, embeddings, vector DB, RAG, prompt engineering) ✅
 11. ✅ Chunk resume data into text pieces (one chunk per row across all 7 tables)
 12. ✅ Embed chunks → Supabase pgvector via OpenAI `text-embedding-3-small` (49 chunks stored)
 13. ✅ Build `/api/chat` RAG route — embed question → vector search → inject top 5 chunks → LLM
@@ -489,7 +502,7 @@ This is the master dev task list. Always update this when a task is done. This s
 25. ⬜ Structured output (Instructor pattern) — reliable JSON from Claude, no hallucinated fields
 26. ⬜ Chain of Verification — Claude validates extracted data against original input before saving
 
-### Phase 4 — Job Aggregator (AI concepts: ETL pipeline, data normalisation, deduplication)
+### Phase 4 — Job Aggregator ✅ (AI concepts: ETL pipeline, data normalisation, deduplication)
 27. ✅ RSS fetchers: SAP Contractors, Remotive (SAP keyword filtered)
 28. ✅ API integrations: Adzuna AU (free key)
 29. ✅ Remotive.io integration (no key needed)
@@ -508,51 +521,78 @@ This is the master dev task list. Always update this when a task is done. This s
 38. ⬜ Job match scorecard: skills %, seniority, location, rate
 39. ✅ LLM-as-judge: scores job match with reasoning — prompt improved to distinguish technical vs functional SAP roles — AI concept: Zero-shot Chain-of-Thought
 40. ⬜ Skill gap analyzer: aggregate missing skills across unmatched jobs
+41. ⚠️ Scoring calibration — SAP+AI hybrid roles scoring too low (~40% when should be 80+%); scoring prompt needs tuning to recognise AI engineering as a primary qualifier alongside SAP
 
 ### Phase 6 — Agents (AI concepts: ReAct, tool use, MCP, multi-agent, LangGraph, self-reflection)
-41. ✅ Pipeline: `/api/pipeline/run` — fetch + score loop in one callable backend endpoint; FetchButton simplified to call it; agent will reuse these as tools
-42. ⬜ Define agent tools: `search_jobs`, `get_profile`, `score_job`, `send_email`, `update_resume` — AI concept: function calling / tool use
-43. ⬜ Add self-reflection step — agent reviews its own output before sending — AI concept: self-reflection
-44. ⬜ Expose job DB as MCP server (Anthropic Model Context Protocol) — AI concept: MCP
-45. ⬜ Multi-agent: Fetcher + Scorer + Email agents orchestrated by LangGraph — AI concept: multi-agent orchestration
-46. ⬜ Human-in-the-loop: user approves before any write action — AI concept: HITL
+42. ✅ Pipeline: `/api/pipeline/run` — fetch + score loop in one callable backend endpoint; FetchButton simplified to call it; agent will reuse these as tools
+43. ⬜ Define agent tools: `search_jobs`, `get_profile`, `score_job`, `send_email`, `update_resume` — AI concept: function calling / tool use
+44. ⬜ Add self-reflection step — agent reviews its own output before sending — AI concept: self-reflection
+45. ⬜ Expose job DB as MCP server (Anthropic Model Context Protocol) — AI concept: MCP
+46. ⬜ Multi-agent: Fetcher + Scorer + Email agents orchestrated by LangGraph — AI concept: multi-agent orchestration
+47. ⬜ Human-in-the-loop: user approves before any write action — AI concept: HITL
 
 ### Phase 7 — Cover Letter Generator (AI concepts: RAG, Chain of Verification, tool use)
-47. ⬜ Pick job → RAG retrieves relevant projects/skills → Claude drafts → human reviews before copying
-48. ⬜ Chain of Verification: validate proposal claims against resume before showing to user
+48. ⬜ Pick job → RAG retrieves relevant projects/skills → Claude drafts → human reviews before copying
+49. ⬜ Chain of Verification: validate proposal claims against resume before showing to user
 
 ### Phase 8 — Memory (AI concepts: short-term memory, long-term memory, semantic caching, delta search)
-49. ⬜ Track jobs acted on (Apply / Pass / Save) in Supabase — AI concept: short-term memory
-50. ⬜ Long-term memory via Mem0 or Zep: learn from accepted/rejected jobs — AI concept: long-term memory
-51. ⬜ Semantic caching for repeated job searches via GPTCache or Redis — AI concept: semantic caching
-52. ⬜ Delta search — only return new jobs since last run — AI concept: delta tracking
+50. ⬜ Track jobs acted on (Apply / Pass / Save) in Supabase — AI concept: short-term memory
+51. ⬜ Long-term memory via Mem0 or Zep: learn from accepted/rejected jobs — AI concept: long-term memory
+52. ⬜ Semantic caching for repeated job searches via GPTCache or Redis — AI concept: semantic caching
+53. ⬜ Delta search — only return new jobs since last run — AI concept: delta tracking
 
 ### Phase 9 — Interview Prep (AI concept: RAG)
-53. ⬜ Given a job → generate likely questions + answers from your project experience via RAG
+54. ⬜ Given a job → generate likely questions + answers from your project experience via RAG
 
 ### Phase 10 — Email & Scheduler
-54. ✅ Vercel Cron — daily at 9am UTC, now calls `/api/pipeline/run` (fetch + score in one shot); sends Telegram notification on completion
-55. ⚠️ Daily digest email via Resend — route built, cron wired (10am UTC), Langfuse tracing added — BLOCKED: requires a custom domain for Resend sender verification. Revisit when domain is available.
-56. ✅ Telegram bot — /run, /stats, /top, /jobs (numbered list), /rescore, /help commands; replaces email digest while domain is pending; webhook registered and live
+55. ✅ Vercel Cron — daily at 9am UTC, now calls `/api/pipeline/run` (fetch + score in one shot); sends Telegram notification on completion
+56. ⚠️ Daily digest email via Resend — route built, cron wired (10am UTC), Langfuse tracing added — BLOCKED: requires a custom domain for Resend sender verification. Revisit when domain is available.
+57. ✅ Telegram bot — /run, /stats, /top, /jobs (numbered list), /rescore, /help commands; replaces email digest while domain is pending; webhook registered and live
+58. ⬜ Telegram `/all` command — list all jobs regardless of score (currently only high-match shown)
 
 ### Phase 11 — Observability (AI concepts: LLM tracing, evals, token/cost tracking)
-57. ✅ Langfuse LLM tracing — traces visible in us.cloud.langfuse.com, input/output/tokens captured for /api/chat and /api/score-batch
-58. ✅ Provider enable/disable switches — ENABLE_ANTHROPIC / ENABLE_OPENAI env vars in Vercel, no redeploy needed
-59. ✅ Token + cost tracking per agent run — input/output/cache tokens captured in Langfuse for both /api/chat and /api/score-batch
-60. ✅ `/admin` page: job counts by status/score, resume chunk health, observability links (Langfuse/Vercel/Supabase/Resend), recent 10 jobs table — server component with `force-dynamic`
-61. ⬜ DeepEval or RAGAs evals for retrieval quality — AI concept: evals
-62. ⬜ LLM-as-judge: Claude scores whether job matched correctly — AI concept: automated evaluation
+59. ✅ Langfuse LLM tracing — traces visible in us.cloud.langfuse.com, input/output/tokens captured for /api/chat and /api/score-batch
+60. ✅ Provider enable/disable switches — ENABLE_ANTHROPIC / ENABLE_OPENAI env vars in Vercel, no redeploy needed
+61. ✅ Token + cost tracking per agent run — input/output/cache tokens captured in Langfuse for both /api/chat and /api/score-batch
+62. ✅ `/admin` page: job counts by status/score, resume chunk health, observability links (Langfuse/Vercel/Supabase/Resend), recent 10 jobs table — server component with `force-dynamic`
+63. ⬜ DeepEval or RAGAs evals for retrieval quality — AI concept: evals
+64. ⬜ LLM-as-judge: Claude scores whether job matched correctly — AI concept: automated evaluation
 
 ### Phase 12 — Upwork OAuth
-63. ⬜ Receive Upwork developer keys, add to Vercel env vars
-64. ⬜ Update callback URL in Upwork portal to `shahid-careerhub.vercel.app`
-65. ⬜ Test full OAuth flow end-to-end
-66. ⬜ AI Profile Optimizer: fetch Upwork profile → Claude suggestions → human review → push
+65. ⚠️ Applied for Upwork developer keys 2026-05-07 — awaiting approval
+66. ⬜ Once approved: add keys to Vercel env vars, update callback URL in Upwork portal to `shahid-careerhub.vercel.app`
+67. ⬜ Test full OAuth flow end-to-end
+68. ⬜ AI Profile Optimizer: fetch Upwork profile → Claude suggestions → human review → push
 
-### Phase 13 — Advanced (AI concepts: LLM routing, streaming, GraphRAG, fine-tuning, multimodal, guardrails)
-67. ⬜ Streaming: stream AI responses to dashboard in real time — AI concept: streaming output
-68. ⬜ LLM routing: Haiku for simple tasks, Opus for complex scoring — AI concept: model routing
-69. ⬜ Guardrails: NeMo Guardrails + Presidio for PII + input validation — AI concept: guardrails
-70. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
-71. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
-72. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
+### Phase 13 — Public Site UX ✅ (Sessions 11–15)
+69. ✅ Shared public layout — `SiteHeader` + `SiteFooter` wrapping all public pages
+70. ✅ Homepage redesign — career landing page replacing dev-status placeholder; hero, AI highlight, nav to key pages
+71. ✅ Blog infrastructure — 24 MDX posts in `content/blogs/`, `src/lib/blogs.ts` parser, `/blogs` listing page, `/blogs/[slug]` detail page with Tailwind typography
+72. ✅ `/ai` page — "On this page" anchor nav added; sections labelled `building`, `projects`, `skills`, `certs`, `writing`, `roadmap`
+73. ✅ `/resume` page — AI Work section (projects + blogs); AI highlight banner; blog section deduplicated to top-5 + "View all" link; certifications section + learning callout
+74. ✅ `/blogs` page — "Start Here — AI + SAP" featured section; post count displayed
+75. ✅ `/learning` page — 42 OpenSAP courses; full course list; linked from resume certifications section
+76. ✅ Accessibility — skip-to-content link, `aria-current="page"` on active nav items, semantic landmarks
+77. ✅ Footer — "Resume Chat" label for `/chat`; `/chat` footer-only (not in main nav)
+78. ✅ Schema.org JSON-LD on `/resume`; SEO metadata on all public pages
+79. ✅ `getCanonicalToSlugMap()` — bridges Supabase SAP Community URLs to local MDX slugs for cross-linking
+80. ⬜ Dashboard "Demo" label + explanatory intro (deferred — focus on job engine first)
+81. ⬜ Blog categories / filter UI on `/blogs`
+
+### Phase 14 — Content & Data
+82. ⬜ AI Skills taxonomy in Supabase — update `skills` table: replace "AI (Exploration)" with proper categories (LLM Apps, RAG, Agents, Enterprise AI, Observability)
+83. ⬜ Certifications expansion — run `20260508_certifications_expand.sql` migration; source 73-cert CSV from user; build `/certifications` full page
+84. ⬜ Remaining ~15 blog posts — convert SAP Community HTML to MDX; add to `content/blogs/`
+
+### Phase 15 — Custom Domain & Email
+85. ⬜ Buy `shahidmsyed.com`; update `BASE_URL` everywhere; update Vercel project domain
+86. ⬜ Resend sender verification — unblocked once custom domain is live
+87. ⬜ Switch daily digest from Telegram-only to Resend email + Telegram
+
+### Phase 16 — Advanced (AI concepts: LLM routing, streaming, GraphRAG, fine-tuning, multimodal, guardrails)
+88. ⬜ Streaming: stream AI responses to dashboard in real time — AI concept: streaming output
+89. ⬜ LLM routing: Haiku for simple tasks, Opus for complex scoring — AI concept: model routing
+90. ⬜ Guardrails: NeMo Guardrails + Presidio for PII + input validation — AI concept: guardrails
+91. ⬜ GraphRAG: knowledge graph over job market for relational queries — AI concept: GraphRAG
+92. ⬜ Fine-tuning prep: collect accepted/rejected dataset from memory — AI concept: fine-tuning
+93. ⬜ Multimodal: parse job PDFs or screenshots with Claude vision — AI concept: multimodal
