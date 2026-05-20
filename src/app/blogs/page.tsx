@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 
 type BlogsPageProps = {
   searchParams?: {
-    tag?: string
     topic?: string
   }
 }
@@ -25,10 +24,6 @@ const TOPICS: TopicOption[] = [
   { slug: 'abap-hana', label: 'ABAP / HANA' },
   { slug: 'ux-automation', label: 'UX / Automation' },
 ]
-
-function normalizeTag(tag: string): string {
-  return tag.trim().toLowerCase()
-}
 
 function formatDate(value: string): string {
   return new Date(value).toLocaleDateString('en-US', {
@@ -76,29 +71,24 @@ function getTopTags(blogs: BlogMeta[]): string[] {
     .map(([tag]) => tag)
 }
 
-function filterBlogs(blogs: BlogMeta[], tag: string | undefined, topic: string | undefined): BlogMeta[] {
+function filterBlogs(blogs: BlogMeta[], topic: string | undefined): BlogMeta[] {
   return blogs.filter((blog) => {
-    const tagMatch = !tag || blog.tags.some((item) => normalizeTag(item) === tag)
-    const topicMatch = !topic || getTopicMatches(blog).includes(topic)
-    return tagMatch && topicMatch
+    return !topic || getTopicMatches(blog).includes(topic)
   })
 }
 
-function buildFilterHref(next: { tag?: string; topic?: string }): string {
+function buildFilterHref(next: { topic?: string }): string {
   const params = new URLSearchParams()
   if (next.topic) params.set('topic', next.topic)
-  if (next.tag) params.set('tag', next.tag)
   const query = params.toString()
   return query ? `/blogs?${query}` : '/blogs'
 }
 
 export default function BlogsPage({ searchParams }: BlogsPageProps) {
   const blogs = getAllBlogs()
-  const activeTag = searchParams?.tag?.trim().toLowerCase() || undefined
   const activeTopic = searchParams?.topic?.trim().toLowerCase() || undefined
-  const filteredBlogs = filterBlogs(blogs, activeTag, activeTopic)
+  const filteredBlogs = filterBlogs(blogs, activeTopic)
   const featuredBlogs = blogs.filter((blog) => getTopicMatches(blog).includes('ai-sap')).slice(0, 3)
-  const tagOptions = getTopTags(blogs)
 
   return (
     <main className="mx-auto max-w-5xl space-y-14 px-6 py-12">
@@ -109,22 +99,37 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
           <p className="text-lg text-gray-600">
             Articles on SAP, AI engineering, integration, and hands-on product experiments, originally published on SAP Community.
           </p>
-          <p className="text-sm text-gray-400">
-            {filteredBlogs.length} of {blogs.length} posts shown
-          </p>
         </div>
       </section>
 
-      {featuredBlogs.length > 0 ? (
+      <section>
+        <div className="flex flex-wrap gap-2">
+          <a
+            href={buildFilterHref({})}
+            className={`tag-sm ${!activeTopic ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+          >
+            All posts ({blogs.length})
+          </a>
+          {TOPICS.map((topic) => {
+            const count = blogs.filter((b) => getTopicMatches(b).includes(topic.slug)).length
+            return (
+              <a
+                key={topic.slug}
+                href={buildFilterHref({ topic: topic.slug })}
+                className={`tag-sm ${activeTopic === topic.slug ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+              >
+                {topic.label} ({count})
+              </a>
+            )
+          })}
+        </div>
+      </section>
+
+      {!activeTopic && featuredBlogs.length > 0 ? (
         <section className="space-y-5">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">Start Here</p>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-900">AI + SAP highlights</h2>
-            </div>
-            <a href={buildFilterHref({ topic: 'ai-sap' })} className="text-sm font-medium text-blue-600 hover:underline">
-              View all AI + SAP posts
-            </a>
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">Start Here</p>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">AI + SAP highlights</h2>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -155,50 +160,6 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
         </section>
       ) : null}
 
-      <section className="space-y-6">
-        <div className="space-y-3">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Browse by topic</h2>
-          <div className="flex flex-wrap gap-2">
-            <a
-              href={buildFilterHref({ tag: activeTag })}
-              className={`tag-sm ${!activeTopic ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
-            >
-              All topics
-            </a>
-            {TOPICS.map((topic) => (
-              <a
-                key={topic.slug}
-                href={buildFilterHref({ topic: topic.slug, tag: activeTag })}
-                className={`tag-sm ${activeTopic === topic.slug ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
-              >
-                {topic.label}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-500">Popular tags</h3>
-          <div className="flex flex-wrap gap-2">
-            <a
-              href={buildFilterHref({ topic: activeTopic })}
-              className={`tag-sm ${!activeTag ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
-            >
-              All tags
-            </a>
-            {tagOptions.map((tag) => (
-              <a
-                key={tag}
-                href={buildFilterHref({ topic: activeTopic, tag: normalizeTag(tag) })}
-                className={`tag-sm ${activeTag === normalizeTag(tag) ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
-              >
-                {tag}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section>
         {filteredBlogs.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center">
@@ -218,7 +179,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                     return (
                       <a
                         key={topic}
-                        href={buildFilterHref({ topic, tag: activeTag })}
+                        href={buildFilterHref({ topic })}
                         className={`tag-sm ${activeTopic === topic ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
                       >
                         {label}
@@ -235,13 +196,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                 <p className="mt-2 text-sm leading-relaxed text-gray-600">{blog.excerpt}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {blog.tags.map((tag) => (
-                    <a
-                      key={tag}
-                      href={buildFilterHref({ topic: activeTopic, tag: normalizeTag(tag) })}
-                      className={`tag-sm ${activeTag === normalizeTag(tag) ? 'bg-gray-900 text-white' : ''}`}
-                    >
-                      {tag}
-                    </a>
+                    <span key={tag} className="tag-sm">{tag}</span>
                   ))}
                 </div>
                 <div className="mt-4 flex flex-wrap gap-4 text-sm">
