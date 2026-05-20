@@ -226,7 +226,7 @@ export function getAllBlogs(): BlogMeta[] {
     .sort((a, b) => {
       const dateOrder = b.published_at.localeCompare(a.published_at)
       if (dateOrder !== 0) return dateOrder
-      return a.slug.localeCompare(b.slug)
+      return b.slug.localeCompare(a.slug)
     })
 }
 
