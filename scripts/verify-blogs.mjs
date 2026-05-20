@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 const BLOGS_DIR = 'content/blogs'
-const files = fs.readdirSync(BLOGS_DIR).filter(f => f.endsWith('.mdx')).sort()
+const files = fs.readdirSync(BLOGS_DIR).filter((file) => file.endsWith('.mdx')).sort()
 
 let passed = 0
 let failed = 0
@@ -24,10 +24,10 @@ for (const file of files) {
   if (body.includes('[****]')) issues.push('broken link with empty label [****]')
 
   if (issues.length === 0) {
-    console.log(`✅ ${file}`)
+    console.log(`OK ${file}`)
     passed++
   } else {
-    console.log(`❌ ${file}`)
+    console.log(`FAIL ${file}`)
     for (const issue of issues) console.log(`   - ${issue}`)
     failed++
   }

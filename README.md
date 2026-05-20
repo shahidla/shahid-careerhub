@@ -67,6 +67,23 @@ Register the production URL in your [Upwork Developer Portal](https://www.upwork
 | `/api/auth/upwork/callback` | GET | Upwork OAuth callback handler |
 | `/api/health` | GET | Health check |
 
+## Blog Archive
+
+The repo is intended to rebuild the blog archive even if SAP Community or Vercel content becomes unavailable.
+
+| Path | Purpose |
+|---|---|
+| `Blogs/` | Raw downloaded SAP Community source archive. Keep this as preservation material. |
+| `content/blogs/` | Production MDX posts rendered by the site. |
+| `public/blogs/` | Only media files referenced by the production MDX posts. |
+| `scripts/verify-blog-assets.mjs` | Verifies every referenced blog asset exists and no unreferenced public blog assets remain. |
+
+Run the archive checks with:
+
+```bash
+npm run verify:blogs
+```
+
 ## Deploy to Vercel
 
 ### Option A - Vercel CLI
