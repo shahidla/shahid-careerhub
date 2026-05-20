@@ -25,11 +25,11 @@ const STATUS_COLOURS: Record<string, string> = {
 function timeAgo(date: string | null): string {
   if (!date) return ''
   const diff = Date.now() - new Date(date).getTime()
-  const h = Math.floor(diff / 3600000)
-  if (h < 1) return 'just now'
-  if (h < 24) return `${h}h ago`
-  const d = Math.floor(h / 24)
-  return `${d}d ago`
+  const hours = Math.floor(diff / 3600000)
+  if (hours < 1) return 'just now'
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  return `${days}d ago`
 }
 
 function JobCard({ job, index }: { job: Job; index: number }) {
@@ -80,9 +80,9 @@ function JobCard({ job, index }: { job: Job; index: number }) {
           )}
           <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 flex-wrap">
             {job.company && <span>{job.company}</span>}
-            {job.company && job.location && <span>·</span>}
+            {job.company && job.location && <span>|</span>}
             {job.location && <span>{job.location}</span>}
-            {job.salary && <><span>·</span><span className="text-green-700 font-medium">{job.salary}</span></>}
+            {job.salary && <><span>|</span><span className="text-green-700 font-medium">{job.salary}</span></>}
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -103,51 +103,44 @@ function JobCard({ job, index }: { job: Job; index: number }) {
 
       {job.tags && job.tags.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
-          {job.tags.slice(0, 6).map((t) => (
-            <span key={t} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
-              {t}
+          {job.tags.slice(0, 6).map((tag) => (
+            <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+              {tag}
             </span>
           ))}
         </div>
       )}
 
-      {/* Action buttons */}
       <div className="mt-3 flex items-center justify-between">
         <span className="text-xs text-gray-400">{timeAgo(job.posted_at ?? job.fetched_at)}</span>
         <div className="flex gap-1.5">
           {status === 'new' && (
             <>
-              <button onClick={() => updateStatus('saved')} disabled={saving}
-                className="text-xs px-2.5 py-1 rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-50 transition-colors disabled:opacity-50">
+              <button onClick={() => updateStatus('saved')} disabled={saving} className="text-xs px-2.5 py-1 rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-50 transition-colors disabled:opacity-50">
                 Save
               </button>
-              <button onClick={() => updateStatus('ignored')} disabled={saving}
-                className="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
+              <button onClick={() => updateStatus('ignored')} disabled={saving} className="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
                 Ignore
               </button>
             </>
           )}
           {status === 'saved' && (
             <>
-              <button onClick={() => updateStatus('applied')} disabled={saving}
-                className="text-xs px-2.5 py-1 rounded-lg border border-green-200 text-green-700 hover:bg-green-50 transition-colors disabled:opacity-50">
+              <button onClick={() => updateStatus('applied')} disabled={saving} className="text-xs px-2.5 py-1 rounded-lg border border-green-200 text-green-700 hover:bg-green-50 transition-colors disabled:opacity-50">
                 Mark Applied
               </button>
-              <button onClick={() => updateStatus('ignored')} disabled={saving}
-                className="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
+              <button onClick={() => updateStatus('ignored')} disabled={saving} className="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
                 Ignore
               </button>
             </>
           )}
           {status === 'applied' && (
-            <button onClick={() => updateStatus('interviewing')} disabled={saving}
-              className="text-xs px-2.5 py-1 rounded-lg border border-yellow-200 text-yellow-700 hover:bg-yellow-50 transition-colors disabled:opacity-50">
+            <button onClick={() => updateStatus('interviewing')} disabled={saving} className="text-xs px-2.5 py-1 rounded-lg border border-yellow-200 text-yellow-700 hover:bg-yellow-50 transition-colors disabled:opacity-50">
               Interviewing
             </button>
           )}
           {(status === 'ignored' || status === 'closed') && (
-            <button onClick={() => updateStatus('new')} disabled={saving}
-              className="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
+            <button onClick={() => updateStatus('new')} disabled={saving} className="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
               Restore
             </button>
           )}
@@ -160,14 +153,14 @@ function JobCard({ job, index }: { job: Job; index: number }) {
 export default function JobFeed({ jobs }: { jobs: Job[] }) {
   const [showIgnored, setShowIgnored] = useState(false)
 
-  const visible = showIgnored ? jobs : jobs.filter((j) => j.status !== 'ignored' && j.status !== 'closed')
-  const hiddenCount = jobs.length - visible.length
+  const visibleJobs = showIgnored ? jobs : jobs.filter((job) => job.status !== 'ignored' && job.status !== 'closed')
+  const hiddenCount = jobs.length - visibleJobs.length
 
   if (jobs.length === 0) {
     return (
       <div className="text-center py-20 text-gray-400">
         <p className="text-lg font-medium mb-2">No jobs yet</p>
-        <p className="text-sm">Click &ldquo;Fetch now&rdquo; to pull the latest SAP jobs.</p>
+        <p className="text-sm">Click &quot;Fetch now&quot; to pull the latest SAP jobs.</p>
       </div>
     )
   }
@@ -175,8 +168,8 @@ export default function JobFeed({ jobs }: { jobs: Job[] }) {
   return (
     <div>
       <div className="space-y-3">
-        {visible.map((job, i) => (
-          <JobCard key={job.id} job={job} index={i + 1} />
+        {visibleJobs.map((job, index) => (
+          <JobCard key={job.id} job={job} index={index + 1} />
         ))}
       </div>
       {hiddenCount > 0 && (

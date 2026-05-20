@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getInternalAuthHeaders } from '@/lib/access'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -23,14 +24,19 @@ async function getTopJobs(): Promise<Job[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return []
   const res = await fetch(
     `${SUPABASE_URL}/rest/v1/jobs?select=title,company,location,url,match_score,match_reasoning,source&match_score=gte.60&status=eq.new&order=match_score.desc&limit=10`,
-    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+    { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   )
   if (!res.ok) return []
   return res.json()
 }
 
 async function run() {
-  const fetchRes = await fetch(`${BASE_URL}/api/fetch-jobs`, { method: 'GET' })
+  const authHeaders = getInternalAuthHeaders()
+
+  const fetchRes = await fetch(`${BASE_URL}/api/fetch-jobs`, {
+    method: 'GET',
+    headers: authHeaders,
+  })
   if (!fetchRes.ok) return { error: 'fetch-jobs failed' }
   const fetchData = await fetchRes.json()
   const fetched: number = fetchData.totalNew ?? 0
@@ -39,13 +45,18 @@ async function run() {
   let scoreError = ''
   let model = ''
   let patchErrors = 0
+
   while (true) {
-    const scoreRes = await fetch(`${BASE_URL}/api/score-batch`, { method: 'POST' })
+    const scoreRes = await fetch(`${BASE_URL}/api/score-batch`, {
+      method: 'POST',
+      headers: authHeaders,
+    })
     if (!scoreRes.ok) {
       const errBody = await scoreRes.text().catch(() => 'unknown error')
       scoreError = errBody
       break
     }
+
     const scoreData = await scoreRes.json()
     scored += scoreData.scored ?? 0
     patchErrors += scoreData.patchErrors ?? 0
@@ -53,30 +64,31 @@ async function run() {
     if ((scoreData.remaining ?? 0) <= 0) break
   }
 
-  return { fetched, scored, model, scoreError: scoreError || undefined, patchErrors: patchErrors || undefined }
+  return {
+    fetched,
+    scored,
+    model,
+    scoreError: scoreError || undefined,
+    patchErrors: patchErrors || undefined,
+  }
 }
 
 async function notifyTelegram(fetched: number, scored: number) {
   if (!TELEGRAM_TOKEN || !TELEGRAM_CHAT_ID) return
 
   const jobs = await getTopJobs()
-
-  let text = `🤖 *Daily pipeline complete*\nFetched: ${fetched} · Scored: ${scored}\n`
+  let text = `Daily pipeline complete\nFetched: ${fetched} | Scored: ${scored}\n`
 
   if (jobs.length === 0) {
-    text += `\nNo high\\-match jobs today \\(score ≥ 60\\)\\.`
+    text += '\nNo high-match jobs today (score >= 60).'
   } else {
-    text += `\n*Top ${jobs.length} high\\-match jobs:*\n`
-    jobs.forEach((job, i) => {
+    text += `\nTop ${jobs.length} high-match jobs:\n`
+    jobs.forEach((job, index) => {
       const score = job.match_score ?? 0
-      const company = (job.company ?? '').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')
-      const title = (job.title ?? '').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')
-      const reasoning = job.match_reasoning
-        ? `\n   _${job.match_reasoning.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&').slice(0, 120)}_`
-        : ''
-      text += `\n${i + 1}\\. [${title}](${job.url}) — *${score}*\n   ${company}${reasoning}\n`
+      const reasoning = job.match_reasoning ? `\n   ${job.match_reasoning.slice(0, 120)}` : ''
+      text += `\n${index + 1}. ${job.title} - ${score}\n   ${job.company}${reasoning}\n   ${job.url}\n`
     })
-    text += `\n[View dashboard](https://shahid\\-careerhub\\.vercel\\.app/dashboard)`
+    text += '\nView dashboard: https://shahid-careerhub.vercel.app/dashboard'
   }
 
   await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
@@ -85,20 +97,17 @@ async function notifyTelegram(fetched: number, scored: number) {
     body: JSON.stringify({
       chat_id: TELEGRAM_CHAT_ID,
       text,
-      parse_mode: 'MarkdownV2',
       disable_web_page_preview: true,
     }),
   }).catch(() => {})
 }
 
-// POST — called from dashboard FetchButton
 export async function POST() {
   const result = await run()
   if ('error' in result) return NextResponse.json(result, { status: 500 })
   return NextResponse.json(result)
 }
 
-// GET — called from Vercel cron (crons only support GET)
 export async function GET() {
   const result = await run()
   if ('error' in result) return NextResponse.json(result, { status: 500 })

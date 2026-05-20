@@ -1,6 +1,6 @@
 # AI Career Hub
 
-A job search aggregator + AI career assistant built with Next.js 14, TypeScript, and Tailwind CSS.
+A job search aggregator and AI career assistant built with Next.js 14, TypeScript, and Tailwind CSS.
 
 ## Setup
 
@@ -31,6 +31,8 @@ Edit `.env.local` and fill in your credentials:
 | `UPWORK_CLIENT_SECRET` | Your Upwork app client secret |
 | `UPWORK_REDIRECT_URI` | OAuth callback URL |
 | `OPENAI_API_KEY` | Your OpenAI API key |
+| `APP_ACCESS_PASSWORD` | Shared password for protected pages and private APIs |
+| `CRON_SECRET` | Secret used by Vercel cron Authorization header |
 
 ### 4. Run locally
 
@@ -40,15 +42,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
+Protected routes such as `/chat`, `/dashboard`, `/admin`, and the private mutation APIs require the shared `APP_ACCESS_PASSWORD`.
+
 ## OAuth Callback URLs
 
 **Local development:**
-```
+
+```text
 http://localhost:3000/api/auth/upwork/callback
 ```
 
 **Production (after Vercel deployment):**
-```
+
+```text
 https://YOUR-VERCEL-DOMAIN.vercel.app/api/auth/upwork/callback
 ```
 
@@ -63,14 +69,14 @@ Register the production URL in your [Upwork Developer Portal](https://www.upwork
 
 ## Deploy to Vercel
 
-### Option A — Vercel CLI
+### Option A - Vercel CLI
 
 ```bash
 npm install -g vercel
 vercel
 ```
 
-### Option B — GitHub integration
+### Option B - GitHub integration
 
 1. Push this repo to GitHub
 2. Go to [vercel.com](https://vercel.com) and import the repo

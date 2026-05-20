@@ -1,18 +1,18 @@
 const FOOTER_LINKS = [
-  { href: '/',          label: 'Home' },
-  { href: '/resume',    label: 'Resume' },
-  { href: '/ai',        label: 'AI Portfolio' },
-  { href: '/blogs',     label: 'Blog' },
+  { href: '/', label: 'Home' },
+  { href: '/resume', label: 'Resume' },
+  { href: '/ai', label: 'AI Portfolio' },
+  { href: '/blogs', label: 'Blog' },
   { href: '/dashboard', label: 'Dashboard Demo' },
-  { href: '/learning',  label: 'Learning' },
-  { href: '/chat',      label: 'Resume Chat' },
+  { href: '/learning', label: 'Learning' },
+  { href: '/chat', label: 'Resume Chat' },
 ]
 
 const SOCIAL_LINKS = [
   { href: 'https://www.linkedin.com/in/shahidmsyed/', label: 'LinkedIn' },
-  { href: 'https://github.com/shahidla',              label: 'GitHub' },
+  { href: 'https://github.com/shahidla', label: 'GitHub' },
   { href: 'https://community.sap.com/t5/user/viewprofilepage/user-id/15422', label: 'SAP Community' },
-  { href: 'mailto:syedsm@gmail.com',                  label: 'Email' },
+  { href: 'mailto:shahid.la@gmail.com', label: 'Email' },
 ]
 
 export default function SiteFooter() {
@@ -22,7 +22,7 @@ export default function SiteFooter() {
         <div className="flex flex-wrap justify-between gap-8">
           <div>
             <p className="font-semibold text-gray-900">Shahid M Syed</p>
-            <p className="text-sm text-gray-500 mt-1">SAP Development Architect · AI Engineer</p>
+            <p className="text-sm text-gray-500 mt-1">SAP Development Architect | AI Engineer</p>
           </div>
           <nav aria-label="Footer navigation">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Pages</p>
@@ -39,14 +39,20 @@ export default function SiteFooter() {
             <ul className="flex flex-wrap gap-x-6 gap-y-2 list-none m-0 p-0">
               {SOCIAL_LINKS.map(({ href, label }) => (
                 <li key={href}>
-                  <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer"
-                    className="text-sm text-gray-500 hover:text-gray-900">{label}</a>
+                  <a
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-500 hover:text-gray-900"
+                  >
+                    {label}
+                  </a>
                 </li>
               ))}
             </ul>
           </nav>
         </div>
-        <p className="mt-8 text-xs text-gray-400">© {new Date().getFullYear()} Shahid M Syed</p>
+        <p className="mt-8 text-xs text-gray-400">(c) {new Date().getFullYear()} Shahid M Syed</p>
       </div>
     </footer>
   )

@@ -4,7 +4,7 @@ const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
 const OPENAI_KEY = process.env.OPENAI_API_KEY
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const COHERE_KEY = process.env.COHERE_API_KEY
+const COHERE_KEY = process.env.COHERE_API_KEY ?? process.env.Cohere_API_key
 
 // Provider switches — set ENABLE_ANTHROPIC=false or ENABLE_OPENAI=false in Vercel to disable without redeploying
 const ANTHROPIC_ENABLED = process.env.ENABLE_ANTHROPIC !== 'false'
