@@ -5,7 +5,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const BLOGS_SRC = path.join(__dirname, '../Blogs')
+const BLOGS_SRC = path.join(__dirname, '../BLOG_ARCHIVE_DO_NOT_DELETE')
 const BLOGS_DEST = path.join(__dirname, '../content/blogs')
 const IMAGES_DEST = path.join(__dirname, '../public/blogs')
 

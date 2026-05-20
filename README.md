@@ -73,7 +73,7 @@ The repo is intended to rebuild the blog archive even if SAP Community or Vercel
 
 | Path | Purpose |
 |---|---|
-| `Blogs/` | Raw downloaded SAP Community source archive. Keep this as preservation material. |
+| `BLOG_ARCHIVE_DO_NOT_DELETE/` | Raw downloaded SAP Community source archive. Do not delete; this is preservation material. |
 | `content/blogs/` | Production MDX posts rendered by the site. |
 | `public/blogs/` | Only media files referenced by the production MDX posts. |
 | `scripts/verify-blog-assets.mjs` | Verifies every referenced blog asset exists and no unreferenced public blog assets remain. |

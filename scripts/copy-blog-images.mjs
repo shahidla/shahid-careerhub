@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 const BLOGS_DIR = 'content/blogs'
-const HTML_ROOT = 'Blogs'
+const HTML_ROOT = 'BLOG_ARCHIVE_DO_NOT_DELETE'
 const PUBLIC_BLOGS = 'public/blogs'
 
 // Patterns to EXCLUDE — SAP Community UI assets, not blog content
@@ -143,4 +143,4 @@ for (const folder of folders) {
 }
 
 console.log(`\nDone: ${totalCopied} images copied, ${totalUpdated} MDX files updated`)
-console.log(`\nSafe to delete Blogs/ folder once you verify the site looks correct.`)
+console.log(`\nDo not delete BLOG_ARCHIVE_DO_NOT_DELETE/; it is the raw SAP Community archive.`)

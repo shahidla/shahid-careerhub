@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 const BLOGS_DIR = 'content/blogs'
-const HTML_ROOT = 'Blogs'
+const HTML_ROOT = 'BLOG_ARCHIVE_DO_NOT_DELETE'
 
 // Read all empty MDX files and build a map: canonical URL → filename
 function getEmptyBlogs() {
@@ -232,7 +232,7 @@ async function main() {
   const emptyBlogs = getEmptyBlogs()
   console.log(`Found ${Object.keys(emptyBlogs).length} empty blogs to populate\n`)
 
-  // Walk Blogs/ directory for all main HTML files
+  // Walk the raw archive directory for all main HTML files.
   const folders = fs.readdirSync(HTML_ROOT)
   let processed = 0
   let skipped = 0
