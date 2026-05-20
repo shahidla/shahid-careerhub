@@ -234,7 +234,7 @@ export default async function ResumePage() {
                     )}
                   </div>
                   {project.client && (
-                    <div className="text-sm text-gray-500 mt-0.5">{project.client}</div>
+                    <div className="text-sm text-blue-600 mt-0.5">{project.client}</div>
                   )}
                   <p className="mt-1 text-sm font-medium text-blue-700">{project.impact}</p>
                   <p className="mt-1 text-sm text-gray-700 leading-relaxed">{project.ai_summary ?? project.description}</p>
