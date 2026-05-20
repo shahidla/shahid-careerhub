@@ -223,7 +223,11 @@ export function getAllBlogs(): BlogMeta[] {
         excerpt: normalizeText(String(data.excerpt ?? '')),
       } as BlogMeta
     })
-    .sort((a, b) => b.published_at.localeCompare(a.published_at))
+    .sort((a, b) => {
+      const dateOrder = b.published_at.localeCompare(a.published_at)
+      if (dateOrder !== 0) return dateOrder
+      return a.slug.localeCompare(b.slug)
+    })
 }
 
 export function getCanonicalToSlugMap(): Record<string, string> {
