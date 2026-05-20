@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/michael-ja
 excerpt: "Idea Michael Jackson’s HIStory album opens with a five-minute spoken montage of real historical moments before asking “What about elephants? What about crying whales?"
 ---
 
-
 ## Idea
 
 Michael Jackson’s HIStory album opens with a five-minute spoken montage of real historical moments before asking *“What about elephants? What about crying whales? What about killing fields?”* The goal was to build a pipeline that listens in real time, identifies the historical events being referenced, retrieves real knowledge about each one from a knowledge base, builds an emotional arc across the full song, and generates a closing reflection at the end. This project is MJ Live.
@@ -28,9 +27,8 @@ The result is a live display that fills up with real historical events as the mu
 
 The entire pipeline runs on SAP BTP Cloud Foundry. SAP CAP handles the cognitive orchestration and OData layer, SAP HANA Cloud handles both event persistence and vector similarity search, and Solace delivers events to the consumer UI in real time. No external compute. No external vector database.
 
-## Demo
 
-▶ YouTube: 
+## Demo
 
 The video shows the full pipeline running on SAP BTP, from the first historical event in the HIStory speech through Earth Song and Man in the Mirror, ending with the AI’s closing reflection.
 
@@ -40,7 +38,7 @@ GitHub: User - shahidla. Repository - MJ
 
 ![Shahid_0-1779101507359.png](/blogs/blog-20-mj-ai-cognitive-pipeline-sap-btp/Shahid_0-1779101507359.png)
 
- 
+
 
 Architecture Diagram
 
@@ -171,7 +169,7 @@ The system is not specific to Michael Jackson. Any audio that produces historica
 
 ![Shahid_1-1779101507412.png](/blogs/blog-20-mj-ai-cognitive-pipeline-sap-btp/Shahid_1-1779101507412.png)
 
- 
+
 
 Consumer Overview
 
@@ -181,7 +179,7 @@ The display has three sections:
 
 ![Shahid_2-1779101507424.png](/blogs/blog-20-mj-ai-cognitive-pipeline-sap-btp/Shahid_2-1779101507424.png)
 
- 
+
 
 Pipeline Active
 
@@ -189,7 +187,7 @@ Pipeline Active
 
 ![Shahid_3-1779101507438.png](/blogs/blog-20-mj-ai-cognitive-pipeline-sap-btp/Shahid_3-1779101507438.png)
 
- 
+
 
 Chronicle Entries
 
@@ -201,7 +199,7 @@ Chronicle Entries
 
 ![Shahid_4-1779101507442.png](/blogs/blog-20-mj-ai-cognitive-pipeline-sap-btp/Shahid_4-1779101507442.png)
 
- 
+
 
 Log Events
 
@@ -211,7 +209,7 @@ The CAP Calls tab shows every transcript batch that reached the pipeline, with t
 
 ![Shahid_5-1779101507451.png](/blogs/blog-20-mj-ai-cognitive-pipeline-sap-btp/Shahid_5-1779101507451.png)
 
- 
+
 
 CAP Calls
 
@@ -303,7 +301,7 @@ After the last note, the system calls Claude Opus with every event witnessed acr
 
 ![Shahid_6-1779101507469.png](/blogs/blog-20-mj-ai-cognitive-pipeline-sap-btp/Shahid_6-1779101507469.png)
 
- 
+
 
 Finale Screen
 
@@ -316,6 +314,7 @@ This is a prototype, but it is deployed to SAP BTP Cloud Foundry and ran live ag
 The AI does not know it is listening to Michael Jackson. It just knows what it heard, and it tells you what it understood.
 
 What makes it deployable at this level is the SAP BTP stack: SAP CAP as the service and orchestration layer, SAP HANA Cloud as the persistence and vector search backend, and Solace for real-time event delivery. All of it runs on Cloud Foundry with a standard cf push. No custom infrastructure. No external vector database. The platform handles the plumbing so the AI work stays in focus.
+
 
 ## References
 - [SAP CAP Documentation](https://cap.cloud.sap/)
@@ -345,6 +344,10 @@ The AI asked a question nobody scripted. That is the result worth keeping.
 
 This is a prototype created for learning and demonstration purposes, but it is deployed to SAP BTP Cloud Foundry and ran live against real audio. Functional gaps and bugs may exist. SAP guidelines, best practices, coding standards, authorisation requirements and performance considerations were not in scope. A real solution would require proper error handling, security checks, resilience measures and alignment with enterprise development standards.
 
+## Demo
+
+> 🎬 **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=zzM3rBsOQEs)
+
 ## Key Takeaways
 
 - Michael Jackson: AI Cognitive Pipeline on SAP BTP, SAP CAP, ElevenLabs, Claude, HANA DB, Solace demonstrates practical integration of SAP technologies in a real-world scenario.
@@ -354,4 +357,3 @@ This is a prototype created for learning and demonstration purposes, but it is d
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/michael-jackson-ai-cognitive-pipeline-on-sap-btp-sap-cap-elevenlabs-claude/ba-p/14398266)
-

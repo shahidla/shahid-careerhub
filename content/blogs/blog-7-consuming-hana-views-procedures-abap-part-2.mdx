@@ -8,26 +8,25 @@ canonical: "https://community.sap.com/t5/application-development-and-automation-
 excerpt: "Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-views-in-abap-740-syntax--part-1 ABAP Report with new data"
 ---
 
-> **Summary:** **Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view...** **** - **ABAP Report with new data declaration syntaxes on 7.40**
+> **Summary:** **Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view... **** - **ABAP Report with new data declaration syntaxes on 7.40**
 
 ## Introduction
 
-**Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view...**
+**Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view...
 
 ****
 
 - **ABAP Report with new data declaration syntaxes on 7.40**
 - **ABAP Report on HANA using ADBC**
-******Part 2:http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view...******
+******Part 2:http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view...**
 
 - **Consuming Attribute View using External View.**
 - **Consuming Attribute View using Native SQL**
 - **Consuming Analytic View/Calculation View in ABAP**
-******Part 3: http://scn.sap.com/community/abap/hana/blog/2014/01/08/as******
+******Part 3: http://scn.sap.com/community/abap/hana/blog/2014/01/08/as**
 
 - **Consuming HANA artifact Stored Procedure using ABAP Proxy Procedure.**
 - **Consume HANA artifact Stored Procedure by Calling it in ABAP Code.**
-
 
 **T3. Consuming Attribute View using External View.**
 
@@ -55,36 +54,25 @@ excerpt: "Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consumi
 
 **Step 1:** Go to ‘ABAP’ prospective.
 
-
 ![Screenshot 1](./image-1.png)
-
 
 **Step 2:  **Right click on ABAP package under which you want to create this external view. Under ‘New’ click on ‘Other ABAP Repository Object’
 
-
 ![Screenshot 2](./image-2.png)
-
 
 **Step 3: **Expand ‘Dictionary’ folder and click on ‘Dictionary View’.
 
-
 ![Screenshot 3](./image-3.png)
-
 
 **Step 4: **Enter name and description of view and select **‘External View’** radio button and browse and select your HANA view.
 
-
 ![Screenshot 4](./image-4.png)
-
 
 **Step 5: **Click on Next, Finish and then **activate the view**, this will create your external view in you ABAP system, you can cross check in SE11.** **‘Synchronize’ button should be used if any changes are made in HANA view
 
-
 ![Screenshot 5](./image-5.png)
 
-
 ![Screenshot 6](./image-6.png)
-
 
 **Source Code to consume the above created external View:**
 
@@ -100,7 +88,6 @@ excerpt: "Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consumi
 
 ****
 
-
 ****
 
 **T4. Consuming Attribute View using Native SQL**
@@ -113,7 +100,6 @@ excerpt: "Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consumi
 
   TRY.
 
-
       lv_sql = | SELECT bill_rate, emp_name, bill_date, pernr, |
 
 *           use HANA built-in function
@@ -122,16 +108,13 @@ excerpt: "Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consumi
 
             && |   FROM _SYS_BIC."mohas97_ha5/AT_EMP_BILL" |.
 
-
 *     Create an SQL statement to be executed via default secondary DB connection
 
       CREATE OBJECT lo_sql_stmt EXPORTING con_ref = cl_sql_connection=>get_connection( ).
 
-
 *     execute the native SQL query/ SQL Call
 
       lo_result = NEW cl_sql_statement( )->execute_query( lv_sql ).   " new syntax
-
 
 *     read the result into the internal table lt_partner
 
@@ -143,16 +126,13 @@ lo_result->next_package( ).
 
 lo_result->close( ).
 
-
     CATCH cx_sql_exception INTO lx_sql_exc.
 
       lv_text = lx_sql_exc->get_text( ).
 
       MESSAGE lv_text TYPE 'E'.
 
-
   ENDTRY.
-
 
   LOOP AT lt_tab2 ASSIGNING FIELD-SYMBOL(<fs>).
 
@@ -162,9 +142,7 @@ lo_result->close( ).
 
   ENDLOOP.
 
-
 ![Screenshot 7](./image-7.png)
-
 
 **T5. Consuming Analytic View/Calculation View in ABAP**
 
@@ -192,9 +170,7 @@ lo_result->close( ).
 
   DATA: LT_PROJ TYPE ZTT_EMP_PROJ.
 
-
   TRY.
-
 
       lv_sql = | SELECT mandt, PERNR, PROJ_NAME, RESOURCE_NO |
 
@@ -206,9 +182,7 @@ lo_result->close( ).
 
 *            && |  ORDER BY bill_rate |.
 
-
 Source Code for Using Input Parameter
-
 
 *      lv_sql = | SELECT mandt, PERNR, BILL_RATE, BILL_DATE |
 
@@ -218,16 +192,13 @@ Source Code for Using Input Parameter
 
 *            && |  WHERE mandt = { sy-mandt }    GROUP BY mandt, pernr, bill_rate, bill_date |.
 
-
 *     Create an SQL statement to be executed via default secondary DB connection
 
       CREATE OBJECT lo_sql_stmt EXPORTING con_ref = cl_sql_connection=>get_connection( ).
 
-
 *     execute the native SQL query/ SQL Call
 
       lo_result = NEW cl_sql_statement( )->execute_query( lv_sql ).   " new syntax
-
 
 *     read the result into the internal table lt_partner
 
@@ -241,13 +212,11 @@ lo_result->set_param_table( lr_data ).  "Retrieve result of native SQL call
 
       lo_result->close( ).
 
-
     CATCH cx_sql_exception INTO lx_sql_exc.
 
       lv_text = lx_sql_exc->get_text( ).
 
       MESSAGE lv_text TYPE 'E'.
-
 
   ENDTRY.
 
@@ -259,11 +228,9 @@ lo_result->set_param_table( lr_data ).  "Retrieve result of native SQL call
 
   ENDLOOP.
 
-
 **Output:**
 
 ****
-
 
 ## Key Takeaways
 
@@ -274,4 +241,3 @@ lo_result->set_param_table( lr_data ).  "Retrieve result of native SQL call
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/application-development-and-automation-blog-posts/consuming-hana-views-procedures-external-views-in-abap-7-40-syntax-part-2/ba-p/13086113)
-

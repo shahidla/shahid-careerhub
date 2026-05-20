@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-cloud-
 excerpt: "Introduction: Aggregating my learnings on few topics such as SAP Cloud Platform Enterprise Messaging, SAP Cloud Platform Open Connectors, Document Information Extraction"
 ---
 
-
 **Introduction:****
 
 
@@ -29,15 +28,15 @@ Objective is to try out communication across different applications using SAP Cl
 
  	**SAP ABAP Daemon **to pull data from Enterprise Messaging and post a reply tweet.
 
- 
+
 
 **Flow:**
 
- 
+
 
 Demo:**
 
- 
+
 
 **Development Details:**
 
@@ -49,17 +48,17 @@ Follow the steps for Trial Plan for SAP Cloud Platform Enterprise Messaging – 
 
 Create Queues,  Create Queue Subscriptions, Create Webhook Subscriptions for Queue:
 
- 
+
 
  	1. Twitter: Your Twitter Account: Tweet to the User ID: @U40010 with Hashtag #ASKCET.
 
- 
+
 
  	1. SAP Cloud Platform Open Connectors:
 
 Follow the steps to enable: [https://developers.sap.com/tutorials/cp-apim-openconnectors-enable.html](https://developers.sap.com/tutorials/cp-apim-openconnectors-enable.html)
 
- 
+
 
 Instance Variables:
 
@@ -74,11 +73,11 @@ Instance Variables:
 
  	1. SAP Conversation AI: I will not be covering creating Chatbot here. There are many deep dive blogs. Please refer to the Resource Information on how to create a chatbot. Please refer to GitHub for code.,
 
- 
+
 
  	1. SAP ABAP Code: SAP ABAP Code is used to call SAP Cloud Platform Enterprise Messaging URLs (using cl_http_client=>create_by_url) to pull the messages and to act on it. SAP ABAP Code is used to call Document Information Extraction Services to read extracted information from the Document and in this case, Picture attached to the Tweet. SAP ABAP Code to post a reply for the Original Tweet. These methods will be called as part of SAP ABAP Daemon.
 
- 
+
 
 **Scenarios:**
 
@@ -101,7 +100,7 @@ When a Tweet is posted:
 **  **
 
 
- 
+
 
 **Scenario 2: **
 
@@ -127,14 +126,14 @@ When a Tweet is posted:
 
  	- Reply to the Original Tweet with the outcome
 
- 
+
 
 Attachment:
 
 
 ** **
 
- 
+
 
 **Scenario 3: **
 
@@ -160,7 +159,7 @@ When a Tweet is posted:
 **  **
 
 
- 
+
 
 **Scenario 4:**
 
@@ -179,7 +178,7 @@ This Scenario is very similar to Scenario 3. Only difference is, the Chatbot dia
 
  	- This Webhook will create a Dialog in the SAP Conversation AI Chatbot and sends the chatbot response as reply to the Original Tweet.
 
- 
+
 
 **Conclusion:**
 
@@ -214,6 +213,10 @@ This is a prototype type built as part of learning. Bugs do exist. SAP Coding st
 
  	- [https://developers.sap.com/mission.cp-aibus-extract-document-service.html](https://developers.sap.com/mission.cp-aibus-extract-document-service.html)
 
+## Demo
+
+> 🎬 **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=ziTtliXBwaI)
+
 ## Key Takeaways
 
 - SAP Cloud Platform Enterprise Messaging with Twitter demonstrates practical integration of SAP technologies in a real-world scenario.
@@ -223,4 +226,3 @@ This is a prototype type built as part of learning. Bugs do exist. SAP Coding st
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-cloud-platform-enterprise-messaging-with-twitter/ba-p/13468559)
-

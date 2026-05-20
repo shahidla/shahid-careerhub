@@ -16,11 +16,9 @@ This application uses Canvas, Image and XSJS service for information flow.
 
 Same Application will be used in two different tabs, exchanging information simultaneously.
 
-
 **Demo Video:**
 
-**http://www.youtube.com/watch?v=2SWd_iNZXRA**
-
+**http://www.youtube.com/watch?v=2SWd_iNZXRA
 
 **.INDEX.HTML: Code to define the size of the img window and to position the squares**
 
@@ -28,21 +26,17 @@ Same Application will be used in two different tabs, exchanging information simu
 
 **.CONTROLLER.JS: Calling methods to exchange the information on the position of the Squares**
 
-
 **INDEX.HTML**
-
 
   <canvas id="myCanvas" width="482" height="482"></canvas>
 
     <script>
-
 
 var canvas = document.getElementById('myCanvas');
 
 var ctx = canvas.getContext('2d');
 
 var strDataURI = canvas.toDataURL(); 
-
 
 var dx = 5;
 
@@ -52,7 +46,6 @@ var x = 200;
 
 var y = 5;
 
-
 var dx2 = 5;
 
 var dy2 = 5;
@@ -60,7 +53,6 @@ var dy2 = 5;
 var x2 = 200;
 
 var y2 = 5;
-
 
 var WIDTH = 482;
 
@@ -72,26 +64,19 @@ var collision = 0;
 
 var counter = 0;
 
-
 </script>
-
 
 ![Screenshot 1](./image-1.png)
 
-
 **.VIEW.JS**
-
 
 Code in CreateContent : **function**(oController)
 
-
 createContent : function(oController) {
-
 
 init();
 
 1. window.addEventListener('keydown',doKeyDown,true);
-
 
 function rect(x,y,w,h) {
 
@@ -101,7 +86,6 @@ function rect(x,y,w,h) {
 4. ctx.fill();
 }
 
-
 function rect2(x2,y2,w,h) {
 
 1. ctx.beginPath();
@@ -110,13 +94,11 @@ function rect2(x2,y2,w,h) {
 4. ctx.fill();
 }
 
-
 function clear() {
 
 1. ctx.clearRect(0, 0, WIDTH, HEIGHT);
 2. ctx.drawImage(img, 0, 0);
 }
-
 
 function init() {
 
@@ -126,15 +108,11 @@ setInterval(draw, 10);
 
 //            setInterval(draw2, 1501);
 
-
 }
-
 
 function doKeyDown(evt){
 
-
 switch (evt.keyCode) {
-
 
 /* Up arrow was pressed /////////////////////////////////////////////////////// */
 
@@ -164,7 +142,6 @@ else {
 
 var CDate = new Date();
 
-
 if (counter == 0){
 
 - oController.MazeMoveSave('blue',x,y,'Test6', CDate);
@@ -176,7 +153,6 @@ else {
 - oController.ReadMazeValX('pink','Test6'); // reading the X position of other square
 - oController.ReadMazeValY('pink','Test6'); // reading the Y position of other square
 
-
 var          lx2 = xval.getText();
 
 var ly2 = yval.getText();
@@ -187,13 +163,11 @@ x2 = xval.getText();
 
 y2 = yval.getText();            }}
 
-
 }
 
 }
 
 break;
-
 
 } else {
 
@@ -211,13 +185,11 @@ y2 += dy2;
 
 collision = 0;
 
-
 }
 
 else {
 
 var CDate = new Date();
-
 
 if (counter == 0){
 
@@ -230,7 +202,6 @@ else {
 - oController.ReadMazeValX('blue','Test6'); // reading the X position of other square
 - oController.ReadMazeValY('blue','Test6'); // reading the Y position of other square
 
-
 var          lx = xval.getText();
 
 var ly = yval.getText();
@@ -241,34 +212,26 @@ x = xval.getText();
 
 y = yval.getText();              }}
 
-
 }
 
 }
 
 break;
 
-
 }
-
 
 ...similar code for all directions of the button...
 
-
 **.CONTROLLER.JS**
-
 
 Methods are used
 
 - Saving the current location of the square
 - Read the location of the other square.
 
-
 MazeMoveSave: function(Square,x,y,Passkey,Date) {
 
-
 var aUrl = '../../../services/MultiplyTest.xsjs?cmd=insertmaze'+'&Square='+Square+'&x='+x+'&y='+y+'&Passkey='+Passkey+'&Date='+Date;
-
 
 1. jQuery.ajax({
 url: aUrl,
@@ -277,18 +240,14 @@ method: 'GET',
 
 dataType: 'json',
 
-
 error: this.onErrorCall });
 
-
 },
-
 
 MazeMoveRead: function(x,y,Square,Passkey) {
 
 var aUrl = '../../../services/MultiplyTest.xsjs?cmd=readmaze'+'&x='+x+'&y='+y+'&Square='+Square+'&Passkey='+Passkey;
 
-
 1. jQuery.ajax({
 url: aUrl,
 
@@ -296,17 +255,13 @@ method: 'GET',
 
 dataType: 'json',
 
-
 error: this.onErrorCall });
 
-
 },
-
 
 ReadMazeValX: function(Square,Passkey) {
 
 var aUrl = '../../../services/MultiplyTest.xsjs?cmd=readmazevalx'+'&Square='+Square+'&Passkey='+Passkey;
-
 
 1. jQuery.ajax({
 url: aUrl,
@@ -319,18 +274,14 @@ success: this.readx,
 
 error: this.onErrorCall });
 
-
 },
 
-
 **.XSJS**
-
 
 Below are the sample codes to retrieve the data by
 
 - by calling a PROCEDURE
 - select statement from the table
-
 
 function performReadMazeValX(){
 
@@ -340,12 +291,9 @@ function performReadMazeValX(){
 
                 var Passkey = $.request.parameters.get('Passkey');
 
-
                 try {
 
-
                                 var query = 'CALL "amohas97.session.models::get_maze"(?,?,?,?)';
-
 
                                 $.trace.debug(query);
 
@@ -359,9 +307,7 @@ function performReadMazeValX(){
 
                                 cstmt.execute();                              
 
-
                                 body = cstmt.getDecimal(3);
-
 
                 } catch (e) {
 
@@ -373,13 +319,11 @@ function performReadMazeValX(){
 
                 } 
 
-
                 $.response.setBody(body);
 
                 $.response.status = $.net.http.OK;
 
 }
-
 
 function performReadMazeValY(){
 
@@ -389,12 +333,9 @@ function performReadMazeValY(){
 
                 var Passkey = $.request.parameters.get('Passkey');
 
-
                 try {
 
-
                                 var query = 'select "y" FROM "WRK_SCH"."amohas97.session.data::insertmazemove" WHERE "Square" = ? AND "Passkey" = ?'; 
-
 
                                 $.trace.debug(query);                   
 
@@ -410,14 +351,11 @@ function performReadMazeValY(){
 
                                 pstmt.setString(2, Passkey);
 
-
                                 rs = pstmt.executeQuery();
-
 
                                 while (rs.next()) {
 
                                 body += rs.getDecimal(1);
-
 
                                 }
 
@@ -431,16 +369,13 @@ function performReadMazeValY(){
 
                 } 
 
-
                 //num2 - num1;
-
 
                 $.response.setBody(body);
 
                 $.response.status = $.net.http.OK;
 
 }
-
 
 ## Key Takeaways
 
@@ -451,4 +386,3 @@ function performReadMazeValY(){
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-amp-canvas-exp-2/ba-p/13027797)
-

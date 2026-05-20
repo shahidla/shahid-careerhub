@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-intell
 excerpt: "Introduction: I have used SAP Intelligent Robotic process automation to create a record which automates a SAP UI5 Application. This is same app which was built in the"
 ---
 
-
 **Introduction:**
 
 I have used SAP Intelligent Robotic process automation to create a record which automates a SAP UI5 Application. This is same app which was built in the [previous step](https://blogs.sap.com/2020/05/21/sap-intelligent-robotic-process-automation-sap-conversational-ai-sap-cloud-application-programming-model-part-1/) using SAP Cloud Application Programming Model. This app is running on LOCALHOST on my desktop and wanted to see SAP Intelligent Robotic Process Automation bot in action which will help to automate the tasks.
@@ -52,9 +51,9 @@ I will update the below index with the blog post links, once they are published.
 
 **Section 10: Output**
 
- 
 
- 
+
+
 
 **Section 3: Building a SAP Intelligent Robotic Process Automation Project and Debug**
 
@@ -70,23 +69,23 @@ There are 3 sections:
 
  	1. Applications: Here we need to capture the capture the Page/UI elements.
 
- 
 
- 
 
- 
 
- 
+
+
+
+
 
 Highlighted blocks are important for every Page and UI element that we need to capture.
 
 Double Click on field and associate the selected item, choose criteria.
 
- 
+
 
 2. Workflow: Create a workflow
 
- 
+
 
 Create workflow, add “start application” drag and drop the pages.
 
@@ -98,7 +97,7 @@ Next Step:
 
 Double Click on “Start Application” – Assign and Application.
 
- 
+
 
 Next Step:
 
@@ -106,19 +105,19 @@ Select the page, the button which needs to be clicked.
 
 Assign required activities.
 
- 
+
 
 Next Step:
 
 Select the Second page, select the input fields and use SET activity and for button its CLICK activity.
 
- 
+
 
 Next Step:
 
 Go to workflow, Double click on workflow, go to properties, define Input/Output.
 
- 
+
 
 3. Scripts:
 
@@ -146,7 +145,7 @@ MainPage.step({ Start_MainPage: function(ev, sc, st) {
 ```
 
 
- 
+
 
 Next Step:
 
@@ -159,7 +158,7 @@ GLOBAL.events.START.on(function (ev) {
                         // Add item in systray menu.
                         systray.addMenu('', 'rpawf', 'Test rpawf', '', function (ev) {
                       var rootData_MainPageData = ctx.dataManagers.rootData_MainPageData.create();
-                                   
+
                                         // Initialize your data here.
                                         MainPage.scenarios.rpawf.start(rootData_MainPageData);
                                         rootData_MainPageData.pSecondPageData.ofn = "some name";
@@ -170,15 +169,15 @@ GLOBAL.events.START.on(function (ev) {
 ```
 
 
- 
+
 
 Next Step:
 
 Final Check:  Check whether everything is in Green and click on BUILD.
 
- 
 
- 
+
+
 
 Debugging:
 
@@ -188,13 +187,13 @@ Select DEBUG option in Desktop studio.
 
 Click on the “Test” to start debugging
 
- 
 
- 
+
+
 
 **Last step: Go to FILE, export PROJECT.**
 
- 
+
 
 **Section 4: Deploying SAP Intelligent Robotic Process Automation Project on Cloud and Execute:**
 
@@ -208,7 +207,7 @@ First, Click on Projects-> New Project.
 
 Import the project which was exported to the Desktop from the Studio.
 
- 
+
 
 Once the project is imported, Cross check the Highlighted Blocks. Specially the I/O.
 
@@ -216,17 +215,17 @@ If the INPUTS are blank, then go back to the Desktop Studio and assign Inputs/Ou
 
 If all good, Save and Generate Package.
 
- 
+
 
 Next Step:
 
 Once the Package is generated, Go to the Packages Tab:
 
- 
+
 
 We can check the package build version and Remote Agent Version. Please refer to standard documentation for compatibility chart.
 
- 
+
 
 Next Step:
 
@@ -250,7 +249,7 @@ If the Remote Agent is in PAUSED STATE (even after trigger the bot and REMOTE AG
 
 If Agent Groups are wrong, REMOTE AGENT will be in PAUSED STATE. Also make sure that the REMOTE AGENT is “BACKGROUND – UNATTENDED”.
 
- 
+
 
 Next Step:
 
@@ -264,7 +263,7 @@ Go to the Packages, select the package that was generated and Deploy.
 
 Click on triggers, I have created an API trigger.
 
- 
+
 
 Next Step:
 
@@ -272,21 +271,21 @@ Refer to SAP Documentation for trigger this API via POSTMAN.
 
 [https://help.sap.com/viewer/c836fab4182e45548b6c6c6d0d0a9146/Cloud/en-US/347ba172a8e64f1c8544f460264...](https://help.sap.com/viewer/c836fab4182e45548b6c6c6d0d0a9146/Cloud/en-US/347ba172a8e64f1c8544f46026446a86.html)
 
- 
+
 
 Result:
 
- 
+
 
 Next Step: Verify status of the Jobs
 
 Go to SAP Intelligent Robotic Process Automation Factory >> Go to Monitoring Tab
 
- 
+
 
 Result: Record Created
 
- 
+
 
 **Conclusion:**
 
@@ -301,4 +300,3 @@ This is just my first impression; this opens up a lot of possibilities in automa
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-intelligent-robotic-process-automation-sap-conversational-ai-part-2/ba-p/13456684)
-

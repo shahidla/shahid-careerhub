@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/multi-serv
 excerpt: "Introduction: Explored by prototyping a Pay-As-You-Go consumption-based Application where payments are carried out in Ethereum ($ETH) by deploying a Smart Contract on"
 ---
 
-
 **Introduction:**
 
 Explored by prototyping a Pay-As-You-Go consumption-based Application where payments are carried out in Ethereum ($ETH) by deploying a Smart Contract on one of the Ethereum Rinkeby Test Network. Tried to tick one or few check boxes within the concepts such as multi-service, microservices, App containerization using docker and deployed on SAP BTP Kyma Runtime with multiple replicas of an application which uses one of the SAP AI Business Services.
@@ -42,7 +41,7 @@ Docker/Dockerfile allowed to create Images for these applications to run it inde
 
 Used Kompose tool to convert docker-compose file. Edited the number of replicas and hosted it on SAP BTP Kyma Runtime as described in this Blog by @gunteralbrecht
 
- 
+
 
 **Flow:**
 
@@ -50,7 +49,7 @@ Used Kompose tool to convert docker-compose file. Edited the number of replicas 
 
 Pay-As-You-Go Model: Users will pay a minimum of 0.11 $ETH for using the application. All payments are accumulated in the Smart Contract till the Contract Creator decides to donate 90% of the amount to a Charity.
 
- 
+
 
 **Demo:**
 
@@ -60,23 +59,23 @@ Pay-As-You-Go Model: Users will pay a minimum of 0.11 $ETH for using the applica
 
  	1. Kyma:
 
- 
 
- 
 
- 
+
+
+
 
  	1. Smart Contract:
 
- 
+
 
 **Output:**
 
  	1. Transactions and Account Balances:
 
- 
 
- 	
+
+
 
  	- User 1 pays 0.25 $ETH for using the Service.
 
@@ -98,23 +97,23 @@ Pay-As-You-Go Model: Users will pay a minimum of 0.11 $ETH for using the applica
 
  	- Charity: 22.656 ETH + (0.75 * 90/100) ETH = 23.331 ETH
 
- 
+
 
 MetaMask before transaction:
 
- 
+
 
 Transactions:
 
- 
+
 
 MetaMask after transactions:
 
- 
+
 
  	1. Accounts and Transaction Information: Account Information and transaction hash can be found at [https://rinkeby.etherscan.io/](https://rinkeby.etherscan.io/)
 
- 	
+
 
  	- User 1: 0xdcEeF70ebd5e3F07d57712cCe5070B16A2662246
 
@@ -130,17 +129,17 @@ MetaMask after transactions:
 
  	- Contract Address: 0x11b02bE7e2FBBfa3618Dedddbc01016a214A002D
 
- 
+
 
 G/L Recommendations:
 
  	User 1 file output:
 
- 
+
 
  	User 2 file output:
 
- 
+
 
 **Source Code:** @ GitHub -> User: “shahidla” -> Repository: “ethapp”
 
@@ -154,7 +153,7 @@ Refer folder: eth->mlservice is used to build SAP AI Business Service – IOR Ap
 
 Refer folder: eth for docker-compose and Kompose files.
 
- 
+
 
 **Conclusion:**
 
@@ -172,6 +171,10 @@ This is a prototype type built as part of learning. Bugs do exist. Coding standa
 
 [https://blogs.sap.com/2021/03/29/kyma-kubernetes-kanban-deploying-a-multi-service-application-on-sap...](https://blogs.sap.com/2021/03/29/kyma-kubernetes-kanban-deploying-a-multi-service-application-on-sap-btp/)
 
+## Demo
+
+> 🎬 **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=Ot3SD0NSK0U)
+
 ## Key Takeaways
 
 - Multi-Service PAYG Application: SAP BTP Kyma Runtime, Docker, Ethereum, SAP AI Business Services demonstrates practical integration of SAP technologies in a real-world scenario.
@@ -181,4 +184,3 @@ This is a prototype type built as part of learning. Bugs do exist. Coding standa
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/multi-service-payg-application-sap-btp-kyma-runtime-docker-ethereum-sap-ai/ba-p/13502402)
-

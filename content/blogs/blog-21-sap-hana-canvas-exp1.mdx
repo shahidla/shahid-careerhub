@@ -18,13 +18,11 @@ Information will be saved/retrieved from HANA DB, based on the current positions
 
 The BLUE square in the demo is controlled by the information stored in configuration tables in HANA.
 
-
 **Demo Video:**
 
 ****
 
 [http://www.youtube.com/watch?v=oZou6tMIb14](http://www.youtube.com/watch?v=oZou6tMIb14)
-
 
 ****
 
@@ -34,7 +32,6 @@ The BLUE square in the demo is controlled by the information stored in configura
 
 **.CONTROLLER.JS: Calling methods**
 
-
 Draw a TRACK for defining moving path for the squares.
 
 Alternately you can upload a picture of the TRACK using commands like                  
@@ -42,15 +39,11 @@ Alternately you can upload a picture of the TRACK using commands like
 1. img.src = "[http://www......sample.gif](http://www......sample.gif/)";
 ** **
 
-
 **INDEX.HTML**
-
 
 <canvas id="myCanvas" width="1500" height="400"></canvas>
 
-
 <script>
-
 
 var canvas = document.getElementById('myCanvas');
 
@@ -68,7 +61,6 @@ var radius = 50;
 
 var color = "rgb(196, 171, 254)";
 
-
 1. ctx.beginPath();
 2. ctx.moveTo(x + radius, y);
 3. ctx.lineTo(x + width - radius, y);
@@ -85,9 +77,7 @@ var color = "rgb(196, 171, 254)";
 14. ctx.stroke();
 15. ctx.closePath();
 
-
 </script>
-
 
 <script>
 
@@ -96,18 +86,13 @@ var view = sap.ui.view({id:"idrace1", viewName:"race.race", type:sap.ui.core.mvc
 
 - view.placeAt("content");
 
-
 </script>
-
 
 ![Screenshot 1](./image-1.png)
 
-
 **.VIEW.JS **
 
-
 Code in  CreateContent : **function**(oController)
-
 
 1. window.requestAnimFrame = (function(callback) {
 return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -118,7 +103,6 @@ function(callback) {
 };
 
 })();
-
 
 // square one
 
@@ -133,9 +117,7 @@ function drawRectangle(myRectangle, context) {
 7. context.stroke();
 }
 
-
 function animate(myRectangle, canvas, context, startTime) {
-
 
 // the below numbers are the position coordinates - x-axis & y-axis of the squares
 
@@ -149,25 +131,19 @@ function animate(myRectangle, canvas, context, startTime) {
 
 if (myRectangle.x >= 145 & myRectangle.x <=1116 & myRectangle.y >= 100 & myRectangle.y <= 233 ) {
 
-
 var spd =              oResult.getText();
 
 1. myRectangle.x = Number(myRectangle.x + (spd*1) );    
 
-
 $(function(oEvent){
-
 
 if (spd == 'null' || spd==null || spd === 'null' || spd === null ||spd.length === 0 || typeof spd === "undefined")
 
 {
 
-
 var Movobj = 'SQ1';
 
-
 - oController.onLiveRace1(Movobj); // this call is used to set the speed of the SQUARE
-
 
 } //if
 
@@ -189,14 +165,11 @@ animate2(myRectangle2, canvas, context, startTime);
 
 } //end
 
-
 //Drawing squares
-
 
 var canvas = document.getElementById('myCanvas');
 
 var context = canvas.getContext('2d');
-
 
 var myRectangle = {
 
@@ -214,7 +187,6 @@ borderWidth: 1
 
 drawRectangle(myRectangle, context);
 
-
 var myRectangle2 = {
 
 x: 400,
@@ -229,9 +201,7 @@ borderWidth: 1
 
 };
 
-
 drawRectangle2(myRectangle2, context);
-
 
 // wait one second before starting animation
 
@@ -241,9 +211,7 @@ var startTime = (new Date()).getTime();
 
 animate(myRectangle, canvas, context, startTime);
 
-
 }, 1000);
-
 
 // wait one second before starting animation
 
@@ -251,14 +219,11 @@ setTimeout(function() {
 
 var startTime = (new Date()).getTime();
 
-
 animate2(myRectangle2, canvas, context, startTime);
 
 }, 1000);
 
-
 ![Screenshot 2](./image-2.png)
-
 
 **.CONTROLLER.JS**
 
@@ -270,12 +235,9 @@ Methods are used
 - Calculating the distance between the two square using X/Y co-ordinates
 - Sending the real-time information to BLUE Square for speed revisions
 
-
 Sending X,Y Co-ordinates Information of both the squares.
 
-
                      **var** aUrl = '../../../session/services/MultiplyTest.xsjs?cmd=speed'+'&x1='+x1+'&y1='+y1+'&x2='+x2+'&y2='+y2;
-
 
                      jQuery.ajax({
 
@@ -291,10 +253,7 @@ Sending X,Y Co-ordinates Information of both the squares.
 
               },
 
-              
-
                      **var** aUrl = '../../../session/services/MultiplyTest.xsjs?cmd=race1'+'&Movobj='+Movobj;
-
 
                      jQuery.ajax({
 
@@ -310,15 +269,12 @@ Sending X,Y Co-ordinates Information of both the squares.
 
               },
 
-
 **.XSJS**
-
 
 Below are the sample codes to retrieve the data by
 
 - by calling a PROCEDURE
 - select statement from the table
-
 
 function performSpeed(){
 
@@ -332,9 +288,7 @@ var x2 = $.request.parameters.get('x2');
 
 var y2 = $.request.parameters.get('y2');
 
-
 try {
-
 
 var query = 'CALL "amohas97.session.models::get_speed"(?,?,?,?,? )';
 
@@ -350,9 +304,7 @@ var cstmt = conn.prepareCall(query);
 4. cstmt.setString(4, y2);
 5. cstmt.execute();
 
-
 body += cstmt.getDecimal(5) + "\n";
-
 
 } catch (e) {
 
@@ -364,13 +316,11 @@ return;
 
 }
 
-
 $.response.setBody(body);
 
 $.response.status = $.net.http.OK;
 
 }
-
 
 function performRace1(){
 
@@ -378,9 +328,7 @@ var body = '';
 
 var Movobj = $.request.parameters.get('Movobj');
 
-
 try {
-
 
 var query =
 
@@ -396,12 +344,9 @@ var rs;
 
 pstmt = conn.prepareStatement(query);
 
-
 1. pstmt.setString(1, Movobj);
 
-
 rs = pstmt.executeQuery();
-
 
 while (rs.next()) {
 
@@ -410,7 +355,6 @@ body += rs.getNString(1) + "\n";
 //var answer = '0';
 
 //body = answer.toString();
-
 
 }
 
@@ -424,9 +368,7 @@ return;
 
 }
 
-
 //num2 - num1;
-
 
 $.response.setBody(body);
 
@@ -434,11 +376,9 @@ $.response.status = $.net.http.OK;
 
 }
 
-
 ## Demo
 
 > 🎬 **Demo:** [http://www.youtube.com/watch?v=oZou6tMIb14](http://www.youtube.com/watch?v=oZou6tMIb14)
-
 
 ## Key Takeaways
 
@@ -449,4 +389,3 @@ $.response.status = $.net.http.OK;
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-amp-canvas-exp-1/ba-p/13027313)
-

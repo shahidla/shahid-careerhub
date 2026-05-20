@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/enterprise-resource-planning-blog-posts
 excerpt: "Initial Thoughts: An attempt to understand newer concepts around and wanted to see it how they can all come together. Borrowed few concepts such as using Clustering"
 ---
 
-
 **Initial Thoughts:**
 
 An attempt to understand newer concepts around and wanted to see it how they can all come together.
@@ -26,7 +25,7 @@ It’s not about the use case, Idea is to fit in different concepts to make it w
 
 **Demo:**
 
- 
+
 
 **Details:**
 
@@ -144,7 +143,7 @@ return str(resp)
 ```
 
 
- 
+
 
 ***Step 4: Receiving the messages in SAP S/4HANA***
 
@@ -194,7 +193,7 @@ Logic is very similar to which what we have already wrote in ALERT but this time
 ```
 
 
- 
+
 
 
 ```
@@ -219,7 +218,7 @@ def about():
 ```
 
 
- 
+
 
 **Final thoughts on Initial thoughts:**
 
@@ -227,7 +226,7 @@ I came across some different technical possibilities while building this prototy
 
 The other thing was to establishing communication between SAP S/4HANA and Messaging Apps as and when an event is triggered, or block of code explicitly executed. Code in SAP S/4HANA, Python, ABAP MQTT and ABAP Daemon has a defined and individual job which just execute the code to call the API or send/receive messages or delegate the task or just keeps the session alive, they neither have do the polling for the update or worry about the outcome of the end task.
 
- 
+
 
 **Sources:**
 
@@ -243,6 +242,10 @@ Step 4: ABAP MQTT
 
 [https://developers.sap.com/group.abap-connectivity-mqtt-daemon.html](https://developers.sap.com/group.abap-connectivity-mqtt-daemon.html)
 
+## Demo
+
+> 🎬 **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=8Z9NHdrSU64)
+
 ## Key Takeaways
 
 - SAP S/4HANA #Machinelearning #MQTT demonstrates practical integration of SAP technologies in a real-world scenario.
@@ -252,4 +255,3 @@ Step 4: ABAP MQTT
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-sap/sap-s-4hana-machinelearning-mqtt/ba-p/13398320)
-

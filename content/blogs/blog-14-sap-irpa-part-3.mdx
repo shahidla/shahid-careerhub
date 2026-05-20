@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-conver
 excerpt: "Introduction: With the evolution of CDS, now we can create SAP HANA Graph using AMDP GraphScript with the help of CDS, a new capability on ABAP Platform for SAP S/4HANA"
 ---
 
-
 **Introduction:**
 
 With the evolution of CDS, now we can create SAP HANA Graph using AMDP GraphScript with the help of CDS, a new capability on ABAP Platform for SAP S/4HANA 1909. Now it is possible to use GraphScript and Graph Algorithms in AMDP. I have tried executing OpenCypher code from ABAP Report. The system that I have used is a SAP S/4HANA 1909 on-premise system.
@@ -36,7 +35,7 @@ In this case: I have populated Employee-Organizational Data. Executed Graph Algo
 
 **Demo:**
 
- 
+
 
 **Index for Development Details:**
 
@@ -74,33 +73,33 @@ I will update the below index with the blog post links, once they are published.
 
 **Section 10: Output**
 
- 
 
- 
+
+
 
 **Section 5: Exploring SAP HANA Graph, built using CDS and AMDP**
 
 Prerequisite: Build your first bot: [https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/](https://cai.tools.sap/blog/build-your-first-bot-with-sap-conversational-ai/)
 
- 
+
 
 Next Step: Prepared sample data using SAP Conversational AI. For this I have created two Intents, one for Node data and one for Edge data.
 
- 
 
- 
 
- 
+
+
+
 
 Next Step: Created 4 Custom Entities so that I can tag it to the expressions in the Intent.
 
 "Node" Intent: Entity #ROLE is assigned to the expression.
 
- 
+
 
 "Edge" Intent: Entity #EMPLOYEENAME, #MANAGERNAME, #RELSHP is assigned to the expression.
 
- 
+
 
 Next Step: Create two Skills. I have created Skill - Node and Edge
 
@@ -110,9 +109,9 @@ Will pass the value of #role and #person to the URL in the Consume API service t
 
 **URL is provided by the SAP Cloud Platform OData Provisioning as described in Section 6**
 
- 
 
- 
+
+
 
 Edge Skill: I have maintained Triggers, Requirements, Action and last step RESET the memory:
 
@@ -120,7 +119,7 @@ Will pass #EMPLOYEENAME (Start Node) , #MANAGERNAME (End Node), #RELSHP (relatio
 
 **URL is provided by the SAP Cloud Platform OData Provisioning as described in Section 6**
 
- 
+
 
 **Sample Data:**
 
@@ -185,7 +184,7 @@ President
 Zoe
 Trainee
 
- 
+
 
 Edge Table:
 
@@ -272,13 +271,13 @@ Zoe
 Dominic
 reports to
 
- 
+
 
 **Graphical view:**
 
- 
 
- 
+
+
 
 Next Step: Build SAP HANA Graph and Testing:
 
@@ -302,7 +301,7 @@ relshp
 ```
 
 
- 
+
 
 
 ```
@@ -321,11 +320,11 @@ pernr
 ```
 
 
- 
+
 
 Next Step: Create AMDP Class
 
- 
+
 
 Method: EMP_GR_CRT will create a Graph Workspace.
 
@@ -335,7 +334,7 @@ Method: NHOOD is the implementation of Neighborhood Algorithm.
 
 I have created an OData service which calls this Method with the help of Table Functions. This OData Service will be used in SAP Conversational AI.
 
- 
+
 
 
 ```
@@ -426,7 +425,7 @@ ENDCLASS.
 ```
 
 
- 
+
 
 Next Step: Table Function and CDS view to fetch the data
 
@@ -446,7 +445,7 @@ implemented by method
 ```
 
 
- 
+
 
 
 ```
@@ -465,21 +464,21 @@ as select from ZCDS_NH( startv : $parameters.STARTV, levelm : $parameters.levelm
 
 key descr,
 role
-     
+
 } 
 
 ```
 
 
- 
+
 
 Next Step: Call Neighborhood Algorithm – Check Result
 
 minDepth and maxDepth are 1, so it travels to next one node.
 
- 
 
- 
+
+
 
 **Step 4: Call OpenCypher Code**
 
@@ -503,17 +502,17 @@ WRITE: 'ERROR'.
 ```
 
 
- 
+
 
 Result: when this query was used MATCH p =  (a)**-[*1..2]-**>(b).
 
- 
+
 
 Result: when this query was used. 1..15 denotes that it can travel  up to15 nodes.
 
 MATCH p = (a)-[***1..15]**->(b) WHERE a.DESCR = ''CARTER''   AND b.ROLE = ''CEO''
 
- 
+
 
 **Section 6: SAP Cloud Platform OData Provisioning:**
 
@@ -523,25 +522,29 @@ Prerequisite: SAP Cloud Connector, Installed, Configure the SAP S/4HANA on-premi
 
 Go to SAP Cloud Platform: Subscribe to OData Provisioning Service.
 
- 
 
- 
+
+
 
 Configure Service – Destinations:
 
- 
+
 
 I have registered OData services from two different SAP S/4HANA on-premise systems, which will be consumed in SAP Conversational AI.
 
- 
+
 
 **The other OData services are straightforward which exposes data related to Payment Instructions from database tables.**
 
- 
+
 
 **Conclusion: **
 
 I can think of some new way of designing solutions or evaluate how SAP HANA Graph can solve business problems during design phase itself on SAP ABAP Platform. This prototype gave me a chance to explore and execute GraphScript alongside with SQLScript and further helped me to understand the idea of combining SAP Conversational AI and SAP HANA Graph.
+
+## Demo
+
+> 🎬 **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=0UWK1WNENj8)
 
 ## Key Takeaways
 
@@ -552,4 +555,3 @@ I can think of some new way of designing solutions or evaluate how SAP HANA Grap
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-conversational-ai-sap-hana-graph-sap-cloud-platform-odata-provisioning/ba-p/13456710)
-

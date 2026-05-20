@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/event-driv
 excerpt: "1. Introduction This prototype implements an event driven pattern using SAP Integration Suite and Solace. A JSON event is published to Solace and processed by an iFlow"
 ---
 
-
 ## Introduction
 This prototype implements an event driven pattern using SAP Integration Suite and Solace. A JSON event is published to Solace and processed by an iFlow that applies AI based validation, routes the result, updates a HANA Cloud table, and records a structured log entry. The objective is to demonstrate event reception, AI assisted validation, routing logic, data extraction, and persistence on SAP BTP.
 
@@ -27,18 +26,19 @@ The end to end processing sequence is as follows.
 - All messages are written to NIXP_LOG
 
 
+
 ## Demo
 ## Design Flow
 Integration Flow design contains the following components.
 ### 4.1 CitizenCreated_Publisher
 ![pub iflow.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/pub iflow.jpg)
 4.1.1 Implementation Details for Publisher iFlow
- 
+
 ![iflow1.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/iflow1.jpg)
- 
+
 ### 4.2 CitizenCreated_Consumer
 *![consumer iflow.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/consumer iflow.jpg)*
- 
+
 ### 4.2.1 Implementation Details for Consumer iFlow
 4.2.1.1 GenerateTraceId Groovy
 
@@ -49,7 +49,7 @@ Creates a unique identifier that is stored as a property and used in all logs an
 String traceId = UUID.randomUUID().toString(); 
 ```
 
- 
+
 
 4.2.1.2 CaptureOriginalPayload Groovy
 
@@ -59,7 +59,7 @@ Reads the incoming payload as a complete text string and stores it in ORIGINAL_P
 message.setProperty("ORIGINAL_PAYLOAD", bodyAsString)
 ```
 
- 
+
 
 4.2.1.3 AIQualityCheck
 
@@ -263,16 +263,17 @@ Test 1 used a valid payload to create the record:
   "firstName": "Shahid",
   "lastName": "Syed"
 }
- 
+
 Test 2 used a payload in which the citizen ID was null to check whether the OpenAI model would validate the payload.
 {
   "citizenId": null,
   "firstName": "Shahid",
   "lastName": "Syed"
 }
- 
+
 Test Results:
 ![t1.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/t1.jpg)![t2.jpg](/blogs/blog-3-event-driven-integration-sap-integration-suite/t2.jpg)
+
 
 ## References
 **[https://community.sap.com/t5/technology-blog-posts-by-members/a-comprehensive-guide-to-using-the-jdb...](https://community.sap.com/t5/technology-blog-posts-by-members/a-comprehensive-guide-to-using-the-jdbc-adapter-in-sap-integration-suite/ba-p/13903154)**
@@ -283,6 +284,10 @@ This prototype demonstrates a event driven pattern with traceability, AI assiste
 ## Disclaimer
 This is a prototype created for learning purposes. SAP guidelines best practices coding standards authorisation requirements and performance considerations were not in scope. A real solution would require reviewing security, performance, and data privacy aspects.
 
+## Demo
+
+> 🎬 **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=LUWdQX_RrNU)
+
 ## Key Takeaways
 
 - Event Driven Integration Using SAP Integration Suite, Solace, HANA DB, and OpenAI Validation demonstrates practical integration of SAP technologies in a real-world scenario.
@@ -292,4 +297,3 @@ This is a prototype created for learning purposes. SAP guidelines best practices
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/event-driven-integration-using-sap-integration-suite-solace-hana-db-and/ba-p/14273167)
-

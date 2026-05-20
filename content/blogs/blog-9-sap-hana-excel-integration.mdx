@@ -12,14 +12,11 @@ excerpt: "The purpose of this exercise is to access the data to & from Excel to 
 
 The purpose of this exercise is to access the data to & from Excel to SAP HANA. This will demonstrate the bidirectional transfer of the data without using import/export options in SAP HANA Studio. 
 
-
 Live data can be viewed whenever we open the excel file. 
-
 
 **STEP 1: Creating a DB table in SAP HANA:**
 
 I have created a simple table with 2 field using SAP RIVER Code. Alternately we can also use the table which is created by .HDBTABLE file
-
 
 *@OData*
 
@@ -35,14 +32,11 @@ I have created a simple table with 2 field using SAP RIVER Code. Alternately we 
 
 }
 
-        
-
 **STEP 2: Creating .XSODATA:**
 
 ****
 
 I haven’t used the OData created by SAP RIVER.  The Excel file has difficulty to read the OData created by SAP RIVER. So I have alternately created an OData using .XSODATA with name rivertab.xsodata
-
 
 service namespace "rivermohas98.services" {
 
@@ -51,7 +45,6 @@ service namespace "rivermohas98.services" {
 as "Excel"; 
 
 }
-
 
 **Testing of OData:**
 
@@ -63,10 +56,7 @@ I have inserted a record in the table using Insert SQL.
 
 ****
 
-  
-
 ![Screenshot 1](./image-1.png)
-
 
 ****
 
@@ -76,52 +66,38 @@ I have inserted a record in the table using Insert SQL.
 
 Now I have an OData which can be accessed. I have chosen an .XSLM file, considering Macros/VBA script can be saved in .XSLM files.
 
-
 Calling Odata using Power Query:
 
 1. My next step is to access the OData in this Excel File. I am sure there must be multiple ways to access it, I tried using the Excel Add-in PowerPivot.
 
-
 ![Screenshot 2](./image-2.png)
-
 
           2. A pop-up will be displayed for the OData Feed. I have entered the OData which I have created using .XSODATA
 
-
 ![Screenshot 3](./image-3.png)
-
 
           3. Query Editor will be opened. Check the feed and Click on Apply & Close
 
-
 ![Screenshot 4](./image-4.png)
-
 
           4. You will promted for User ID and Password. Alternately you can set the Credentials here.
 
-
 ![Screenshot 5](./image-5.png)
-
 
           5. The below screenshot will help to set the OData Refresh settings. Also you can see the data has been retrieved from SAP HANA DB.
 
-
 ![Screenshot 6](./image-6.png)
-
 
 ****
 
 **STEP 4:Sending Data from Excel to SAP HANA DB:**
 
-
 Now lets see how to post the data. Data will be posted to SAP by Python code.
-
 
 1. Installation of Python and XLRD library:
 I have installed Python33. The next important step is to install XLRD. XLRD is a library to read .XSLS, .XSLM files in python. I have downloaded the package “xlrd-0.9.3.tar.gz”.
 
 Once downloaded, Unzip, go to Command line (RUN->CMD), Navigate to the folder and run "python setup.py install" in command line. Follow other sources to install python and xlrd.
-
 
     2.  Code in VBA:
 
@@ -129,9 +105,7 @@ A code has been written to trigger the Python File in Excel. Go to ALT+F11 and u
 
 Write your code in Worksheet, this will have multiple options when to run this code. I want to trigger the Python code on Saving of the Excel file.
 
-
 ![Screenshot 7](./image-7.png)
-
 
 Private Sub Workbook_AfterSave(ByVal Success As Boolean)
 
@@ -145,23 +119,19 @@ Call Shell(pyPrgm & pyScript, vbMaximizedFocus)
 
 End Sub
 
-
 Explanation for the Highlighted in RED
 
 pyPrgm = "C:\Python33\python.exe " -> This is the path where Python is installed.
 
 pyScript = "C:\pyt\LoadExcel.py" -> This is where my python code stored to trigger OData.
 
-
      3.  Python Code:
 
 Python code is in LoadExcel.py stored in the above mentioned path.
 
-
 #! /usr/bin/python
 
 # All import files may not require
-
 
 import os
 
@@ -175,21 +145,17 @@ import sys
 
 import xlrd
 
-
 # OData URL. I am using the OData Created by SAP RIVER. Give the full address of the server.
 
 appURL = '[http://v………..8008/Rivermohas98/odata/Rivermohas98.HelloExcelApp](http://v%E2%80%A6%E2%80%A6%E2%80%A6..8008/Rivermohas98/odata/Rivermohas98.HelloExcelApp)'
-
 
 # Credentials
 
 auth = 'userid','password'
 
-
 s = requests.Session()
 
 1. s.headers.update({'Connection': 'keep-alive'})
-
 
 headers = {'X-CSRF-TOKEN': 'Fetch'}
 
@@ -203,16 +169,13 @@ headers = {'X-CSRF-TOKEN': CSRFtoken}
 
 url = appURL + "/exceldata"
 
-
 # Your file has to be in this location. This is the path which we have given in Excel (VBA code). Full path is required 
 
 workbook = xlrd.open_workbook('C:\pyt\employ.xlsm') 
 
-
 # Give the worksheet  name
 
 worksheet = workbook.sheet_by_name('Sheet1')
-
 
 num_rows = worksheet.nrows - 1
 
@@ -236,33 +199,23 @@ while curr_row < num_rows:
 
                 r = s.post(url, data=data, headers=headers)
 
-
      4.  Test your Python Code:
-
 
 You can test your Python Code from command line. Below screenshot is for reference.
 
-
 ![Screenshot 8](./image-8.png)
-
 
 **STEP 5: Post the data to SAP HANA DB from Excel:**
 
-
      1. Now add an entry in Excel:
-
 
 ![Screenshot 9](./image-9.png)
 
-
      2. Check the result in SAP HANA:
-
 
 Now we have two records.
 
-
 ![Screenshot 10](./image-10.png)
-
 
 **STEP 6: Post the data to SAP HANA DB from Excel:**
 
@@ -270,20 +223,15 @@ Now we have two records.
 
 Now create one more record in SAP HANA table and check whether it is updating the Excel. As Similar to Step 2 and check the result in Excel.
 
-
 ![Screenshot 11](./image-11.png)
-
 
 ![Screenshot 12](./image-12.png)
 
-
 Currently I have only used OData 'POST' operation. I believe further operations can be used like PUT & DELETE or triggering the Python Code for GET operation instead of using Excel OData feeds.
-
 
 Thanks to philip.mugglestone for his video on Python @ hana.academy
 
 Thanks for reading.
-
 
 ## Key Takeaways
 
@@ -294,4 +242,3 @@ Thanks for reading.
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-amp-excel-bidirectional-data-sync-data-using-python-amp-odata/ba-p/13113659)
-

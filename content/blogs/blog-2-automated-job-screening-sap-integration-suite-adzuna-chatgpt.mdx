@@ -7,7 +7,6 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/automated-
 excerpt: "Idea This exercise began as a practical way to explore SAP Integration Suite. Most job portals already provide alerts for new roles, but these alerts are usually driven"
 ---
 
-
 **Idea**
 
 This exercise began as a practical way to explore SAP Integration Suite. Most job portals already provide alerts for new roles, but these alerts are usually driven by simple keyword matching. As a result, many of the recommended roles do not match the actual technical profile of the person receiving them.
@@ -32,7 +31,7 @@ As the run progresses, the integration flow builds a consolidated email body by 
 
 [Watch on YouTube](https://youtu.be/7kK4MsogJUw)
 
- 
+
 
 **Design Flow**
 
@@ -46,11 +45,11 @@ This design provides a repeatable cycle of fetch, filter, classify, and notify. 
 
 ![p2.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p2.jpg)
 
- 
+
 
 ![p3.jpg](/blogs/blog-2-automated-job-screening-sap-integration-suite-adzuna-chatgpt/p3.jpg)
 
- 
+
 
 # Main flow
 1. Start Timer A timer event triggers the flow according to the schedule. The event carries no payload. All runtime values are set in the next step.
@@ -85,7 +84,7 @@ This design provides a repeatable cycle of fetch, filter, classify, and notify. 
 9. End 2 Returns control to the JobLoop wrapper. If job_queue_index is less than job_queue_size, JobLoop runs again for the next job. If all jobs are processed, JobLoop ends and PageLoop continues with state updates.
 
 
- 
+
 
 **ChatGPT Model:**
 
@@ -132,4 +131,3 @@ This is a prototype created for learning purposes. Functional gaps and bugs may 
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/automated-job-screening-using-sap-integration-suite-adzuna-and-chatgpt/ba-p/14270454)
-

@@ -14,12 +14,9 @@ excerpt: "The base idea was to share my exploration on SAP HANA Text Analysis th
 
 The base idea was to share my exploration on SAP HANA Text Analysis thru this blog. In the process, I have used custom configurations and custom dictionary to build my full text analysis index tables and used a dynamic query in the procedure to fetch the number columns of a table.
 
-
 If there are no entries in text analysis table, then the query will return the fields maintain in the custom configuration table, else it adds a new column to the query which was requested and stored in the text table. Thought was the same procedure should return the data with X or Y number of columns without changing the procedure code.
 
-
 YouTube: [https://www.youtube.com/watch?v=XzC5vpinNNM](https://www.youtube.com/watch?v=XzC5vpinNNM)
-
 
 **STEP 1: Creating a Custom Configuration** **.hdbtextconfig:**
 
@@ -33,7 +30,6 @@ In this case, I have built a custom dictionary which is based on database table 
 2. I have copied the code inside EXTRACTION_CORE_VOICEOFCUSTOMER.hdbtextconfig
 3. Added the below line in my custom configuration file, customconfig.hdbtextconfig
 
-
 ```abap
 string-list-value>amohas97.session.textproj::prod.hdbtextdict/string-list-value>
 ```
@@ -41,19 +37,15 @@ string-list-value>amohas97.session.textproj::prod.hdbtextdict/string-list-value>
 
 ****
 
-
 **Code in Custom Configuration:**
 
-
 ![Screenshot 1](./image-1.png)
-
 
 **STEP 2: Creating a Custom Dictionary .hdbtextdict:**
 
 ****
 
 I have added the lines in the file to create a custom dictionary. When the entries are populated in the table which has text analysis index created with the customconfig.hdbtextconfig, it will read the below dictionary to identify the TA_TOKEN and TA_TYPE. I have maintained the table name "amohas97.session.data::srnum" and field name "status" in the custom dictionary under different categories.
-
 
 ```abap
 
@@ -63,44 +55,35 @@ dictionary xmlns="http://www.sap.com/ta/4.0">
             variant name ="serial numbers"/>
       entity_name>
   entity_category> 
- 
-   
+
+
   entity_category name="queryfields">
       entity_name standard_form="queryfields">
             variant name ="status"/>
       entity_name>
   entity_category>   
- 
+
 dictionary>
 
 
 
 ```
 
-
 STEP 3: Tables & Text Analysis full text index:
-
 
 1. Table for default selection **"amohas97.session.data::srnumpr".**
 
-
         Table was created to maintain the default query. This table will have 3 fields Schema name, Table name and the default fields. This query will get                    executed when there are no entries in the text analysis table.
-
 
 ![Screenshot 2](./image-2.png)
 
-
     2. Table to fetch the data. Maintain some sample records. In this case **"amohas97.session.data::srnum"**
-
 
 ![Screenshot 3](./image-3.png)
 
-
     3. Table to store the requests for the selection of the fields from the above table. In this case **"WRK_SCH"****.****"amohas97.session.data::sptxt"** 
 
-
     4. Create a full text index on the table **"WRK_SCH"****.****"amohas97.session.data::sptxt"**. This table will hold the newly requested **FIELDS**. Refer the custom          configuration file for creating an Index.
-
 
 ```abap
 CREATE FULLTEXT INDEX TXTIDX2 ON "WRK_SCH"."amohas97.session.data::sptxt" ("TTXT")
@@ -112,7 +95,6 @@ TEXT ANALYSIS ON;
 
 ```
 
-
 **STEP 4: Procedure:**
 
 1. Get the default query maintained in the "amohas97.session.data::srnumpr" to fetch the data from "amohas97.session.data::srnum"
@@ -121,11 +103,10 @@ TEXT ANALYSIS ON;
 4. Build a new query using the step 3 information
 5. Execute the query which was built in step 4
 
-
 ```sql
 CREATE PROCEDURE dquery ( )
                 LANGUAGE SQLSCRIPT as                 
-         
+
                 --SQL SECURITY INVOKER
                 --DEFAULT SCHEMA 
                 --READS SQL DATA AS
@@ -156,13 +137,13 @@ select count(*) into lv_count from "WRK_SCH"."$TA_TXTIDX2" where ta_type = 'quer
                                 select column_name into lv_new_q from TABLE_COLUMNS where schema_NAME = 'WRK_SCH' and table_name = lv_table and upper(comments) = upper(lv_fields);
                                 -- --Concatenate the field name with the exisiting query
                                 lv_query := lv_old_q || ',' || lv_new_q;
-                         
+
                                 -- --Prepare the final query
                                 lv_q_fin := ' select ' || lv_query|| ' from "WRK_SCH"."amohas97.session.data::srnum" ';
                 else
                 -- --Existing query in the table
                 lv_q_fin := ' select ' || lv_old_q|| ' from "WRK_SCH"."amohas97.session.data::srnum" ';
-         
+
                 end if;
 -- Execute the QUERY
 EXECUTE IMMEDIATE (:lv_q_fin);
@@ -172,9 +153,7 @@ END;
 
 ```
 
-
 STEP 5: Execution: 
-
 
 Run the procedure in SQL console : **CALL** "amohas97.session.ta::dquery"(); 
 
@@ -184,12 +163,9 @@ as the default selection of the fields is maintained in the **"amohas97.session.
 
  In this table I have maintained only 3 columns. so the query returned only 3 columns.
 
-
 ![Screenshot 4](./image-4.png)
 
-
 1.      Now in SQL console, I will insert a new entry in this table with a statement in **English **in the table "amohas97.session.data::sptxt" table. I have created a full text index on this table. So whenever there is an entry created it, my text analysis table will have an entry with categorized TA_TOKENS and TA_NORMALIZED.
-
 
 ```abap
 insert into "."amohas97.session.data::sptxt""WRK_SCH"."amohas97.session.data::sptxt" values('1','shahid','give me the status of serial numbers');
@@ -199,23 +175,17 @@ insert into "."amohas97.session.data::sptxt""WRK_SCH"."amohas97.session.data::sp
 ```
 This is how the text table looks like
 
-
 ![Screenshot 5](./image-5.png)
-
 
 **1.      Now run the procedure again, this time the procedure will return the data with 4 columns**
 
-
 ![Screenshot 6](./image-6.png)
 
-
 Thank you for reading.
-
 
 ## Demo
 
 > 🎬 **Demo:** [https://www.youtube.com/watch?v=XzC5vpinNNM](https://www.youtube.com/watch?v=XzC5vpinNNM)
-
 
 ## Key Takeaways
 
@@ -226,4 +196,3 @@ Thank you for reading.
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-text-analysis-custom-configuration-dictionary-dynamic-query/ba-p/13191112)
-

@@ -30,11 +30,11 @@ For the demo purpose, I have stored all related data in different databases and 
 
 
 
- 
 
 
 
- 
+
+
 
 
 
@@ -50,16 +50,15 @@ I have created sandbox accounts of database hosting services
 
 
 
- 
 
 
 
- 
+
+
 
 
 
 **Neo4j:** I have stored/maintained data of the supplier and it’s relationship to the phone model and rating as one of the property of the seller node in the Graph database.
-
 
 
 
@@ -69,16 +68,15 @@ I have created sandbox accounts of database hosting services
 
 
 
- 
 
 
 
- 
+
+
 
 
 
 **MongoDB: **I have maintained Supplier and their Geolocation in JSON format.
-
 
 
 
@@ -88,7 +86,7 @@ I have created sandbox accounts of database hosting services
 
 
 
- 
+
 
 
 
@@ -116,12 +114,11 @@ Assuming the user has requested for a seller who sells Samsung S8 model and has 
 
 
 
- 
+
 
 
 
 The outcome of the above query will be like this neo4j browser.
-
 
 
 
@@ -131,12 +128,11 @@ The outcome of the above query will be like this neo4j browser.
 
 
 
- 
+
 
 
 
 Below screenshot is executed on local host to fetch the data based on different URL parameters.
-
 
 
 
@@ -146,12 +142,11 @@ Below screenshot is executed on local host to fetch the data based on different 
 
 
 
- 
+
 
 
 
 Similarly, the above result will be send to Mongo DB to read the json document for the latitude and longitude information of the supplier/seller. Below screenshot is the result for the above input/outcome from NEO4J (executed on local host to fetch the data based on different URL parameters).
-
 
 
 
@@ -170,21 +165,20 @@ Similarly, the above result will be send to Mongo DB to read the json document f
 
 
 
-
 ![Screenshot 6](./image-6.png)
 
 
 
 
- 
 
 
 
- 
 
 
 
- 
+
+
+
 
 
 
@@ -304,7 +298,7 @@ app.listen(port, function () {
 ```
 
 
- 
+
 
 
 
@@ -344,7 +338,7 @@ app.get('/data/:rating/:model', function (req, res) {
 ```
 
 
- 
+
 
 
 
@@ -382,7 +376,7 @@ module.exports.getDummy = getDummyvar;
 ```
 
 
- 
+
 
 
 
@@ -422,7 +416,7 @@ module.exports.getUser = getUser;
 ```
 
 
- 
+
 
 
 
@@ -481,7 +475,7 @@ module.exports.clearLoc = clearLoc;
 ```
 
 
- 
+
 
 
 
@@ -539,12 +533,11 @@ module.exports.finaldata = dist;
 ```
 
 
- 
+
 
 
 
 This is how the final result looks like. It brings all the sellers who are selling the requested phone model and how far they are...
-
 
 
 
@@ -556,7 +549,6 @@ This is how the final result looks like. It brings all the sellers who are selli
 
 Thank you for reading and your time ....
 
-
 ## Key Takeaways
 
 - This post covers Node.js Connecting to HANA + Mongo + Neo4J with hands-on examples and step-by-step guidance.
@@ -566,4 +558,3 @@ Thank you for reading and your time ....
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/node-js-connecting-to-hana-mongo-neo4j/ba-p/13325341)
-

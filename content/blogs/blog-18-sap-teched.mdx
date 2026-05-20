@@ -18,7 +18,6 @@ This topic will explain the advantages of **SAP Business Application Accelerator
 
 This blog doesn’t explains you the HANA Specific Application Accelerators like CO-PA or Moving data intensive operations down to HANA, rather a simple use case to see the advantages of using SAP Business Application Accelerator and HANA Database on the current existing programs without changing the code by calculating the runtime of the program.
 
-
 **How it works:**
 
 Runtime intensive table selects can be redirected to the HANA database instead being selected from the primary database.
@@ -40,50 +39,35 @@ On kernel level a select statement within this configuration is redirected to HA
 
 Kernel version 7.21 and the SAP Business Application Accelerator Add On.
 
-
 **Demo - Overview:**
 
-
 ![Screenshot 1](./image-1.png)
-
 
 **Demo - Step-by-Step:**
 
 1. Establishing a Connection a connection between ERP system and HANA DB. In this case we are connecting our ERP System to HANA Database (System – HDB). We can also check available DB Connections, Indicated with arrow in the screen shot.
 
-
 ![Screenshot 2](./image-2.png)
-
 
      2. SLT: SLT is a process to replicate the data from primary to secondary database. In this case we will identify time intensive – tables / program                            combinations to be redirected to HANA and not to the primary database for read access.
 
-
      3. In this demo program: ZR_COEP is used which uses the ZCEOP table. This table will be replicated in HANA DB using SLT. 
-
 
      4. Maintaining the Configuration by preparing the XML with scenario, program and table names after identifying the program and table.
 
-
 ![Screenshot 3](./image-3.png)
-
 
      5. Configuration is maintained by using RDA_MAINTAIN program. First XML will be upload using the ‘Upload Scenario’. Once the XML is uploaded, a                      database connection has to be maintained (second screen shot) and last we will Activate the Scenario. Configuration entries are maintained in                            RDA_CONTROL, RDA_CONFIG and RDA_CONTEXT table. You can validate your configuration entries here.
 
-
 ![Screenshot 4](./image-4.png)
-
 
 ![Screenshot 5](./image-5.png)
 
-
      6. Profile Parameters rsdb/rda is used to redirect the DBs using RZ11 transaction Code. It acts like a switch between two databases. Please see the                      prerequisite to avail the profile parameters. Please make sure the scenario which we have uploaded in previous step has to in active status, only then the            redirection of DBs works.
-
 
 ![Screenshot 6](./image-6.png)
 
-
 ![Screenshot 7](./image-7.png)
-
 
      7. Analyzing the Runtime by testing the runtime of the program in both DBs by setting profile parameter values as on/off.
 
@@ -95,15 +79,11 @@ Kernel version 7.21 and the SAP Business Application Accelerator Add On.
 
      It only took **4 seconds **to run the program.
 
-
 ![Screenshot 8](./image-8.png)
-
 
 ![Screenshot 9](./image-9.png)
 
-
 ![Screenshot 10](./image-10.png)
-
 
 **Limitations:**
 
@@ -111,7 +91,6 @@ Kernel version 7.21 and the SAP Business Application Accelerator Add On.
 2. No update scenarios during interactive reporting on replicated tables possible
 3. SAP Business Application Accelerator does not leverage all HANA capabilities and does therefore not reach the same performance as possible with modeling in HANA Modeling Studio or with HANA Application Accelerators (e.g. COPA Accelerator)
 4. Check Note 1694697
-
 
 ## Key Takeaways
 
@@ -122,4 +101,3 @@ Kernel version 7.21 and the SAP Business Application Accelerator Add On.
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/knowledge-sharing-from-teched-bangalore-sap-business-application/ba-p/13059339)
-
