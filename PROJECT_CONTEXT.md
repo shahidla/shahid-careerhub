@@ -1,7 +1,7 @@
 # AI Career Hub — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-20 (session 18)
+Last updated: 2026-05-20 (session 19)
 
 ---
 
@@ -495,6 +495,15 @@ This is the master dev task list. Always update this when a task is done. This s
 - Security hardening — middleware auth, /access login page, httpOnly cookie, internal API Bearer headers (session 18, Codex)
 - Scoring calibration — pre-LLM signal analysis + post-LLM score capping/boosting (session 18, Codex)
 - Dashboard UX — "jobs found" label, low-priority/stale filtering, restore button (session 18, Codex)
+- Global nav updated: Home, Resume, AI Portfolio, Blog, Patent, Certifications, Dashboard Demo (session 19)
+- Footer updated: /patent link added (session 19)
+- Patent page: duplicate footer nav removed (session 19)
+- Resume: certification text fixed to "69 completed courses" (session 19)
+- Experience table rebuilt to 8 company-level rows matching PDF (session 19)
+- Projects table rebuilt to 11 rows matching PDF with period column for Stockland dual-employer (session 19)
+- projects.period column added — free-text date ranges (session 19)
+- All 24 MDX blog posts migrated from SAP Community via Codex (session 19)
+- 24/24 blogs verified via scripts/verify-blogs.mjs (session 19)
 
 #### Pending ⬜
 - O1-C: Re-embed resume chunks after skills update (chatbot uses stale AI skills data)
