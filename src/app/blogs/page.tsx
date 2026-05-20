@@ -56,20 +56,6 @@ function getTopicMatches(blog: BlogMeta): string[] {
   return matches
 }
 
-function getTopTags(blogs: BlogMeta[]): string[] {
-  const counts = new Map<string, number>()
-
-  for (const blog of blogs) {
-    for (const tag of blog.tags) {
-      counts.set(tag, (counts.get(tag) ?? 0) + 1)
-    }
-  }
-
-  return Array.from(counts.entries())
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, 10)
-    .map(([tag]) => tag)
-}
 
 function filterBlogs(blogs: BlogMeta[], topic: string | undefined): BlogMeta[] {
   return blogs.filter((blog) => {
