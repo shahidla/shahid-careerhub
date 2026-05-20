@@ -202,7 +202,7 @@ for page in range(0,10):
 
 I have collected 6000+ tweets.
 
-![Screenshot 1](./image-1.png)
+![Screenshot 1](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-1.jpg)
 
 **3. Filtering the data:**
 
@@ -224,7 +224,7 @@ also decompose words=2, as in looking for two separate words.
 
 I have got 161 records
 
-![Screenshot 2](./image-2.png)
+![Screenshot 2](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-2.jpg)
 
 **4. Creating FULLTEXT index for the table with ****Configuration 'EXTRACTION_CORE_VOICEOFCUSTOMER'**
 
@@ -240,11 +240,11 @@ Configuration 'EXTRACTION_CORE_VOICEOFCUSTOMER' will help us to classify the str
 
 whenever it there is "#" mentioned it considers as "SOCIAL", HTTP as "URL".
 
-![Screenshot 3](./image-3.png)
+![Screenshot 3](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-3.jpg)
 
 When I browsed this data, I realized people have used "#" in front of the city/location. so I am  removing "#" from the table. It will show the "type" as "locality"
 
-![Screenshot 4](./image-4.png)
+![Screenshot 4](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-4.jpg)
 
 Using the above index table, I further created three more table. I will use this tables in Python, SAP Lumira and Excel.
 
@@ -266,15 +266,15 @@ INSERT  INTO "MOHAS97"."amohas97.session.data::twitloc"
 
 I will use XSODATA to view the table data in SAP Lumira.
 
-![Screenshot 5](./image-5.png)
+![Screenshot 5](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-5.jpg)
 
-![Screenshot 6](./image-6.png)
+![Screenshot 6](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-6.jpg)
 
-![Screenshot 7](./image-7.png)
+![Screenshot 7](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-7.jpg)
 
-![Screenshot 8](./image-8.png)
+![Screenshot 8](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-8.jpg)
 
-![Screenshot 9](./image-9.png)
+![Screenshot 9](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-9.jpg)
 
 I have created a geography hierarchy.
 
@@ -302,7 +302,7 @@ open the excel file and use the odata as follows. All the URLs are fetched in a 
 
 ****
 
-![Screenshot 10](./image-10.png)
+![Screenshot 10](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-10.jpg)
 
 **Table 3:  Reply to Tweets -Twitter Bot**
 
@@ -332,7 +332,7 @@ INSERT INTO "MOHAS97"."amohas97.session.data::twitfnl"
 
         OR p.TA_TYPE = 'ADDRESS2') );
 
-![Screenshot 11](./image-11.png)
+![Screenshot 11](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-11.jpg)
 
 **Python Code:**
 
@@ -414,9 +414,9 @@ Out of 6000+ tweets I am able to choose and reply to 117 tweets. I have job URLs
 
 And knows the right head hunter.
 
-![Screenshot 12](./image-12.png)
+![Screenshot 12](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-12.jpg)
 
-![Screenshot 13](./image-13.png)
+![Screenshot 13](/blogs/blog-24-sap-hana-twitter-find-your-leads/image-13.jpg)
 
 ## Key Takeaways
 

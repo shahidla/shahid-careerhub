@@ -56,7 +56,7 @@ I have inserted a record in the table using Insert SQL.
 
 ****
 
-![Screenshot 1](./image-1.png)
+![Screenshot 1](/blogs/blog-9-sap-hana-excel-integration/image-1.jpg)
 
 ****
 
@@ -70,23 +70,23 @@ Calling Odata using Power Query:
 
 1. My next step is to access the OData in this Excel File. I am sure there must be multiple ways to access it, I tried using the Excel Add-in PowerPivot.
 
-![Screenshot 2](./image-2.png)
+![Screenshot 2](/blogs/blog-9-sap-hana-excel-integration/image-2.jpg)
 
           2. A pop-up will be displayed for the OData Feed. I have entered the OData which I have created using .XSODATA
 
-![Screenshot 3](./image-3.png)
+![Screenshot 3](/blogs/blog-9-sap-hana-excel-integration/image-3.jpg)
 
           3. Query Editor will be opened. Check the feed and Click on Apply & Close
 
-![Screenshot 4](./image-4.png)
+![Screenshot 4](/blogs/blog-9-sap-hana-excel-integration/image-4.jpg)
 
           4. You will promted for User ID and Password. Alternately you can set the Credentials here.
 
-![Screenshot 5](./image-5.png)
+![Screenshot 5](/blogs/blog-9-sap-hana-excel-integration/image-5.jpg)
 
           5. The below screenshot will help to set the OData Refresh settings. Also you can see the data has been retrieved from SAP HANA DB.
 
-![Screenshot 6](./image-6.png)
+![Screenshot 6](/blogs/blog-9-sap-hana-excel-integration/image-6.jpg)
 
 ****
 
@@ -105,7 +105,7 @@ A code has been written to trigger the Python File in Excel. Go to ALT+F11 and u
 
 Write your code in Worksheet, this will have multiple options when to run this code. I want to trigger the Python code on Saving of the Excel file.
 
-![Screenshot 7](./image-7.png)
+![Screenshot 7](/blogs/blog-9-sap-hana-excel-integration/image-7.jpg)
 
 Private Sub Workbook_AfterSave(ByVal Success As Boolean)
 
@@ -203,19 +203,19 @@ while curr_row < num_rows:
 
 You can test your Python Code from command line. Below screenshot is for reference.
 
-![Screenshot 8](./image-8.png)
+![Screenshot 8](/blogs/blog-9-sap-hana-excel-integration/image-8.jpg)
 
 **STEP 5: Post the data to SAP HANA DB from Excel:**
 
      1. Now add an entry in Excel:
 
-![Screenshot 9](./image-9.png)
+![Screenshot 9](/blogs/blog-9-sap-hana-excel-integration/image-9.jpg)
 
      2. Check the result in SAP HANA:
 
 Now we have two records.
 
-![Screenshot 10](./image-10.png)
+![Screenshot 10](/blogs/blog-9-sap-hana-excel-integration/image-10.jpg)
 
 **STEP 6: Post the data to SAP HANA DB from Excel:**
 
@@ -223,9 +223,9 @@ Now we have two records.
 
 Now create one more record in SAP HANA table and check whether it is updating the Excel. As Similar to Step 2 and check the result in Excel.
 
-![Screenshot 11](./image-11.png)
+![Screenshot 11](/blogs/blog-9-sap-hana-excel-integration/image-11.jpg)
 
-![Screenshot 12](./image-12.png)
+![Screenshot 12](/blogs/blog-9-sap-hana-excel-integration/image-12.jpg)
 
 Currently I have only used OData 'POST' operation. I believe further operations can be used like PUT & DELETE or triggering the Python Code for GET operation instead of using Excel OData feeds.
 

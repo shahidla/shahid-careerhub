@@ -41,13 +41,13 @@ Kernel version 7.21 and the SAP Business Application Accelerator Add On.
 
 **Demo - Overview:**
 
-![Screenshot 1](./image-1.png)
+![Screenshot 1](/blogs/blog-18-sap-teched/image-1.png)
 
 **Demo - Step-by-Step:**
 
 1. Establishing a Connection a connection between ERP system and HANA DB. In this case we are connecting our ERP System to HANA Database (System – HDB). We can also check available DB Connections, Indicated with arrow in the screen shot.
 
-![Screenshot 2](./image-2.png)
+![Screenshot 2](/blogs/blog-18-sap-teched/image-2.png)
 
      2. SLT: SLT is a process to replicate the data from primary to secondary database. In this case we will identify time intensive – tables / program                            combinations to be redirected to HANA and not to the primary database for read access.
 
@@ -55,19 +55,19 @@ Kernel version 7.21 and the SAP Business Application Accelerator Add On.
 
      4. Maintaining the Configuration by preparing the XML with scenario, program and table names after identifying the program and table.
 
-![Screenshot 3](./image-3.png)
+![Screenshot 3](/blogs/blog-18-sap-teched/image-3.png)
 
      5. Configuration is maintained by using RDA_MAINTAIN program. First XML will be upload using the ‘Upload Scenario’. Once the XML is uploaded, a                      database connection has to be maintained (second screen shot) and last we will Activate the Scenario. Configuration entries are maintained in                            RDA_CONTROL, RDA_CONFIG and RDA_CONTEXT table. You can validate your configuration entries here.
 
-![Screenshot 4](./image-4.png)
+![Screenshot 4](/blogs/blog-18-sap-teched/image-4.png)
 
-![Screenshot 5](./image-5.png)
+![Screenshot 5](/blogs/blog-18-sap-teched/image-5.png)
 
      6. Profile Parameters rsdb/rda is used to redirect the DBs using RZ11 transaction Code. It acts like a switch between two databases. Please see the                      prerequisite to avail the profile parameters. Please make sure the scenario which we have uploaded in previous step has to in active status, only then the            redirection of DBs works.
 
-![Screenshot 6](./image-6.png)
+![Screenshot 6](/blogs/blog-18-sap-teched/image-6.png)
 
-![Screenshot 7](./image-7.png)
+![Screenshot 7](/blogs/blog-18-sap-teched/image-7.png)
 
      7. Analyzing the Runtime by testing the runtime of the program in both DBs by setting profile parameter values as on/off.
 
@@ -79,11 +79,11 @@ Kernel version 7.21 and the SAP Business Application Accelerator Add On.
 
      It only took **4 seconds **to run the program.
 
-![Screenshot 8](./image-8.png)
+![Screenshot 8](/blogs/blog-18-sap-teched/image-8.png)
 
-![Screenshot 9](./image-9.png)
+![Screenshot 9](/blogs/blog-18-sap-teched/image-9.png)
 
-![Screenshot 10](./image-10.png)
+![Screenshot 10](/blogs/blog-18-sap-teched/image-10.png)
 
 **Limitations:**
 

@@ -41,11 +41,11 @@ excerpt: "Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consumi
 
 **Step 2:  **Enter name and description, select the ‘Default Schema’ (SAP-SID) and Run With as ‘Invoker’s Right’ and click on finish.
 
-![Screenshot 1](./image-1.png)
+![Screenshot 1](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-1.jpg)
 
 **Step 3: ** Add ‘Output’ and ‘Input’ parameters by right clicking on the respective folders
 
-![Screenshot 2](./image-2.png)
+![Screenshot 2](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-2.jpg)
 
 **Step 4:** Place the code in the procedure editor
 
@@ -65,7 +65,7 @@ et_last_rev_bill = **SELECT** empinfo.pernr **as** PERNR, DAYS_BETWEEN(empbill.B
 
 /********* End Procedure Script ************/
 
-![Screenshot 3](./image-3.png)
+![Screenshot 3](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-3.jpg)
 
 **Step5:** Save and activate the procedure. Execute the procedure in ‘SQL Console’.
 
@@ -75,29 +75,29 @@ et_last_rev_bill = **SELECT** empinfo.pernr **as** PERNR, DAYS_BETWEEN(empbill.B
 
 **Call** "_SYS_BIC"."mohas97_ha5/ZEMP_BILL_PP"(?);
 
-![Screenshot 4](./image-4.png)
+![Screenshot 4](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-4.jpg)
 
 **Now create a Proxy Procedure in ABAP:**
 
 **Step 1:** Go to ‘ABAP’ prospective.
 
-![Screenshot 5](./image-5.png)
+![Screenshot 5](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-5.jpg)
 
 **Step 2:  **Right click on ABAP package under which you want to create this Proxy Procedure. Under ‘New’ click on ‘Other ABAP Repository Object’
 
-![Screenshot 6](./image-6.png)
+![Screenshot 6](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-6.jpg)
 
 **Step 3: **Choose ‘Database Procedure Proxy’.
 
-![Screenshot 7](./image-7.png)
+![Screenshot 7](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-7.jpg)
 
 **Step 4**: Enter name, description, HANA s procedure name 
 
-![Screenshot 8](./image-8.png)
+![Screenshot 8](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-8.jpg)
 
 **Step 5: **Now your proxy procedure is created just activate the object.
 
-![Screenshot 9](./image-9.png)
+![Screenshot 9](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-9.jpg)
 
 **Source code to Consume the ‘Proxy Procedure’  in ABAP:**
 
@@ -119,7 +119,7 @@ IMPORTING et_last_rev_bill = lt_bill_rev_days.
 
 **Output:**
 
-![Screenshot 10](./image-10.png)
+![Screenshot 10](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-10.jpg)
 
 **T7. Consume HANA artifact Stored Procedure by Calling it in ABAP Code.**
 
@@ -173,7 +173,7 @@ IMPORTING et_last_rev_bill = lt_bill_rev_days.
  WRITE: '::', <fs_bill_rev_days>-last_rev_bill , /.
  ENDLOOP.
 
-![Screenshot 11](./image-11.png)
+![Screenshot 11](/blogs/blog-6-consuming-hana-views-procedures-abap-part-1/image-11.jpg)
 
 ## Key Takeaways
 

@@ -88,7 +88,7 @@ The following BADIs will help you to manipulate/change the data or to derive any
 
 Transaction Code: /LOGWIN/IMG – Check/Tick Activates the SAP UIL.
 
-![Screenshot 1](./image-1.png)
+![Screenshot 1](/blogs/blog-19-sap-ui-logging/image-1.png)
 
 ****
 
@@ -98,17 +98,17 @@ Transaction Code: /LOGWIN/IMG – Check/Tick Activates the SAP UIL.
 
         execute/access the transaction code.
 
-![Screenshot 2](./image-2.png)
+![Screenshot 2](/blogs/blog-19-sap-ui-logging/image-2.png)
 
-![Screenshot 3](./image-3.png)
+![Screenshot 3](/blogs/blog-19-sap-ui-logging/image-3.png)
 
 Now execute the program /LOGWIN/GENERATE_MAP_ENTRIES. A lot of configuration entries can be found. Let take an example of transaction code ‘CJ30’. I am only interested in one screen, so I have deleted the rest of entries for performance. In this screen/view, I have the field which is required for the logging.
 
-![Screenshot 4](./image-4.png)
+![Screenshot 4](/blogs/blog-19-sap-ui-logging/image-4.png)
 
 Let us now see what we have in GUI fields for the above screen. I have removed all the entries/fields which are not required for the logging. I am only interested in POSID, so I have maintained mapping value. You can also see EXCLUDE FIELD, if you select this field the logging will not happen, but consider the code will have to loop on these fields to determine whether this field is required for the logging or not.
 
-![Screenshot 5](./image-5.png)
+![Screenshot 5](/blogs/blog-19-sap-ui-logging/image-5.png)
 
 Mapping Value: POSID is one of the fields in the external log table. When we are building the name/value pair table during transformation, the user entered value will be assigned to the structure of the external log table field; this is like an easy mapping. If we have BUKRS, CCode or any other name on the transaction code then we can map all these fields to one by having single mapping value. 
 
@@ -118,7 +118,7 @@ Transaction Code: /LOGWIN/SHOW_LOG - In the below screen shot you will have all 
 
 In the below case, I can tell that the user has used sales order number 13112 in the VA03 tcode. PAI event actually tells me that the user has executed the transaction.
 
-![Screenshot 6](./image-6.png)
+![Screenshot 6](/blogs/blog-19-sap-ui-logging/image-6.png)
 
 **External Logs:**
 
@@ -126,7 +126,7 @@ The below tables are only for information purpose. I want to store all the heade
 
 Table 1: User Information:
 
-![Screenshot 7](./image-7.png)
+![Screenshot 7](/blogs/blog-19-sap-ui-logging/image-7.png)
 
 Table 2: Accessed Information:
 
@@ -142,7 +142,7 @@ Table 2: Accessed Information:
 
     If these two fields are not equal then we will raise a violation.
 
-![Screenshot 8](./image-8.png)
+![Screenshot 8](/blogs/blog-19-sap-ui-logging/image-8.png)
 
 **Conclusion:**
 

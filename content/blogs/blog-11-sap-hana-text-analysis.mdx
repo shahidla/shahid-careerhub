@@ -39,7 +39,7 @@ string-list-value>amohas97.session.textproj::prod.hdbtextdict/string-list-value>
 
 **Code in Custom Configuration:**
 
-![Screenshot 1](./image-1.png)
+![Screenshot 1](/blogs/blog-11-sap-hana-text-analysis/image-1.jpg)
 
 **STEP 2: Creating a Custom Dictionary .hdbtextdict:**
 
@@ -75,11 +75,11 @@ STEP 3: Tables & Text Analysis full text index:
 
         Table was created to maintain the default query. This table will have 3 fields Schema name, Table name and the default fields. This query will get                    executed when there are no entries in the text analysis table.
 
-![Screenshot 2](./image-2.png)
+![Screenshot 2](/blogs/blog-11-sap-hana-text-analysis/image-2.jpg)
 
     2. Table to fetch the data. Maintain some sample records. In this case **"amohas97.session.data::srnum"**
 
-![Screenshot 3](./image-3.png)
+![Screenshot 3](/blogs/blog-11-sap-hana-text-analysis/image-3.jpg)
 
     3. Table to store the requests for the selection of the fields from the above table. In this case **"WRK_SCH"****.****"amohas97.session.data::sptxt"** 
 
@@ -163,7 +163,7 @@ as the default selection of the fields is maintained in the **"amohas97.session.
 
  In this table I have maintained only 3 columns. so the query returned only 3 columns.
 
-![Screenshot 4](./image-4.png)
+![Screenshot 4](/blogs/blog-11-sap-hana-text-analysis/image-4.jpg)
 
 1.      Now in SQL console, I will insert a new entry in this table with a statement in **English **in the table "amohas97.session.data::sptxt" table. I have created a full text index on this table. So whenever there is an entry created it, my text analysis table will have an entry with categorized TA_TOKENS and TA_NORMALIZED.
 
@@ -175,11 +175,11 @@ insert into "."amohas97.session.data::sptxt""WRK_SCH"."amohas97.session.data::sp
 ```
 This is how the text table looks like
 
-![Screenshot 5](./image-5.png)
+![Screenshot 5](/blogs/blog-11-sap-hana-text-analysis/image-5.jpg)
 
 **1.      Now run the procedure again, this time the procedure will return the data with 4 columns**
 
-![Screenshot 6](./image-6.png)
+![Screenshot 6](/blogs/blog-11-sap-hana-text-analysis/image-6.jpg)
 
 Thank you for reading.
 
