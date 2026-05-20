@@ -105,11 +105,6 @@ export default function PatentPage() {
         </div>
       </section>
 
-      <section className="border-t border-gray-100 pt-6 flex flex-wrap gap-6 text-sm">
-        <a href="/resume#awards" className="text-gray-500 hover:text-gray-900">← Back to Resume</a>
-        <a href="/ai#projects" className="text-gray-500 hover:text-gray-900">AI Portfolio</a>
-      </section>
-
     </main>
   )
 }
