@@ -5,6 +5,7 @@ import {
   getSkills,
   getBlogs,
 } from '@/lib/db'
+import { getCanonicalToSlugMap } from '@/lib/blogs'
 
 export const dynamic = 'force-dynamic'
 
@@ -41,6 +42,8 @@ export default async function AiPage() {
     getSkills(true),
     getBlogs(true),
   ])
+
+  const canonicalToSlug = getCanonicalToSlugMap()
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
@@ -174,13 +177,19 @@ export default async function AiPage() {
       </section>
 
       <section id="writing">
-        <h2 className="section-heading">AI Writing - SAP Community</h2>
+        <h2 className="section-heading">AI Writing</h2>
         <ul className="mt-4 space-y-3">
-          {blogs.map((blog) => (
+          {blogs.map((blog) => {
+            const slug = canonicalToSlug[blog.url]
+            return (
             <li key={blog.id} className="flex gap-3 items-start">
               <span className="text-purple-500 mt-1 shrink-0">-</span>
               <div>
-                <a href={blog.url} target="_blank" rel="noopener noreferrer" className="text-sm text-purple-700 hover:underline font-medium">
+                <a
+                  href={slug ? `/blogs/${slug}` : blog.url}
+                  target={slug ? undefined : '_blank'}
+                  rel={slug ? undefined : 'noopener noreferrer'}
+                  className="text-sm text-purple-700 hover:underline font-medium">
                   {blog.title}
                 </a>
                 <div className="flex flex-wrap gap-1 mt-1">
@@ -190,7 +199,8 @@ export default async function AiPage() {
                 </div>
               </div>
             </li>
-          ))}
+            )
+          })}
         </ul>
       </section>
 
