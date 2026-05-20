@@ -1,7 +1,7 @@
 # AI Career Hub — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-20 (session 19)
+Last updated: 2026-05-20 (session 19b)
 
 ---
 
@@ -504,13 +504,13 @@ This is the master dev task list. Always update this when a task is done. This s
 - projects.period column added — free-text date ranges (session 19)
 - All 24 MDX blog posts migrated from SAP Community via Codex (session 19)
 - 24/24 blogs verified via scripts/verify-blogs.mjs (session 19)
+- O1-C: Re-embedded resume chunks — 110 chunks now live (session 19b)
+- O1-E: Projects confirmed matching PDF exactly (session 19b)
+- O1-F MED: Analysis for Office added to Stockland project technologies (session 19b)
+- O1-F DECISIONS: All resolved (session 19b) — TechEd speaker confirmed + links to blog-18; Stockland covered via period field; SAP Labs sub-projects bundled in experience + individual project rows; MCP folded into CBA project; Patent has own /patent page, no projects row needed
 
 #### Pending ⬜
-- O1-C: Re-embed resume chunks after skills update (chatbot uses stale AI skills data)
 - O1-D: Profile completeness score widget on dashboard
-- O1-E: Confirm projects in Supabase match CV exactly
-- O1-F MED: Stockland project technologies — add 'Analysis for Office' (SQL not yet run)
-- O1-F DECISIONS NEEDED: TechEd speaker in proof_points (verify/remove); Stockland second stint Apr–Nov 2018 (add or skip?); SAP Labs 4 sub-projects bundle vs split; MCP standalone vs fold into CBA; Patent as project row?
 
 ---
 
