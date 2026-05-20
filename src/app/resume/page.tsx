@@ -130,7 +130,11 @@ export default async function ResumePage() {
               {profile.proof_points.map((point) => (
                 <div key={point} className="flex gap-2 text-sm">
                   <span className="text-blue-500 mt-0.5 shrink-0">-</span>
-                  <span>{point}</span>
+                  {point.toLowerCase().includes('teched speaker') ? (
+                    <span>{point.replace('TechEd speaker', '')}<a href="/blogs/blog-18-sap-teched" className="text-blue-600 hover:underline">TechEd speaker</a></span>
+                  ) : (
+                    <span>{point}</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -299,9 +303,10 @@ export default async function ResumePage() {
               <div className="mt-6 border border-blue-100 rounded-xl p-5 bg-blue-50">
                 <div className="flex flex-wrap justify-between gap-2">
                   <span className="text-sm font-semibold text-gray-900">US10304013B2</span>
-                  <a href="https://patents.google.com/patent/US10304013B2/en" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-700 hover:underline">
-                    View on Google Patents {'->'}
-                  </a>
+                  <div className="flex gap-4">
+                    <a href="/patent" className="text-sm text-blue-700 hover:underline">Full details →</a>
+                    <a href="https://patents.google.com/patent/US10304013B2/en" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-700 hover:underline">Google Patents →</a>
+                  </div>
                 </div>
                 <p className="mt-2 text-sm text-gray-700 leading-relaxed">{patent.description}</p>
               </div>
