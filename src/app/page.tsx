@@ -23,13 +23,13 @@ export default async function HomePage() {
             href="/ai"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-5 py-2.5 rounded-lg transition-colors"
           >
-            AI Portfolio -&gt;
+            AI Portfolio {'->'}
           </a>
           <a
             href="/resume"
             className="inline-block bg-gray-900 hover:bg-gray-700 text-white font-medium px-5 py-2.5 rounded-lg transition-colors"
           >
-            SAP Resume -&gt;
+            SAP Resume {'->'}
           </a>
           <a
             href="/chat"
@@ -61,11 +61,11 @@ export default async function HomePage() {
       <section className="border-t border-gray-100 pt-10">
         <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">More</h2>
         <div className="flex flex-wrap gap-4 text-sm">
-          <a href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard Demo -&gt;</a>
-          <a href="/learning" className="text-gray-600 hover:text-gray-900">Learning &amp; Courses -&gt;</a>
-          <a href="https://www.linkedin.com/in/shahidmsyed/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">LinkedIn -&gt;</a>
-          <a href="https://github.com/shahidla" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">GitHub -&gt;</a>
-          <a href={`mailto:${profile.contact.email}`} className="text-gray-600 hover:text-gray-900">Email -&gt;</a>
+          <a href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard Demo {'->'}</a>
+          <a href="/learning" className="text-gray-600 hover:text-gray-900">Learning &amp; Courses {'->'}</a>
+          <a href="https://www.linkedin.com/in/shahidmsyed/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">LinkedIn {'->'}</a>
+          <a href="https://github.com/shahidla" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">GitHub {'->'}</a>
+          <a href={`mailto:${profile.contact.email}`} className="text-gray-600 hover:text-gray-900">Email {'->'}</a>
         </div>
       </section>
     </main>

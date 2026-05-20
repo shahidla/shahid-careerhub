@@ -176,7 +176,7 @@ export default async function ResumePage() {
               </div>
               <div className="flex flex-col gap-2 shrink-0 justify-center">
                 <a href="/ai" className="inline-block bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg text-center transition-colors">
-                  View AI Portfolio -&gt;
+                  View AI Portfolio {'->'}
                 </a>
                 <a href="/chat" className="inline-block border border-purple-300 text-purple-700 hover:bg-purple-100 text-sm font-medium px-4 py-2 rounded-lg text-center transition-colors">
                   Chat with my resume
@@ -259,7 +259,7 @@ export default async function ResumePage() {
             </div>
             <div className="mt-5 flex items-center gap-3 text-sm border-t border-gray-100 pt-4">
               <span className="text-gray-500">+ 69 completed OpenSAP courses covering SAP HANA, BTP, ABAP, AI/ML, and Fiori</span>
-              <a href="/learning" className="text-blue-600 hover:underline font-medium shrink-0">View all -&gt;</a>
+              <a href="/certifications" className="text-blue-600 hover:underline font-medium shrink-0">View all {'->'}</a>
             </div>
           </section>
 
@@ -287,7 +287,7 @@ export default async function ResumePage() {
               })}
             </ul>
             <div className="mt-5">
-              <a href="/blogs" className="text-sm text-blue-600 hover:underline font-medium">View all {blogs.length} posts -&gt;</a>
+              <a href="/blogs" className="text-sm text-blue-600 hover:underline font-medium">View all {blogs.length} posts {'->'}</a>
             </div>
           </section>
 
@@ -300,7 +300,7 @@ export default async function ResumePage() {
                 <div className="flex flex-wrap justify-between gap-2">
                   <span className="text-sm font-semibold text-gray-900">US10304013B2</span>
                   <a href="https://patents.google.com/patent/US10304013B2/en" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-700 hover:underline">
-                    View on Google Patents -&gt;
+                    View on Google Patents {'->'}
                   </a>
                 </div>
                 <p className="mt-2 text-sm text-gray-700 leading-relaxed">{patent.description}</p>

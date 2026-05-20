@@ -81,7 +81,7 @@ export default async function AiPage() {
               <p className="text-sm text-gray-600 mt-0.5">Next.js 14 | Supabase pgvector | Claude API | Vercel</p>
             </div>
             <a href="https://github.com/shahidla/shahid-careerhub" target="_blank" rel="noopener noreferrer" className="text-sm text-purple-700 hover:underline font-medium self-start">
-              GitHub -&gt;
+              GitHub {'->'}
             </a>
           </div>
           <p className="mt-3 text-sm text-gray-700 leading-relaxed">
@@ -147,7 +147,12 @@ export default async function AiPage() {
       </section>
 
       <section id="certs">
-        <h2 className="section-heading">AI Certifications</h2>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 className="section-heading">AI Certifications</h2>
+          <a href="/certifications?track=ai" className="text-sm font-medium text-purple-700 hover:underline">
+            View full credential index {'->'}
+          </a>
+        </div>
         <div className="mt-4 grid sm:grid-cols-2 gap-3">
           {certifications.map((cert) => (
             <div key={cert.id} className="border border-purple-200 rounded-lg p-3 bg-purple-50">
@@ -196,7 +201,7 @@ export default async function AiPage() {
           {AI_BUILT.map((row) => (
             <div key={row.concept} className="flex gap-3 items-start text-sm">
               <span className={`shrink-0 mt-0.5 font-bold ${row.done ? 'text-green-500' : 'text-gray-300'}`}>
-                {row.done ? 'OK' : 'TODO'}
+                {row.done ? 'Done' : 'Planned'}
               </span>
               <div>
                 <span className={`font-semibold ${row.done ? 'text-gray-900' : 'text-gray-400'}`}>{row.concept}</span>

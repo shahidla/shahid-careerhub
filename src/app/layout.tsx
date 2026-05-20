@@ -8,26 +8,26 @@ const BASE_URL = 'https://shahid-careerhub.vercel.app'
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'Shahid M Syed — SAP & AI Engineer',
-    template: '%s — Shahid M Syed',
+    default: 'Shahid M Syed - SAP & AI Engineer',
+    template: '%s - Shahid M Syed',
   },
   description:
-    'SAP Development Architect with 19 years experience, now building AI systems — RAG, agents, embeddings, MCP, and LLM integration on BTP.',
+    'SAP Development Architect with 19 years experience, now building AI systems - RAG, agents, embeddings, MCP, and LLM integration on BTP.',
   authors: [{ name: 'Shahid M Syed' }],
   creator: 'Shahid M Syed',
   openGraph: {
     type: 'website',
     siteName: 'Shahid M Syed',
     url: BASE_URL,
-    title: 'Shahid M Syed — SAP & AI Engineer',
+    title: 'Shahid M Syed - SAP & AI Engineer',
     description:
-      'SAP Development Architect with 19 years experience, now building AI systems — RAG, agents, embeddings, MCP, and LLM integration on BTP.',
+      'SAP Development Architect with 19 years experience, now building AI systems - RAG, agents, embeddings, MCP, and LLM integration on BTP.',
   },
   twitter: {
     card: 'summary',
-    title: 'Shahid M Syed — SAP & AI Engineer',
+    title: 'Shahid M Syed - SAP & AI Engineer',
     description:
-      'SAP Development Architect with 19 years experience, now building AI systems — RAG, agents, embeddings, MCP, and LLM integration on BTP.',
+      'SAP Development Architect with 19 years experience, now building AI systems - RAG, agents, embeddings, MCP, and LLM integration on BTP.',
   },
   robots: { index: true, follow: true },
   alternates: { canonical: BASE_URL },
@@ -38,7 +38,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+        >
           Skip to main content
         </a>
         <SiteHeader />

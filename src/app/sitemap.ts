@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/resume`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE_URL}/ai`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE_URL}/blogs`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE_URL}/certifications`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/learning`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/chat`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
   ]

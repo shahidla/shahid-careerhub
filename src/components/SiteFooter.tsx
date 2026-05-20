@@ -2,6 +2,7 @@ const FOOTER_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/resume', label: 'Resume' },
   { href: '/ai', label: 'AI Portfolio' },
+  { href: '/certifications', label: 'Certifications' },
   { href: '/blogs', label: 'Blog' },
   { href: '/dashboard', label: 'Dashboard Demo' },
   { href: '/learning', label: 'Learning' },
@@ -52,7 +53,7 @@ export default function SiteFooter() {
             </ul>
           </nav>
         </div>
-        <p className="mt-8 text-xs text-gray-400">(c) {new Date().getFullYear()} Shahid M Syed</p>
+        <p className="mt-8 text-xs text-gray-400">© {new Date().getFullYear()} Shahid M Syed</p>
       </div>
     </footer>
   )

@@ -22,6 +22,9 @@ const STATUS_COLOURS: Record<string, string> = {
   closed: 'bg-red-50 text-red-400',
 }
 
+const LOW_SIGNAL_THRESHOLD = 45
+const STALE_DAYS = 21
+
 function timeAgo(date: string | null): string {
   if (!date) return ''
   const diff = Date.now() - new Date(date).getTime()
@@ -32,10 +35,35 @@ function timeAgo(date: string | null): string {
   return `${days}d ago`
 }
 
+function getJobDate(job: Job): string | null {
+  return job.posted_at ?? job.fetched_at ?? null
+}
+
+function ageInDays(date: string | null): number | null {
+  if (!date) return null
+  const diff = Date.now() - new Date(date).getTime()
+  return Math.floor(diff / 86400000)
+}
+
+function isLowSignal(job: Job): boolean {
+  return job.status === 'new' && job.match_score != null && job.match_score < LOW_SIGNAL_THRESHOLD
+}
+
+function isStale(job: Job): boolean {
+  const days = ageInDays(getJobDate(job))
+  return job.status === 'new' && days != null && days > STALE_DAYS
+}
+
+function isArchived(job: Job): boolean {
+  return job.status === 'ignored' || job.status === 'closed'
+}
+
 function JobCard({ job, index }: { job: Job; index: number }) {
   const [status, setStatus] = useState(job.status)
   const [saving, setSaving] = useState(false)
   const [showReasoning, setShowReasoning] = useState(false)
+  const stale = isStale(job)
+  const lowSignal = isLowSignal(job)
 
   async function updateStatus(newStatus: string) {
     setSaving(true)
@@ -74,6 +102,8 @@ function JobCard({ job, index }: { job: Job; index: number }) {
                 {job.match_score}% match
               </button>
             )}
+            {lowSignal && <span className="text-xs rounded-full bg-amber-50 px-2 py-0.5 font-medium text-amber-700">Low signal</span>}
+            {stale && <span className="text-xs rounded-full bg-gray-100 px-2 py-0.5 font-medium text-gray-500">Older than 3 weeks</span>}
           </div>
           {showReasoning && job.match_reasoning && (
             <p className="mt-1 text-xs text-gray-500 italic">{job.match_reasoning}</p>
@@ -112,7 +142,7 @@ function JobCard({ job, index }: { job: Job; index: number }) {
       )}
 
       <div className="mt-3 flex items-center justify-between">
-        <span className="text-xs text-gray-400">{timeAgo(job.posted_at ?? job.fetched_at)}</span>
+        <span className="text-xs text-gray-400">{timeAgo(getJobDate(job))}</span>
         <div className="flex gap-1.5">
           {status === 'new' && (
             <>
@@ -152,9 +182,15 @@ function JobCard({ job, index }: { job: Job; index: number }) {
 
 export default function JobFeed({ jobs }: { jobs: Job[] }) {
   const [showIgnored, setShowIgnored] = useState(false)
+  const [showLowPriority, setShowLowPriority] = useState(false)
 
-  const visibleJobs = showIgnored ? jobs : jobs.filter((job) => job.status !== 'ignored' && job.status !== 'closed')
-  const hiddenCount = jobs.length - visibleJobs.length
+  const hiddenArchivedCount = jobs.filter(isArchived).length
+  const hiddenLowPriorityCount = jobs.filter((job) => !isArchived(job) && (isLowSignal(job) || isStale(job))).length
+  const visibleJobs = jobs.filter((job) => {
+    if (!showIgnored && isArchived(job)) return false
+    if (!showLowPriority && !isArchived(job) && (isLowSignal(job) || isStale(job))) return false
+    return true
+  })
 
   if (jobs.length === 0) {
     return (
@@ -167,19 +203,28 @@ export default function JobFeed({ jobs }: { jobs: Job[] }) {
 
   return (
     <div>
+      <div className="mb-4 flex flex-wrap gap-2 text-xs">
+        <button
+          onClick={() => setShowLowPriority(!showLowPriority)}
+          className="rounded-full border border-gray-200 px-3 py-1 text-gray-600 transition-colors hover:bg-gray-100"
+        >
+          {showLowPriority ? 'Hide' : `Show ${hiddenLowPriorityCount}`} low-priority / stale
+        </button>
+        {hiddenArchivedCount > 0 && (
+          <button
+            onClick={() => setShowIgnored(!showIgnored)}
+            className="rounded-full border border-gray-200 px-3 py-1 text-gray-600 transition-colors hover:bg-gray-100"
+          >
+            {showIgnored ? 'Hide' : `Show ${hiddenArchivedCount}`} ignored / closed
+          </button>
+        )}
+      </div>
+
       <div className="space-y-3">
         {visibleJobs.map((job, index) => (
           <JobCard key={job.id} job={job} index={index + 1} />
         ))}
       </div>
-      {hiddenCount > 0 && (
-        <button
-          onClick={() => setShowIgnored(!showIgnored)}
-          className="mt-4 text-xs text-gray-400 hover:text-gray-600 underline"
-        >
-          {showIgnored ? 'Hide' : `Show ${hiddenCount} ignored/closed`}
-        </button>
-      )}
     </div>
   )
 }

@@ -5,14 +5,15 @@ import type { Metadata } from 'next'
 type Props = { params: { slug: string } }
 
 export async function generateStaticParams() {
-  return getAllBlogs().map((b) => ({ slug: b.slug }))
+  return getAllBlogs().map((blog) => ({ slug: blog.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blog = getBlog(params.slug)
   if (!blog) return {}
+
   return {
-    title: `${blog.title} — Shahid M Syed`,
+    title: `${blog.title} - Shahid M Syed`,
     description: blog.excerpt,
     alternates: { canonical: blog.canonical },
     openGraph: {
@@ -35,19 +36,23 @@ export default function BlogPage({ params }: Props) {
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
-      <a href="/blogs" className="text-sm text-gray-500 hover:text-gray-900 mb-8 inline-block">← All Blogs</a>
+      <a href="/blogs" className="mb-8 inline-block text-sm text-gray-500 hover:text-gray-900">
+        ← All Blogs
+      </a>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'BlogPosting',
-          headline: blog.title,
-          description: blog.excerpt,
-          datePublished: blog.published_at,
-          author: { '@type': 'Person', name: 'Shahid M Syed', url: 'https://shahid-careerhub.vercel.app/resume' },
-          url: `https://shahid-careerhub.vercel.app/blogs/${blog.slug}`,
-          keywords: blog.tags.join(', '),
-        })}}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: blog.title,
+            description: blog.excerpt,
+            datePublished: blog.published_at,
+            author: { '@type': 'Person', name: 'Shahid M Syed', url: 'https://shahid-careerhub.vercel.app/resume' },
+            url: `https://shahid-careerhub.vercel.app/blogs/${blog.slug}`,
+            keywords: blog.tags.join(', '),
+          }),
+        }}
       />
 
       <header className="mb-10">
@@ -56,8 +61,10 @@ export default function BlogPage({ params }: Props) {
           {blog.author} · {new Date(blog.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {blog.tags.map((t) => (
-            <span key={t} className="tag-sm">{t}</span>
+          {blog.tags.map((tag) => (
+            <span key={tag} className="tag-sm">
+              {tag}
+            </span>
           ))}
         </div>
         <div className="mt-4">
@@ -72,20 +79,18 @@ export default function BlogPage({ params }: Props) {
         </div>
       </header>
 
-      <article
-        className="blog-prose"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <article className="blog-prose" dangerouslySetInnerHTML={{ __html: html }} />
 
-      <footer className="mt-14 pt-8 border-t border-gray-200">
+      <footer className="mt-14 border-t border-gray-200 pt-8">
         <div className="flex flex-wrap gap-4 text-sm">
-          <a href="/blogs" className="text-gray-500 hover:text-gray-900">← All Blogs</a>
+          <a href="/blogs" className="text-gray-500 hover:text-gray-900">
+            ← All Blogs
+          </a>
           <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600">
             View on SAP Community ↗
           </a>
         </div>
       </footer>
-
     </main>
   )
 }

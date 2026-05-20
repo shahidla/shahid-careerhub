@@ -15,6 +15,7 @@ export default async function DashboardPage() {
   const newCount = jobs.filter((job) => job.status === 'new').length
   const savedCount = jobs.filter((job) => job.status === 'saved').length
   const appliedCount = jobs.filter((job) => job.status === 'applied').length
+  const interviewingCount = jobs.filter((job) => job.status === 'interviewing').length
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -32,9 +33,11 @@ export default async function DashboardPage() {
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Job Feed</h2>
             <div className="flex gap-4 mt-1 text-sm text-gray-500">
-              <span>{newCount} new</span>
+              <span>{jobs.length} jobs found</span>
+              {newCount > 0 && <span>{newCount} new to review</span>}
               {savedCount > 0 && <span>{savedCount} saved</span>}
               {appliedCount > 0 && <span>{appliedCount} applied</span>}
+              {interviewingCount > 0 && <span>{interviewingCount} interviewing</span>}
             </div>
           </div>
           <FetchButton />

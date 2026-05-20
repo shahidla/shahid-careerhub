@@ -82,8 +82,8 @@ export default function ChatPage() {
     <div className="min-h-screen bg-white flex flex-col">
       <header className="border-b border-gray-200 px-6 py-3 flex items-center gap-4 text-sm sticky top-0 bg-white z-20">
         <a href="/" className="text-gray-400 hover:text-gray-700">Home</a>
-        <a href="/resume" className="text-blue-600 hover:text-blue-800">SAP Profile -&gt;</a>
-        <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio -&gt;</a>
+        <a href="/resume" className="text-blue-600 hover:text-blue-800">SAP Profile {'->'}</a>
+        <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio {'->'}</a>
         <span className="ml-auto text-gray-900 font-medium">Resume Chat</span>
       </header>
 
