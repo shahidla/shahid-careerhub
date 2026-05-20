@@ -1,4 +1,5 @@
 ---
+
 title: "Node.js Connecting to HANA + Mongo + Neo4J"
 author: "Shahid"
 published_at: "2017-09-29"
@@ -7,4 +8,562 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/node-js-co
 excerpt: "I tried to document my recent learnings on consuming different kinds of data, such as HANA database, MongoDB (Document Store), Neo4j DB (Graph Database), Google Map APIs"
 ---
 
+> **Summary:** I tried to document my recent learnings on consuming different kinds of data, such as HANA database, MongoDB (Document Store), Neo4j DB (Graph Database), Google Map APIs using Node.js. This blog is my learning code to built few use cases to understand the possibilities of using different APIs. I am 
+
+I tried to document my recent learnings on consuming different kinds of data, such as HANA database, MongoDB (Document Store), Neo4j DB (Graph Database), Google Map APIs using Node.js. This blog is my learning code to built few use cases to understand the possibilities of using different APIs. I am definite that there are better of ways of coding, better ways of connecting to different databases (like connecting to Mongo or PostgreSQL using cloud foundry backing services) or using Cloud connectors.
+
+
+
+Table names, Suppliers/Phone & relationship/models, Places and Select SQL are used in a fictitious manner. This blog is purely experimental.
+
+
+
+I took a simple example, where a user is requesting for a Mobile model to purchase and expecting the result should help him to decide from where he should buy based on Supplier/Seller, Supplier Ratings, geographical location of the seller.
+
+
+
+For the demo purpose, I have stored all related data in different databases and consumed data from SAP HANA using node.js.
+
+
+
+**For showing result of individual queries, I have executed those queries in NEO4J browser or using local node.js code. The final code calls all the APIs using promises to give the final output.**
+
+
+
+ 
+
+
+
+ 
+
+
+
+I have created sandbox accounts of database hosting services
+
+
+
+ 	- Graph Database -> Neo4j -> [https://www.graphenedb.com/](https://www.graphenedb.com/)
+
+
+ 	- Mongo DB -> JSON -> [https://mlab.com/home](https://mlab.com/home)
+
+
+
+
+ 
+
+
+
+ 
+
+
+
+**Neo4j:** I have stored/maintained data of the supplier and it’s relationship to the phone model and rating as one of the property of the seller node in the Graph database.
+
+
+
+
+
+![Screenshot 1](./image-1.png)
+
+
+
+
+ 
+
+
+
+ 
+
+
+
+**MongoDB: **I have maintained Supplier and their Geolocation in JSON format.
+
+
+
+
+
+![Screenshot 2](./image-2.png)
+
+
+
+
+ 
+
+
+
+**Code Flow: **
+
+
+
+**From HANA DB:**
+
+
+
+For the sake of simplicity, I just wrote a SQL on dummy table which will act as the requested data. May be this can be notification data/predictive data/business data or we can query parameters from URL itself.
+
+
+
+**var query = "SELECT '60' as rating, 'SS8' as model from dummy";**
+
+
+
+Assuming the user has requested for a seller who sells Samsung S8 model and has a minimum of 60% rating. I built a CIPHER SQL out of the dummy table output, so that it can be passed to an API to fetch the data from the graph database.
+
+
+
+**var query = "MATCH (a:supplier)  -[:SELLS]-> (b:product) WHERE a.rating > '" + rating.replace(/['"]+/g, '')  + "' and b.name = '" + model.replace(/['"]+/g, '') + "' RETURN a" ;**
+
+
+
+ 
+
+
+
+The outcome of the above query will be like this neo4j browser.
+
+
+
+
+
+![Screenshot 3](./image-3.png)
+
+
+
+
+ 
+
+
+
+Below screenshot is executed on local host to fetch the data based on different URL parameters.
+
+
+
+
+
+![Screenshot 4](./image-4.png)
+
+
+
+
+ 
+
+
+
+Similarly, the above result will be send to Mongo DB to read the json document for the latitude and longitude information of the supplier/seller. Below screenshot is the result for the above input/outcome from NEO4J (executed on local host to fetch the data based on different URL parameters).
+
+
+
+
+
+![Screenshot 5](./image-5.png)
+
+
+
+
+***Finally, I know who are the sellers of Samsung s8 and where they are located. I still don’t know who is closest to me. I will find it out using Google APIs. All these API calls has to be synchronous, I tried a couple of ways in doing that. Code for Promises & Async/Await can be found below.***
+
+
+
+***Let me share my folder structure and the code (please ignore the extra code) and then will run the code for the final result.***
+
+
+
+
+
+![Screenshot 6](./image-6.png)
+
+
+
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+
+**Code in Server.js**
+
+
+```sql
+"use strict";
+
+var port = process.env.PORT || 3000,
+    request = require('request'),
+    server = require("http").createServer(),
+    express = require("express"),
+    axios = require("axios"),
+    async = require("async"),
+    app = express(),
+
+    xssec = require("@sap/xssec"),
+    xsjs = require("@sap/xsjs"),
+    xsenv = require("@sap/xsenv"),
+    passport = require("passport"),
+    xsHDBConn = require("@sap/hdbext"),
+    methodOverride = require('method-override'),
+    pg = require('pg');
+
+var user = require('./neo/getSup');
+var loc = require('./mongo/getLoc');
+var dis = require('./google/getDistance');
+var han = require('./hadb/select');
+var dummy = require('./hadb/dummy');
+var pos = require('./postgre/postcon');
+
+var getUser = user.getUser;
+var getGeos = loc.getGeos;
+var getDist = dis.getDist;
+var clearData = dis.clear;
+var clearLoc = loc.clearLoc;
+var getHana = han.getHana;
+var getDummy = dummy.getDummy;
+
+//configure HANA 
+var options = xsenv.getServices({
+    hana: {
+        tag: "hana"
+    }
+});
+app.use(xsHDBConn.middleware(options.hana));
+var appenv = xsenv.loadEnv();
+
+app.get('/', function (req, res) {
+    res.send('
+## Running
+');
+});
+
+
+app.get('/getlist', function (req, res) {
+
+    var getResult = function () {
+
+        return getDummy(req, res).then(function (query) {
+            return new Promise(function (resolve) {
+                return getUser(query).then(function (userdata) {
+                    var sup = userdata.results[0]["data"]; //mongo data for suppliers   
+                    var promises = [];
+
+                    function SyncCalls(supname) {
+                        console.log('async counter');
+                        return getGeos(supname).then(function (geos) {
+                            return getDist(geos).then(function (geodist) {
+                                console.log('google counter');
+                            });
+                        });
+                    }
+                    for (var i = 0; i  sup.length; i++) {
+                        var supname = JSON.stringify(sup[i]["row"][0].name); //neo data
+                        console.log('push counter');
+                        promises.push(SyncCalls(supname));
+                    }
+
+                    Promise.all(promises)
+                        .then(function () {
+                            console.log("All done");
+
+                            resolve(dis.finaldata); //send results here
+                            // resolve(loc.alldata); //send results here
+                            var clear = clearData();
+                            var clearloc = clearLoc();
+                        })
+                        .catch(function (e) {
+                            resolve(e);
+                        });
+
+                });
+
+            });
+        });
+    };
+
+    getResult().then(function (data) {
+        res.send(data); // data to UI
+        // res.send('
+## Worked
+');
+    }).catch(function (e) {
+        res.send('
+## Failed
+');
+    });
+
+});
+
+app.listen(port, function () {
+    console.log('Running on port ' + port);
+
+});
+```
+
+
+ 
+
+
+
+**Code for Async/Await**
+
+
+```sql
+app.get('/data/:rating/:model', function (req, res) {
+
+    console.log('run');
+
+    var rating = req.params.rating;
+    var model = req.params.model;
+    var query = "MATCH (a:supplier)  -[:SELLS]-> (b:product) WHERE a.rating > '" + rating + "' and b.name = '" + model + "' RETURN a";
+
+    var getStatusAlt = async (query) => {
+        var user = await getUser(query);  //list suppliers from neo
+        var sup = user.results[0]["data"];  //mongo data for suppliers         
+
+        for (var i = 0; i  sup.length; i++) {
+            var supname = JSON.stringify(sup[i]["row"][0].name);
+            var geos = await getGeos(supname);                //for every record of neo, get mongo
+            var geodist = await getDist(geos);
+        }
+        var clear = await clearData();
+        var clearloc = await clearLoc();
+          return dis.finaldata;
+    };
+
+    getStatusAlt(query).then((data) => {
+        res.send(data)    // data to UI
+    }).catch((e) => {
+        console.log(e);
+    });
+
+});
+```
+
+
+ 
+
+
+
+**Code in dummy.js **
+
+
+```sql
+var getDummyvar = function(req, res) {
+	return new Promise(function(resolve, reject) {
+		var client = req.db;
+
+		var query = "SELECT '60' as rating, 'SS8' as model from dummy";
+		client.prepare(query,
+			function(err, statement) {
+				statement.exec([],
+					function(err, results) {
+						if (err) {
+							// res.type("text/plain").status(500).send("ERROR: " + err);
+							reject(err);
+						} else {
+						    var rating = JSON.stringify(results[0].RATING);
+						    var model  = JSON.stringify(results[0].MODEL);
+							var query = "MATCH (a:supplier)  -[:SELLS]-> (b:product) WHERE a.rating > '" + rating.replace(/['"]+/g, '')
+							           + "' and b.name = '" + model.replace(/['"]+/g, '') + "' RETURN a" ;
+
+							resolve(query);
+
+						}
+					});
+			});
+	});
+};
+
+module.exports.getDummy = getDummyvar;
+```
+
+
+ 
+
+
+
+**Code in getSup.js**
+
+
+```abap
+var request = require('request');
+var txUrl = "http://hobby-anjbojgcjildgbkgdlppl.dbs.graphenedb.com:24789/db/data/transaction/commit";  //url by graphedb
+
+var getUser = function(query, params) {
+	return new Promise(function(resolve, reject) {
+		request.post({
+				uri: txUrl,
+				headers: {
+					"Authorization": "Basic ZXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"          
+				},
+				proxy: 'your company proxy',    ///your company proxy
+				json: {
+					statements: [{
+						statement: query,
+						parameters: params
+					}]
+				}
+			},
+			function(err, res) {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res.body);
+				}
+			});
+	});
+};
+
+module.exports.getUser = getUser;
+```
+
+
+ 
+
+
+
+**Code in getLoc.js**
+
+
+```abap
+var request = require('request');
+var o = {}; 
+var key = 'MongoData';
+var jsondata = {};
+o[key] = []; 
+
+var getGeos = function(supname) {
+	return new Promise(function(resolve, reject) {
+		var result = supname;
+		var muri = 'https://api.mlab.com/api/1/databases/node/collections/products?q={"name": ' + result +
+			'}&apiKey=TXXXXXXXXXXXXXXXXXkZeXTy';
+		request({
+			url: muri,
+			json: true,
+			proxy: 'http://proxy.wdf.sap.corp:8080/'
+		}, function(error, response, body) {
+			if (error) {
+				reject(error);
+			} else {
+				(body);
+			}
+			var result = JSON.stringify(body[0]);
+			var name = JSON.stringify(body[0].name);
+			var location = JSON.stringify(body[0].location);
+			var latitude = JSON.stringify(body[0].latitude);
+			var longitude = JSON.stringify(body[0].longitude);
+
+			jsondata = {
+				name: name.replace(/['"]+/g, ''),
+				location: location.replace(/['"]+/g, ''),
+				latitude: latitude.replace(/['"]+/g, ''),
+				longitude: longitude.replace(/['"]+/g, '')
+			};
+
+			o[key].push(jsondata);
+			resolve(jsondata);
+
+		});
+	});
+};
+
+var clearLoc = function() {
+	o[key] = [];
+};
+
+module.exports.getGeos = getGeos;
+module.exports.alldata = o[key];
+module.exports.clearLoc = clearLoc;
+```
+
+
+ 
+
+
+
+**Code in getDistance.js**
+
+
+```abap
+var request = require('request');
+var dist = [];
+var jsondata = {};
+var getDist = function(geos) {
+
+	return new Promise(function(resolve, reject) {
+		var result = geos;
+		var muri = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=' + geos.latitude + ',' + geos.longitude +
+			'&destinations=12.9242352,%2077.668176&key=AXXXXXXXXXXXXXXXXXXXXXX';
+		request({
+			url: muri,
+			json: true,
+			proxy: 'your company proxy'
+		}, function(error, response, body) {
+			if (error) {
+				reject(error);
+			} else {
+				(body);
+			}
+
+			var result = JSON.stringify(body.rows[0].elements[0].distance.text);
+			var name = JSON.stringify(geos.name);
+			var location = JSON.stringify(geos.location);
+
+			jsondata = {
+				name: name.replace(/['"]+/g, ''),
+				location: location.replace(/['"]+/g, ''),
+				distance: result
+			};
+
+			dist.push(jsondata);
+			resolve(jsondata);
+
+			// dist.push(body.rows[0].elements[0].distance.text, dist.distance = geos.name);
+			//  dist.push(body.rows[0].elements[0].distance.text); 
+			// resolve(dist)
+		});
+	});
+};
+
+var clear = function() {
+	dist = [];
+};
+
+module.exports.getDist = getDist;
+module.exports.clear = clear;
+module.exports.finaldata = dist;
+```
+
+
+ 
+
+
+
+This is how the final result looks like. It brings all the sellers who are selling the requested phone model and how far they are...
+
+
+
+
+
+![Screenshot 7](./image-7.png)
+
+
+
+
+Thank you for reading and your time ....
+
+
+## Key Takeaways
+
+- This post covers Node.js Connecting to HANA + Mongo + Neo4J with hands-on examples and step-by-step guidance.
+- Practical implementation patterns are demonstrated using real SAP tooling.
+- The concepts explored here form part of a broader SAP BTP + HANA learning series.
+
+## References
+
+- [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/node-js-connecting-to-hana-mongo-neo4j/ba-p/13325341)
 

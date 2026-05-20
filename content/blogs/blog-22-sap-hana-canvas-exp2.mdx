@@ -1,4 +1,5 @@
 ---
+
 title: "SAP HANA & Canvas -  Exp:2"
 author: "Shahid"
 published_at: "2013-10-17"
@@ -7,4 +8,447 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-a
 excerpt: "This application uses Canvas, Image and XSJS service for information flow. Same Application will be used in two different tabs, exchanging information simultaneously."
 ---
 
+> **Summary:** This application uses Canvas, Image and XSJS service for information flow. Same Application will be used in two different tabs, exchanging information simultaneously. **Demo Video:**
+
+## Introduction
+
+This application uses Canvas, Image and XSJS service for information flow.
+
+Same Application will be used in two different tabs, exchanging information simultaneously.
+
+
+**Demo Video:**
+
+**http://www.youtube.com/watch?v=2SWd_iNZXRA**
+
+
+**.INDEX.HTML: Code to define the size of the img window and to position the squares**
+
+**.VIEW.JS : Code to draw the squares and its movement**
+
+**.CONTROLLER.JS: Calling methods to exchange the information on the position of the Squares**
+
+
+**INDEX.HTML**
+
+
+  <canvas id="myCanvas" width="482" height="482"></canvas>
+
+    <script>
+
+
+var canvas = document.getElementById('myCanvas');
+
+var ctx = canvas.getContext('2d');
+
+var strDataURI = canvas.toDataURL(); 
+
+
+var dx = 5;
+
+var dy = 5;
+
+var x = 200;
+
+var y = 5;
+
+
+var dx2 = 5;
+
+var dy2 = 5;
+
+var x2 = 200;
+
+var y2 = 5;
+
+
+var WIDTH = 482;
+
+var HEIGHT = 482;
+
+var img = new Image();
+
+var collision = 0;
+
+var counter = 0;
+
+
+</script>
+
+
+![Screenshot 1](./image-1.png)
+
+
+**.VIEW.JS**
+
+
+Code in CreateContent : **function**(oController)
+
+
+createContent : function(oController) {
+
+
+init();
+
+1. window.addEventListener('keydown',doKeyDown,true);
+
+
+function rect(x,y,w,h) {
+
+1. ctx.beginPath();
+2. ctx.rect(x,y,w,h);
+3. ctx.closePath();
+4. ctx.fill();
+}
+
+
+function rect2(x2,y2,w,h) {
+
+1. ctx.beginPath();
+2. ctx.rect(x2,y2,w,h);
+3. ctx.closePath();
+4. ctx.fill();
+}
+
+
+function clear() {
+
+1. ctx.clearRect(0, 0, WIDTH, HEIGHT);
+2. ctx.drawImage(img, 0, 0);
+}
+
+
+function init() {
+
+1. img.crossOrigin = '';
+2. img.src = "[http://www.tinyuploads.com/images/cKdYx9.gif](http://www.tinyuploads.com/images/cKdYx9.gif)";
+setInterval(draw, 10);
+
+//            setInterval(draw2, 1501);
+
+
+}
+
+
+function doKeyDown(evt){
+
+
+switch (evt.keyCode) {
+
+
+/* Up arrow was pressed /////////////////////////////////////////////////////// */
+
+case 38:  /* Up arrow was pressed */
+
+var clr =                color.getText();
+
+if(clr=='blue') {
+
+if (y - dy > 0){
+
+y -= dy;
+
+clear();
+
+checkcollision();
+
+if (collision == 1){
+
+y += dy;
+
+collision = 0;
+
+}
+
+else {
+
+var CDate = new Date();
+
+
+if (counter == 0){
+
+- oController.MazeMoveSave('blue',x,y,'Test6', CDate);
+counter = 1; }
+
+else {
+
+- oController.MazeMoveRead(x,y,'blue','Test6'); //update
+- oController.ReadMazeValX('pink','Test6'); // reading the X position of other square
+- oController.ReadMazeValY('pink','Test6'); // reading the Y position of other square
+
+
+var          lx2 = xval.getText();
+
+var ly2 = yval.getText();
+
+if (lx2 > 0){
+
+x2 = xval.getText();
+
+y2 = yval.getText();            }}
+
+
+}
+
+}
+
+break;
+
+
+} else {
+
+if (y2 - dy2 > 0){
+
+y2 -= dy2;
+
+clear();
+
+checkcollision2();
+
+if (collision == 1){
+
+y2 += dy2;
+
+collision = 0;
+
+
+}
+
+else {
+
+var CDate = new Date();
+
+
+if (counter == 0){
+
+- oController.MazeMoveSave('pink',x2,y2,'Test6', CDate);
+counter = 1; }
+
+else {
+
+- oController.MazeMoveRead(x2,y2,'pink','Test6'); //update
+- oController.ReadMazeValX('blue','Test6'); // reading the X position of other square
+- oController.ReadMazeValY('blue','Test6'); // reading the Y position of other square
+
+
+var          lx = xval.getText();
+
+var ly = yval.getText();
+
+if (lx > 0){
+
+x = xval.getText();
+
+y = yval.getText();              }}
+
+
+}
+
+}
+
+break;
+
+
+}
+
+
+...similar code for all directions of the button...
+
+
+**.CONTROLLER.JS**
+
+
+Methods are used
+
+- Saving the current location of the square
+- Read the location of the other square.
+
+
+MazeMoveSave: function(Square,x,y,Passkey,Date) {
+
+
+var aUrl = '../../../services/MultiplyTest.xsjs?cmd=insertmaze'+'&Square='+Square+'&x='+x+'&y='+y+'&Passkey='+Passkey+'&Date='+Date;
+
+
+1. jQuery.ajax({
+url: aUrl,
+
+method: 'GET',
+
+dataType: 'json',
+
+
+error: this.onErrorCall });
+
+
+},
+
+
+MazeMoveRead: function(x,y,Square,Passkey) {
+
+var aUrl = '../../../services/MultiplyTest.xsjs?cmd=readmaze'+'&x='+x+'&y='+y+'&Square='+Square+'&Passkey='+Passkey;
+
+
+1. jQuery.ajax({
+url: aUrl,
+
+method: 'GET',
+
+dataType: 'json',
+
+
+error: this.onErrorCall });
+
+
+},
+
+
+ReadMazeValX: function(Square,Passkey) {
+
+var aUrl = '../../../services/MultiplyTest.xsjs?cmd=readmazevalx'+'&Square='+Square+'&Passkey='+Passkey;
+
+
+1. jQuery.ajax({
+url: aUrl,
+
+method: 'GET',
+
+dataType: 'json',
+
+success: this.readx,
+
+error: this.onErrorCall });
+
+
+},
+
+
+**.XSJS**
+
+
+Below are the sample codes to retrieve the data by
+
+- by calling a PROCEDURE
+- select statement from the table
+
+
+function performReadMazeValX(){
+
+                var body = '';
+
+                var Square = $.request.parameters.get('Square');
+
+                var Passkey = $.request.parameters.get('Passkey');
+
+
+                try {
+
+
+                                var query = 'CALL "amohas97.session.models::get_maze"(?,?,?,?)';
+
+
+                                $.trace.debug(query);
+
+                                var conn = $.db.getConnection();
+
+                                var cstmt = conn.prepareCall(query);     
+
+                                cstmt.setString(1, Square);
+
+                                cstmt.setString(2, Passkey);
+
+                                cstmt.execute();                              
+
+
+                                body = cstmt.getDecimal(3);
+
+
+                } catch (e) {
+
+                                $.response.status = $.net.http.INTERNAL_SERVER_ERROR;
+
+                                $.response.setBody(e.message);
+
+                                return;
+
+                } 
+
+
+                $.response.setBody(body);
+
+                $.response.status = $.net.http.OK;
+
+}
+
+
+function performReadMazeValY(){
+
+                var body = '';
+
+                var Square = $.request.parameters.get('Square');
+
+                var Passkey = $.request.parameters.get('Passkey');
+
+
+                try {
+
+
+                                var query = 'select "y" FROM "WRK_SCH"."amohas97.session.data::insertmazemove" WHERE "Square" = ? AND "Passkey" = ?'; 
+
+
+                                $.trace.debug(query);                   
+
+                                var conn = $.db.getConnection();
+
+                                var pstmt;
+
+                                var rs;
+
+                                pstmt = conn.prepareStatement(query);
+
+                                pstmt.setString(1, Square);
+
+                                pstmt.setString(2, Passkey);
+
+
+                                rs = pstmt.executeQuery();
+
+
+                                while (rs.next()) {
+
+                                body += rs.getDecimal(1);
+
+
+                                }
+
+                } catch (e) {
+
+                //            $.response.status = $.net.http.INTERNAL_SERVER_ERROR;
+
+                //            $.response.setBody(e.message);
+
+                //            return;
+
+                } 
+
+
+                //num2 - num1;
+
+
+                $.response.setBody(body);
+
+                $.response.status = $.net.http.OK;
+
+}
+
+
+## Key Takeaways
+
+- This post covers SAP HANA & Canvas -  Exp:2 with hands-on examples and step-by-step guidance.
+- Practical implementation patterns are demonstrated using real SAP tooling.
+- The concepts explored here form part of a broader SAP BTP + HANA learning series.
+
+## References
+
+- [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-amp-canvas-exp-2/ba-p/13027797)
 

@@ -1,4 +1,5 @@
 ---
+
 title: "Access HANA tables created by SAP RIVER Code in SAP Lumira"
 author: "Shahid"
 published_at: "2014-03-20"
@@ -7,4 +8,169 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/access-han
 excerpt: "Correction: This blog as earlier stated not using OData, instead we are using to access the HANA catalog tables created by the SAP River program. RIVER code when"
 ---
 
+> **Summary:** Correction: This blog as earlier stated not using OData, instead we are using to access the HANA catalog tables created by the SAP River program. RIVER code when activated creates tables and oData for the entity. The table created by RIVER code will be used to get the data from SAP HANA into SAP Lum
+
+## Introduction
+
+Correction: This blog as earlier stated not using OData, instead we are using to access the HANA catalog tables created by the SAP River program.
+
+
+RIVER code when activated creates tables and oData for the entity. The table created by RIVER code will be used to get the data from SAP HANA into SAP Lumira for preparing dataset. This dataset will be used for Visualization.
+
+
+Only SAP HANA Analytic Views can be used in SAP Lumira for preparing datasets.
+
+In this blog we will use HANA tables created by SAP RIVER in SAP Lumira for preparing data sets.
+
+
+**Creating a file with extension .RDL in RIVER environment.**
+
+****
+
+
+![Screenshot 1](./image-1.png)
+
+
+**Activate the RIVER file. Now there will be three to ‘Generate Test Data’, ‘Data Preview’, ‘Odata Calls’**
+
+
+![Screenshot 2](./image-2.png)
+
+
+**Click on Generate test data. **
+
+
+![Screenshot 3](./image-3.png)
+
+
+**Specify Sample Data**
+
+
+![Screenshot 4](./image-4.png)
+
+
+**I have selected 'values from file'. To look a reasonable data, I have prepared a TEXT file with comma separated.**
+
+
+![Screenshot 5](./image-5.png)
+
+
+****
+
+**Values for YEAR**
+
+****
+
+
+![Screenshot 6](./image-6.png)
+
+
+**Data Preview**
+
+
+![Screenshot 7](./image-7.png)
+
+
+**Check the oData by clicking on ‘oData Calls’**
+
+
+![Screenshot 8](./image-8.png)
+
+
+**Go to SAP Lumira to create a DATASET**
+
+
+![Screenshot 9](./image-9.png)
+
+
+**Choose SAP HANA database and click on NEXT for establishing a connection**
+
+
+![Screenshot 10](./image-10.png)
+
+
+**Give the credentials to connect to HANA System and click on ‘Connect’**
+
+![Screenshot 11](./image-11.png)
+
+
+**Shortlist the table by using a keyword. Select the columns which are required by checking/unchecking the box. Click on create to create a DATASET.**
+
+
+![Screenshot 12](./image-12.png)
+
+
+**Click on ‘Prepare’**
+
+
+![Screenshot 13](./image-13.png)
+
+
+**Prepare the data, Define Measures, Time and Geographic Hierarchy**
+
+****
+
+**Create 'Geographic Hierarchy' for CITY**
+
+****
+
+****
+
+****
+
+**Create 'Time Hierarchy' for YEAR**
+
+****
+
+
+![Screenshot 14](./image-14.png)
+
+
+**Hide the duplicate fields(CITY and other fields) from the dataset panel**
+
+
+![Screenshot 15](./image-15.png)
+
+
+**Hide the fields which are not required and save the file. You can save it in ‘Local’ or “Cloud’.**
+
+****
+
+
+**Now Click on “Visualize”. Select DONUT CHART for Visualization**
+
+****
+
+
+****
+
+**Donut Chart - Sales Revenue by City**
+
+****
+
+
+**Donut Chart - **Sales Revenue by City – Year on Year by using TRELLIS option
+
+****
+
+****
+
+****
+
+Sources:
+
+[SAP HANA Academy | SAP HANA](http://www.saphana.com/community/hana-academy#SAPRiver)
+
+[http://www.saphana.com/community/hana-academy#lumira](http://www.saphana.com/community/hana-academy#lumira)
+
+
+## Key Takeaways
+
+- This post covers Access HANA tables created by SAP RIVER Code in SAP Lumira with hands-on examples and step-by-step guidance.
+- Practical implementation patterns are demonstrated using real SAP tooling.
+- The concepts explored here form part of a broader SAP BTP + HANA learning series.
+
+## References
+
+- [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/access-hana-tables-created-by-sap-river-code-in-sap-lumira/ba-p/13086549)
 

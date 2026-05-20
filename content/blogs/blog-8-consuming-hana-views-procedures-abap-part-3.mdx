@@ -1,4 +1,5 @@
 ---
+
 title: "Consuming HANA Views, Procedures, External Views in ABAP 7.40 Syntax - Part 1"
 author: "Shahid"
 published_at: "2014-01-08"
@@ -7,4 +8,352 @@ canonical: "https://community.sap.com/t5/application-development-and-automation-
 excerpt: "Tried to document my learning on ABAP 7.4 and ABAP for HANA. Topics: 1. ABAP Report with new data declaration syntaxes on 7.40 2. ABAP Report on HANA using ADBC 3."
 ---
 
+> **Summary:** **Tried to document my learning on ABAP 7.4 and ABAP for HANA.** **Topics:** **1. ABAP Report with new data declaration syntaxes on 7.40 **
+
+## Introduction
+
+**Tried to document my learning on ABAP 7.4 and ABAP for HANA.**
+
+
+**Topics:**
+
+
+**1. ABAP Report with new data declaration syntaxes on 7.40 **
+
+**2. ABAP Report on HANA using ADBC **
+
+**3. Consuming Attribute View using External View.**
+
+**4. Consuming Attribute View using Native SQL**
+
+**5. Consuming Analytic View/Calculation View in ABAP**
+
+**6. Consuming HANA artifact Stored Procedure using ABAP Proxy Procedure. **
+
+**7. Consume HANA artifact Stored Procedure by Calling it in ABAP Code.**
+
+
+****
+
+**Part 1: http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view...**
+
+****
+
+- **ABAP Report with new data declaration syntaxes on 7.40**
+- **ABAP Report on HANA using ADBC**
+******Part 2:http://scn.sap.com/community/abap/hana/blog/2014/01/08/consuming-hana-views-procedures-external-view...**
+
+****
+
+- **Consuming Attribute View using External View.**
+- **Consuming Attribute View using Native SQL**
+- **Consuming Analytic View/Calculation View in ABAP**
+******Part 3: http://scn.sap.com/community/abap/hana/blog/2014/01/08/as******
+
+- **Consuming HANA artifact Stored Procedure using ABAP Proxy Procedure.**
+- **Consume HANA artifact Stored Procedure by Calling it in ABAP Code.**
+****
+
+
+**T1. ABAP Report with new data declaration syntaxes on 7.40 ** 
+
+* Open SQL, Native SQL, Defining native SQL with String Templates & Expressions
+
+
+REPORT zabap_for_hana.
+
+
+* Declarations
+
+* ADBC Objects and variables
+
+
+DATA:  lo_sql_stmt TYPE REF TO cl_sql_statement,
+
+             lr_data     TYPE REF TO data.
+
+
+* Exception handling
+
+
+DATA:  lx_sql_exc TYPE REF TO cx_sql_exception,
+
+lv_text TYPE string,
+
+           lo_alv  TYPE REF TO cl_salv_table,
+
+           lx_msg  TYPE REF TO cx_salv_msg.
+
+
+* Data objects
+
+DATA: gt_pernr     TYPE ztt_emp_bill,
+
+           lv_start     TYPE timestampl,
+
+           lv_end       TYPE timestampl,
+
+           lv_message   TYPE string.
+
+
+* Hello World Program with new syntaxs available for data declaration in 7.40
+
+
+*DATA: lv_name TYPE string VALUE 'Hello World'.  // old syntax
+
+DATA(lv_name) = 'Hello World'.             " New Syntax
+
+
+DATA: lr_conn TYPE REF TO cl_sql_connection,
+
+            lt_emp_info TYPE TABLE OF dtab_emp_info.
+
+
+WRITE: lv_name.
+
+SKIP.
+
+
+CREATE OBJECT lr_conn.
+
+lr_conn->ping( ).
+
+
+* Select
+
+SELECT * UP TO 5 ROWS
+
+  INTO TABLE lt_emp_info
+
+  FROM dtab_emp_info.
+
+ SKIP.
+
+
+* Read Syntax
+
+
+*DATA: LS_EMP_INFO_2    TYPE DTAB_EMP_INFO.
+
+*DATA: LS_EMP_INFO_READ TYPE DTAB_EMP_INFO.
+
+*READ TABLE DTAB_EMP_INFO INTO LS_EMP_INFO_2 INDEX 2.
+
+*READ TABLE DTAB_EMP_INFO INTO LS_EMP_INFO_READ WITH KEY PERNR = '00000005' DEPARTMENT = 'SUPPORT'.
+
+
+*** Above Code can be replaced like following **
+
+
+DATA(ls_emp_info_2) = lt_emp_info[ 2 ].
+
+WRITE: 'Read Statement for Index 2:-',ls_emp_info_2-pernr.
+
+SKIP.
+
+
+* Reading the internal table with a condition
+
+DATA(ls_emp_info_read) = lt_emp_info[ pernr = '00000005' department = 'SUPPORT' ].
+
+WRITE: 'Read Statement with condition:-',ls_emp_info_read-pernr.
+
+SKIP.
+
+
+*READ TABLE DTAB_EMP_INFO TRANSPORTING NO FIELDS WITH KEY PERNR = '00000005' DEPARTMENT = 'SUPPORT'.
+
+*** Same can be written as below with new syntax**
+
+IF line_exists( lt_emp_info[ pernr = '00000005' department = 'SUPPORT' ] ).
+
+  WRITE: 'Condition Satisfied'.
+
+ENDIF.
+
+
+* Defining the work area in the Loop Statement
+
+LOOP AT lt_emp_info INTO DATA(ls_emp_info).
+
+  WRITE: ls_emp_info-pernr.
+
+ENDLOOP.
+
+SKIP.
+
+
+* Field symbols can also be assinged in the same fashion
+
+LOOP AT lt_emp_info ASSIGNING FIELD-SYMBOL(<fs_emp_info>).
+
+  WRITE: <fs_emp_info>-pernr.
+
+ENDLOOP.
+
+SKIP.
+
+
+* Data Declaration when calling a method
+
+CALL METHOD zcl_test=>get_pernr
+
+  EXPORTING
+
+    iv_location = 'BANGALORE'
+
+    iv_country = 'IN'
+
+  IMPORTING
+
+    et_emp_info = DATA(lt_emp_info_tab).
+
+
+DESCRIBE TABLE lt_emp_info_tab LINES DATA(lv_lines).
+
+WRITE: 'Number of Records', lv_lines.
+
+SKIP.
+
+
+![Screenshot 1](./image-1.png)
+
+
+**T2. ABAP Report on HANA using ADBC **
+
+****
+
+TRY.
+
+    CLEAR gt_pernr.
+
+
+* Open SQL
+
+*     SELECT empinfo~mandt empinfo~pernr empbill~bill_rate
+
+*       FROM DTAB_EMP_INFO AS empinfo INNER JOIN DTAB_EMP_BILL AS empbill ON empinfo~pernr = empbill~pernr
+
+*       into table gt_pernr
+
+*      GROUP BY empinfo~mandt empinfo~pernr empbill~bill_rate
+
+*       ORDER BY empinfo~pernr.
+
+
+* Difference between Open and Native SQL are Comma separated field list, explicit client handling , NO 'INTO' clause
+
+
+* Defining native SQL
+
+
+data(lv_sql) = | SELECT empinfo.mandt, empinfo.pernr, empbill.bill_rate, |
+
+**           use HANA built-in function
+
+&& | sum( DAYS_BETWEEN(empbill.BILL_DATE,CURRENT_UTCDATE) ) AS LAST_BILL_REV
+
+**    && | AVG( DAYS_BETWEEN(empbill.BILL_DATE,CURRENT_UTCDATE) ) AS LAST_BILL_REV |
+
+&& |   FROM DTAB_EMP_INFO AS empinfo INNER JOIN DTAB_EMP_BILL AS empbill ON empinfo.pernr = empbill.pernr |
+
+            && |  WHERE empbill.mandt = { sy-mandt } |
+
+            && |  GROUP BY empinfo.mandt, empinfo.pernr, empbill.bill_rate |
+
+            && |  ORDER BY empinfo.pernr |.
+
+
+* Defining native SQL with String Templates & Expressions
+
+
+    CONCATENATE ` SELECT empinfo.mandt, empinfo.pernr, empbill.bill_rate, `
+
+*           use HANA built-in function
+
+      ` DAYS_BETWEEN(empbill.BILL_DATE,CURRENT_UTCDATE) AS LAST_BILL_REV `
+
+                ` FROM DTAB_EMP_INFO AS empinfo INNER JOIN DTAB_EMP_BILL AS empbill ON empinfo.pernr = empbill.pernr `
+
+                ` WHERE empbill.mandt =  ` sy-mandt
+
+                ` GROUP BY empinfo.mandt, empinfo.pernr, empbill.bill_rate, empbill.bill_date `
+
+                ` ORDER BY empinfo.pernr `
+
+                INTO DATA(lv_sql)
+
+                SEPARATED BY space.
+
+
+*     Create an SQL statement to be executed via default secondary DB connection
+
+    CREATE OBJECT lo_sql_stmt EXPORTING con_ref = cl_sql_connection=>get_connection( ).
+
+
+*     execute the native SQL query/ SQL Call
+
+    DATA(lo_result) = NEW cl_sql_statement( )->execute_query( lv_sql ).   " new syntax
+
+
+*     read the result into the internal table lt_partner
+
+    GET REFERENCE OF gt_pernr INTO lr_data.
+
+    lo_result->set_param_table( lr_data ).  "Retrieve result of native SQL call
+
+    lo_result->next_package( ).
+
+    lo_result->close( ).
+
+
+  CATCH cx_sql_exception INTO lx_sql_exc.
+
+    lv_text = lx_sql_exc->get_text( ).
+
+    MESSAGE lv_text TYPE 'E'.
+
+
+ENDTRY.
+
+
+* display
+
+TRY.
+
+      cl_salv_table=>factory(
+
+          IMPORTING
+
+            r_salv_table = lo_alv
+
+          CHANGING
+
+            t_table      = gt_pernr ).
+
+
+      lo_alv->display( ).
+
+
+    CATCH cx_salv_msg INTO lx_msg.
+
+      lv_text = lx_msg->get_text( ).
+
+      MESSAGE lv_text TYPE 'E'.
+
+ENDTRY.
+
+
+![Screenshot 2](./image-2.png)
+
+
+## Key Takeaways
+
+- This post covers Consuming HANA Views, Procedures, External Views in ABAP 7.40 Syntax - Part 1 with hands-on examples and step-by-step guidance.
+- Practical implementation patterns are demonstrated using real SAP tooling.
+- The concepts explored here form part of a broader SAP BTP + HANA learning series.
+
+## References
+
+- [Original SAP Community Post](https://community.sap.com/t5/application-development-and-automation-blog-posts/consuming-hana-views-procedures-external-views-in-abap-7-40-syntax-part-1/ba-p/13085942)
 

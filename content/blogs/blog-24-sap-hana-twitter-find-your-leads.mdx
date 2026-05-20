@@ -1,4 +1,5 @@
 ---
+
 title: "SAP HANA & Twitter - Find your leads"
 author: "Shahid"
 published_at: "2014-09-10"
@@ -7,4 +8,492 @@ canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-a
 excerpt: "In recent times I have personally experienced a lot of change the way we used to search or reading a review on a product, company, movie, buying/selling real estate,"
 ---
 
+> **Summary:** In recent times I have personally experienced a lot of change the way we used to search or reading a review on a product, company, movie, buying/selling real estate, finding out job vacancies. Somehow we are happy to depend more on twitter to get this information. But extracting/searching for the in
+
+In recent times I have personally experienced a lot of change the way we used to search or reading a review on a product, company, movie, buying/selling real estate, finding out job vacancies. Somehow we are happy to depend more on twitter to get this information. But extracting/searching for the information from tweets is not very handy and very time consuming, considering the number of tweets raised 4500 per day to 5000 tweets per second from 2007 to 2014.
+
+In this blog, I tried to get the tweet handlers information of head hunters tweeting about a specific job vacancy and responding to their exact tweet.
+
+****
+
+**Summary:**
+
+- Posting tweets to SAP HANA on a daily basis using a python script.
+- Filter/Changing the tweet data to structured data by using few SQL queries & Fuzzy search.
+- Stored the data in Fulltext Index tables so that I can differentiate the data
+- Using XSODATA of index tables in SAP Lumira for visualization
+- A python script to reply to specific tweets to the specific user.
+
+
+Initially I wanted to build an application with selection parameters to search/filter the tweet data and to reply to the tweets using XSJS. But, I have to settle down with python due to trust store issues.
+
+Let’s do it step-by-step.
+
+
+**1. Creating tables and services in HANA:**
+
+****
+
+**Created few tables using SQL Console and .xsodata **
+
+****
+
+**Sample Code:**
+
+  **create** **column** **table** "MOHAS97"."amohas97.session.data::fuzz"
+
+ (
+
+ IDNO **nvarchar**(60) **primary** **key**,
+
+ CNTR **nvarchar**(60),
+
+ THLR **nvarchar**(60),
+
+ CRTD **nvarchar**(60),
+
+ TTXT **NVARCHAR**(260) fuzzy search **index** **on**
+
+  );
+
+****
+
+**XSODATA:**
+
+service namespace "amohas97.services" {
+
+"MOHAS97"."amohas97.session.data::fuzz" as "tweet";  
+
+"MOHAS97"."amohas97.session.data::twitter" as "twitter";  
+
+"MOHAS97"."$TA_TWTIDX" as "twitlds";
+
+  "MOHAS97"."amohas97.session.data::twitfnl" as "twitfnl";
+
+  "MOHAS97"."$TA_TWTFNL" as "twitfnlidx";
+
+  "MOHAS97"."amohas97.session.data::twiturl" as "twiturl";
+
+  "MOHAS97"."amohas97.session.data::twitloc" as "twitloc";          
+
+                  }    
+
+
+**2. Posting the tweet data from twitter:**
+
+****
+
+Twitter API has limitations, it cant fetch data older than a week. So I have executed python script in regular/irregular intervals.
+
+****
+
+Install TWYTHON for Python and get your twitters keys from dev.twitter.com
+
+****
+
+Following is the woking code to fetch the data from twitter and to post it in SAP HANA. I have used the words "SAP ABAP". API will fetch all the tweets which has "SAP" and "ABAP"****
+
+****
+
+
+#! /usr/bin/python
+
+
+import requests
+
+import json
+
+import csv
+
+import sys
+
+import xlrd
+
+import os
+
+#import urllib.request as urllib2
+
+import codecs
+
+from twython import Twython, TwythonError
+
+import time
+
+from datetime import datetime
+
+from datetime import timedelta
+
+import socket #import the socket module
+
+
+appURL = '[http://va..........your](http://va..........your/) server addd ..:8008/amohas97/session/services/pytxso.xsodata'
+
+auth = 'your hana id','your password'
+
+
+s = requests.Session()
+
+s.headers.update({'Connection': 'keep-alive'})
+
+headers = {"Content-type": 'application/json;charset=utf-8'}
+
+r = s.get(url=appURL, headers=headers, auth=auth)
+
+url = appURL + "/tweet"
+
+
+# Requires Authentication as of Twitter API v1.1
+
+
+twitter = Twython('8Jep7jyAstr8W8wxMekC3', 'ywvEJKc4TRnZcDHiHBP4jZmYH73DCEgf7UnLrlwprUwh7l', '273814468-7MUccHp07UiPvpL5o6ktIZkjdZg7YXjMTGH', 'iFMgreouGh6Hl18eGX3r99U3IjjaqXdMxp8B4yUN')
+
+
+keywords = ['sap abap']
+
+count=0
+
+
+for page in range(0,1):
+
+    search = twitter.search(q=keywords,
+
+                count =35 ,include_retweets=False,  timeout=1500)
+
+
+#count=35, it will read 35 tweets per request. max is 100
+
+
+    tweets = search['statuses']
+
+
+    for tweet in tweets:
+
+      count+=1
+
+      ts = datetime.strptime(tweet['created_at'],'%a %b %d %H:%M:%S +0000 %Y')
+
+      ts1 = str(ts)
+
+      data = '{"IDNO": " ' + tweet['id_str'] + ' ", "CNTR": " ' + str(count) + ' ", "THLR": " ' + tweet['user']['screen_name'] + ' ",  "CRTD": " ' + ts1[0:10] + ' ", "TTXT": " ' + str(tweet['text'].encode('utf-8')) + ' "}'
+
+      r = s.post(url, data=data, headers=headers)
+
+
+    print(count)
+
+    last = tweet['id_str']
+
+#last is ID of last tweet. we are going to use it next step
+
+
+for page in range(0,10):
+
+
+    search2 = twitter.search(q=keywords,
+
+                count =35 ,  include_retweets=False, max_id=last,  timeout=1500)
+
+
+# we need to pass the value for max_id, otherwise the request will fetch the same tweets( or latest) again. Maintaining max_id will help the request to start from last fetched tweet.
+
+
+# I have looped it for 10 times and faced issues when the looping number is more, so used nested loop to fetch more tweets. 
+
+
+    tweets2 = search2['statuses']
+
+
+    for tweet in tweets2:
+
+      count+=1
+
+      ts = datetime.strptime(tweet['created_at'],'%a %b %d %H:%M:%S +0000 %Y')
+
+      ts1 = str(ts)
+
+      data = '{"IDNO": " ' + tweet['id_str'] + ' ", "CNTR": " ' + str(count) + ' ", "THLR": " ' + tweet['user']['screen_name'] + ' ",  "CRTD": " ' + ts1[0:10] + ' ", "TTXT": " ' + str(tweet['text'].encode('utf-8')) + ' "}'
+
+      r = s.post(url, data=data, headers=headers)
+
+    print(count)
+
+    last = tweet['id_str']
+
+
+**Table Screenshot:**
+
+I have collected 6000+ tweets.
+
+
+![Screenshot 1](./image-1.png)
+
+
+**3. Filtering the data:**
+
+
+Let assume, we are more interested in finding a job in ABAP in CRM module or in ABAP HCM or any other.
+
+I have executed the below SQL in sql console to save tweet data in another table which has ABAP CRM mentioned in the tweets.
+
+
+INSERT INTO "MOHAS97"."amohas97.session.data::twitter" select * from "MOHAS97"."amohas97.session.data::fuzz"
+
+  where contains("TTXT", 'ABAP CRM', fuzzy(0.9, 'ts=compare, excessTokenWeight=0.1, decomposewords=2' ))
+
+  order by 1 desc;
+
+
+Fuzzy is 0.9
+
+excess token weight = 0.1 -> any other words in the string/tweet will be ignored during select apart from ABAP CRM.
+
+also decompose words=2, as in looking for two separate words.
+
+
+I have got 161 records
+
+
+![Screenshot 2](./image-2.png)
+
+
+**4. Creating FULLTEXT index for the table with ****Configuration 'EXTRACTION_CORE_VOICEOFCUSTOMER'**
+
+
+CREATE FULLTEXT INDEX TWTIDX ON "MOHAS97"."amohas97.session.data::twitter" ("TTXT")
+
+CONFIGURATION 'EXTRACTION_CORE_VOICEOFCUSTOMER'
+
+TOKEN SEPARATORS '\/;,.:-_()[]<>!?*@+{}="&'
+
+TEXT ANALYSIS ON;
+
+
+Configuration 'EXTRACTION_CORE_VOICEOFCUSTOMER' will help us to classify the string into different types.
+
+whenever it there is "#" mentioned it considers as "SOCIAL", HTTP as "URL".
+
+
+![Screenshot 3](./image-3.png)
+
+
+When I browsed this data, I realized people have used "#" in front of the city/location. so I am  removing "#" from the table. It will show the "type" as "locality"
+
+
+![Screenshot 4](./image-4.png)
+
+
+Using the above index table, I further created three more table. I will use this tables in Python, SAP Lumira and Excel.
+
+
+**Table 1:  Using XSODATA in SAP Lumira**
+
+I want compare different cities in terms of job market.
+
+
+INSERT  INTO "MOHAS97"."amohas97.session.data::twitloc"
+
+  SELECT idno,TA_TOKEN
+
+              FROM "MOHAS97"."$TA_TWTFNL" 
+
+            WHERE Ta_type = 'LOCALITY'
+
+            group by idno, ta_token
+
+            order by ta_token;
+
+
+I will use XSODATA to view the table data in SAP Lumira.
+
+
+![Screenshot 5](./image-5.png)
+
+
+![Screenshot 6](./image-6.png)
+
+
+![Screenshot 7](./image-7.png)
+
+
+![Screenshot 8](./image-8.png)
+
+
+![Screenshot 9](./image-9.png)
+
+
+I have created a geography hierarchy.
+
+Looks like Pune City has more job offers or may be twitter handler is more active.
+
+
+**Table 2:  Using XSODATA in Excel**
+
+Lets have all the URL links mentioned in the tweets in excel.
+
+
+  INSERT  INTO "MOHAS97"."amohas97.session.data::twiturl"
+
+  SELECT TA_TOKEN, max(idno)
+
+              FROM "MOHAS97"."$TA_TWTFNL" 
+
+            WHERE Ta_type = 'URI/URL'
+
+            group by ta_token
+
+            order by ta_token;
+
+
+****
+
+open the excel file and use the odata as follows. All the URLs are fetched in a column****
+
+****
+
+
+![Screenshot 10](./image-10.png)
+
+
+**Table 3:  Reply to Tweets -Twitter Bot**
+
+Initially I wanted to build an application with selection parameters to search/filter the tweet data and to reply to the tweets using XSJS. But, I have to settle down with python due to trust store issues.
+
+I want to reply to each and every tweet after I filtering on my own conditions. It is again going to be tough to find the short listed tweets and responding to all of it.
+
+so I am going to use this 3rd table to reply to all the exact tweets at once.
+
+**Now I only have 117 records. I am going to use this data @ python to respond to their tweets**
+
+
+INSERT INTO "MOHAS97"."amohas97.session.data::twitfnl"
+
+            SELECT *
+
+            FROM "MOHAS97"."amohas97.session.data::twitter" AS s
+
+            WHERE EXISTS
+
+                        (SELECT *
+
+                        FROM "MOHAS97"."$TA_TWTIDX" as p
+
+                        WHERE p.idno = s.idno
+
+                          and ( p.Ta_type = 'LOCALITY'
+
+        OR p.TA_TYPE = 'ADDRESS2') );
+
+
+![Screenshot 11](./image-11.png)
+
+
+**Python Code:**
+
+
+#! /usr/bin/python
+
+
+import requests
+
+import json
+
+import csv
+
+import sys
+
+import xlrd
+
+import os
+
+import urllib.request as urllib2
+
+import codecs
+
+from twython import Twython, TwythonError
+
+import time
+
+#import datetime
+
+from datetime import datetime
+
+from datetime import timedelta
+
+import socket #import the socket module
+
+
+appURL = '[http://v](http://v/).... your server add .....:8008/amohas97/session/services/pytxso.xsodata'
+
+auth = 'your hana id','your password'
+
+
+s = requests.Session()
+
+s.headers.update({'Connection': 'keep-alive'})
+
+
+url = appURL + "/twitfnl/?$format=json"
+
+#url = appURL + "/twitfnl"
+
+
+r = s.get(url, auth=auth)
+
+data = json.loads(r.text)
+
+
+twitdata = data['d']['results']
+
+
+from twython import Twython, TwythonError
+
+
+# Requires Authentication for Twitter API v1.1
+
+
+twitter = Twython('8Jep7jyA8wxMekC3', 'ywvEJKc4T3DCEgf7UnLrlwprUwh7l', '273814468-7MUccHpYXjMTGH', 'iFMgreouGXdMxp8B4yUN')
+
+
+k = 0
+
+for i in twitdata:
+
+    #print( "Twitter Handler: " + exceldata[k]['THLR'] + " --- " + "Twitter ID: " + exceldata[k]['IDNO'] )
+
+    tweet = '@' +  exceldata[k]['THLR'].strip() + ' ' +' I am not interested - Share more details to refer others'
+
+    tid = exceldata[k]['IDNO']
+
+    k = k+1
+
+
+# Posting tweets
+
+    twitter.update_status(status=tweet, in_reply_to_status_id=tid)
+
+    print(tweet, tid)
+
+
+Let check my tweets @ twitter.
+
+Out of 6000+ tweets I am able to choose and reply to 117 tweets. I have job URLs and knows which city has more jobs.
+
+And knows the right head hunter.
+
+
+![Screenshot 12](./image-12.png)
+
+
+![Screenshot 13](./image-13.png)
+
+
+## Key Takeaways
+
+- This post covers SAP HANA & Twitter - Find your leads with hands-on examples and step-by-step guidance.
+- Practical implementation patterns are demonstrated using real SAP tooling.
+- The concepts explored here form part of a broader SAP BTP + HANA learning series.
+
+## References
+
+- [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-amp-twitter-find-your-leads/ba-p/13114368)
 
