@@ -45,6 +45,7 @@ export type Project = {
   tags: string[]
   url: string
   is_ai: boolean
+  period: string | null
   sort_order: number
 }
 

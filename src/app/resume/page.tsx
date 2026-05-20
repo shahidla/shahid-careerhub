@@ -228,9 +228,14 @@ export default async function ResumePage() {
                       {project.is_ai && (
                         <span className="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">AI</span>
                       )}
-                      <span className="text-gray-500 text-sm">| {project.client}</span>
                     </div>
+                    {project.period && (
+                      <span className="text-sm text-gray-400 shrink-0">{project.period}</span>
+                    )}
                   </div>
+                  {project.client && (
+                    <div className="text-sm text-gray-500 mt-0.5">{project.client}</div>
+                  )}
                   <p className="mt-1 text-sm font-medium text-blue-700">{project.impact}</p>
                   <p className="mt-1 text-sm text-gray-700 leading-relaxed">{project.ai_summary ?? project.description}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
