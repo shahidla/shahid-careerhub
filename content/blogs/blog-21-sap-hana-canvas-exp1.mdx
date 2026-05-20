@@ -1,388 +1,246 @@
 ---
 
-title: "SAP HANA & Canvas -  Exp:1"
+title: "SAP HANA & Canvas - Exp:1"
 author: "Shahid"
 published_at: "2013-10-17"
 tags: [".xsjs", "Canvas", "database", "HANA"]
 canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-amp-canvas-exp-1/ba-p/13027313"
-excerpt: "This application uses Canvas, Animation Functions, XSJS services to Controlling the drawing of a squares. Information will be saved/retrieved from HANA DB, based on the"
+excerpt: "This application uses Canvas, animation functions, and XSJS services to control moving squares. Information is saved to and retrieved from HANA based on the current square positions."
 ---
 
-> **Summary:** This application uses Canvas, Animation Functions, XSJS services to Controlling the drawing of a squares. Information will be saved/retrieved from HANA DB, based on the current positions of the squares.   The BLUE square in the demo is controlled by the information stored in configuration tables in 
+> **Summary:** This application uses Canvas, animation functions, and XSJS services to control moving squares. Information is saved to and retrieved from HANA based on the current positions of the squares, and the blue square is driven by configuration stored in HANA tables.
 
 ## Introduction
 
-This application uses Canvas, Animation Functions, XSJS services to Controlling the drawing of a squares.
+This application uses Canvas, animation functions, and XSJS services to control the movement of squares.
 
-Information will be saved/retrieved from HANA DB, based on the current positions of the squares.  
+Information is saved to and retrieved from HANA based on the current positions of the squares.
 
-The BLUE square in the demo is controlled by the information stored in configuration tables in HANA.
+The blue square in the demo is controlled by configuration data stored in HANA tables.
 
-**Demo Video:**
+**.INDEX.HTML: Code to draw the track**
 
-****
-
-[http://www.youtube.com/watch?v=oZou6tMIb14](http://www.youtube.com/watch?v=oZou6tMIb14)
-
-****
-
-**.INDEX.HTML: Code to draw the TRACK**
-
-**.VIEW.JS : Code to draw the squares and its movement**
+**.VIEW.JS: Code to draw the squares and their movement**
 
 **.CONTROLLER.JS: Calling methods**
 
-Draw a TRACK for defining moving path for the squares.
+Draw a track to define the path for the moving squares.
 
-Alternately you can upload a picture of the TRACK using commands like                  
+Alternatively, you can upload a picture of the track using a command like:
 
-1. img.src = "[http://www......sample.gif](http://www......sample.gif/)";
-** **
+`img.src = "http://www.example.com/sample.gif";`
 
 **INDEX.HTML**
 
+```html
 <canvas id="myCanvas" width="1500" height="400"></canvas>
 
 <script>
-
 var canvas = document.getElementById('myCanvas');
-
 var ctx = canvas.getContext('2d');
-
 var width = 1000;
-
 var height = 150;
-
 var x = 140;
-
 var y = 100;
-
 var radius = 50;
-
 var color = "rgb(196, 171, 254)";
 
-1. ctx.beginPath();
-2. ctx.moveTo(x + radius, y);
-3. ctx.lineTo(x + width - radius, y);
-4. ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-5. ctx.lineTo(x + width, y + height - radius);
-6. ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-7. ctx.lineTo(x + radius, y + height);
-8. ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-9. ctx.lineTo(x, y + radius);
-10. ctx.quadraticCurveTo(x, y, x + radius, y);
-11. ctx.lineWidth = 60;
-12. ctx.strokeStyle = color;
-13. ctx.fillStyle = "rgba(255, 255, 0, .5)";
-14. ctx.stroke();
-15. ctx.closePath();
-
+ctx.beginPath();
+ctx.moveTo(x + radius, y);
+ctx.lineTo(x + width - radius, y);
+ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+ctx.lineTo(x + width, y + height - radius);
+ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+ctx.lineTo(x + radius, y + height);
+ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+ctx.lineTo(x, y + radius);
+ctx.quadraticCurveTo(x, y, x + radius, y);
+ctx.lineWidth = 60;
+ctx.strokeStyle = color;
+ctx.fillStyle = "rgba(255, 255, 0, .5)";
+ctx.stroke();
+ctx.closePath();
 </script>
 
 <script>
-
-1. sap.ui.localResources("race");
+sap.ui.localResources("race");
 var view = sap.ui.view({id:"idrace1", viewName:"race.race", type:sap.ui.core.mvc.ViewType.JS});
-
-- view.placeAt("content");
-
+view.placeAt("content");
 </script>
+```
 
 ![Screenshot 1](/blogs/blog-21-sap-hana-canvas-exp1/image-1.jpg)
 
-**.VIEW.JS **
+**.VIEW.JS**
 
-Code in  CreateContent : **function**(oController)
+Code in `createContent: function(oController)`
 
-1. window.requestAnimFrame = (function(callback) {
-return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-
-function(callback) {
-
-1. window.setTimeout(callback, 1000 / 60);
-};
-
+```javascript
+window.requestAnimFrame = (function(callback) {
+  return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function(callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
 })();
 
-// square one
-
 function drawRectangle(myRectangle, context) {
-
-1. context.beginPath();
-2. context.rect(myRectangle.x, myRectangle.y, myRectangle.width, myRectangle.height);
-3. context.fillStyle = '#8ED6FF';
-4. context.fill();
-5. context.lineWidth = myRectangle.borderWidth;
-6. context.strokeStyle = 'black';
-7. context.stroke();
+  context.beginPath();
+  context.rect(myRectangle.x, myRectangle.y, myRectangle.width, myRectangle.height);
+  context.fillStyle = '#8ED6FF';
+  context.fill();
+  context.lineWidth = myRectangle.borderWidth;
+  context.strokeStyle = 'black';
+  context.stroke();
 }
 
 function animate(myRectangle, canvas, context, startTime) {
+  // The numbers below are the x/y coordinates of the squares.
+  // These values can be retrieved dynamically from HANA.
+  // The condition defines the speed, direction, and position of the square.
+  // Similar logic is repeated for square 2.
+  if (myRectangle.x >= 145 && myRectangle.x <= 1116 && myRectangle.y >= 100 && myRectangle.y <= 233) {
+    var spd = oResult.getText();
+    myRectangle.x = Number(myRectangle.x + (spd * 1));
 
-// the below numbers are the position coordinates - x-axis & y-axis of the squares
+    $(function(oEvent) {
+      if (spd == 'null' || spd == null || spd.length === 0 || typeof spd === "undefined") {
+        var Movobj = 'SQ1';
+        oController.onLiveRace1(Movobj);
+      }
+    });
+  }
 
-// these numbers can be dynamically picked from HANA DB
+  // Additional movement logic continues here...
 
-// the below condition defines the speed, direction, and postion of the square.
-
-// applied same logic to control the square movement, few more if statements
-
-// repeated the same logic for SQUARE 2
-
-if (myRectangle.x >= 145 & myRectangle.x <=1116 & myRectangle.y >= 100 & myRectangle.y <= 233 ) {
-
-var spd =              oResult.getText();
-
-1. myRectangle.x = Number(myRectangle.x + (spd*1) );    
-
-$(function(oEvent){
-
-if (spd == 'null' || spd==null || spd === 'null' || spd === null ||spd.length === 0 || typeof spd === "undefined")
-
-{
-
-var Movobj = 'SQ1';
-
-- oController.onLiveRace1(Movobj); // this call is used to set the speed of the SQUARE
-
-} //if
-
-});  //end of func
-
-…
-
-…
-
-….
-
-// requesting frame
-
-requestAnimFrame(function() {
-
-animate2(myRectangle2, canvas, context, startTime);
-
-});
-
-} //end
-
-//Drawing squares
+  requestAnimFrame(function() {
+    animate2(myRectangle2, canvas, context, startTime);
+  });
+}
 
 var canvas = document.getElementById('myCanvas');
-
 var context = canvas.getContext('2d');
-
-var myRectangle = {
-
-x: 145,
-
-y: 100,
-
-width: 12,
-
-height: 12,
-
-borderWidth: 1
-
-};
-
+var myRectangle = { x: 145, y: 100, width: 12, height: 12, borderWidth: 1 };
 drawRectangle(myRectangle, context);
 
-var myRectangle2 = {
-
-x: 400,
-
-y: 100,
-
-width: 12,
-
-height: 12,
-
-borderWidth: 1
-
-};
-
+var myRectangle2 = { x: 400, y: 100, width: 12, height: 12, borderWidth: 1 };
 drawRectangle2(myRectangle2, context);
 
-// wait one second before starting animation
-
 setTimeout(function() {
-
-var startTime = (new Date()).getTime();
-
-animate(myRectangle, canvas, context, startTime);
-
+  var startTime = (new Date()).getTime();
+  animate(myRectangle, canvas, context, startTime);
 }, 1000);
 
-// wait one second before starting animation
-
 setTimeout(function() {
-
-var startTime = (new Date()).getTime();
-
-animate2(myRectangle2, canvas, context, startTime);
-
+  var startTime = (new Date()).getTime();
+  animate2(myRectangle2, canvas, context, startTime);
 }, 1000);
+```
 
 ![Screenshot 2](/blogs/blog-21-sap-hana-canvas-exp1/image-2.jpg)
 
 **.CONTROLLER.JS**
 
-** **
+Methods are used to:
 
-Methods are used 
+- define the default speed and corner speed for a square from configuration tables
+- calculate the distance between the two squares using X/Y coordinates
+- send real-time information to the blue square for speed revisions
 
-- To define the default speed, speed at the corners for a square from the configuration tables
-- Calculating the distance between the two square using X/Y co-ordinates
-- Sending the real-time information to BLUE Square for speed revisions
+Sending X,Y coordinate information for both squares:
 
-Sending X,Y Co-ordinates Information of both the squares.
+```javascript
+var aUrl = '../../../session/services/MultiplyTest.xsjs?cmd=speed' + '&x1=' + x1 + '&y1=' + y1 + '&x2=' + x2 + '&y2=' + y2;
+jQuery.ajax({
+  url: aUrl,
+  method: 'GET',
+  dataType: 'json',
+  success: this.onCompleteSpeed,
+  error: this.onErrorCall
+});
 
-                     **var** aUrl = '../../../session/services/MultiplyTest.xsjs?cmd=speed'+'&x1='+x1+'&y1='+y1+'&x2='+x2+'&y2='+y2;
-
-                     jQuery.ajax({
-
-                           url: aUrl,
-
-                           method: 'GET',
-
-                           dataType: 'json',
-
-                           success: **this**.onCompleteSpeed,
-
-                           error: **this**.onErrorCall });
-
-              },
-
-                     **var** aUrl = '../../../session/services/MultiplyTest.xsjs?cmd=race1'+'&Movobj='+Movobj;
-
-                     jQuery.ajax({
-
-                            url: aUrl,
-
-                           method: 'GET',
-
-                           dataType: 'json',
-
-                           success: **this**.onCompleteMultiply,
-
-                           error: **this**.onErrorCall });
-
-              },
+var aUrl = '../../../session/services/MultiplyTest.xsjs?cmd=race1' + '&Movobj=' + Movobj;
+jQuery.ajax({
+  url: aUrl,
+  method: 'GET',
+  dataType: 'json',
+  success: this.onCompleteMultiply,
+  error: this.onErrorCall
+});
+```
 
 **.XSJS**
 
-Below are the sample codes to retrieve the data by
+Below are sample snippets to retrieve data by:
 
-- by calling a PROCEDURE
-- select statement from the table
+- calling a procedure
+- selecting from a table
 
-function performSpeed(){
+```javascript
+function performSpeed() {
+  var body = '';
+  var x1 = $.request.parameters.get('x1');
+  var y1 = $.request.parameters.get('y1');
+  var x2 = $.request.parameters.get('x2');
+  var y2 = $.request.parameters.get('y2');
 
-var body = '';
+  try {
+    var query = 'CALL "amohas97.session.models::get_speed"(?,?,?,?,? )';
+    $.trace.debug(query);
+    var conn = $.db.getConnection();
+    var cstmt = conn.prepareCall(query);
+    cstmt.setString(1, x1);
+    cstmt.setString(2, y1);
+    cstmt.setString(3, x2);
+    cstmt.setString(4, y2);
+    cstmt.execute();
+    body += cstmt.getDecimal(5) + "\n";
+  } catch (e) {
+    $.response.status = $.net.http.INTERNAL_SERVER_ERROR;
+    $.response.setBody(e.message);
+    return;
+  }
 
-var x1 = $.request.parameters.get('x1');
-
-var y1 = $.request.parameters.get('y1');
-
-var x2 = $.request.parameters.get('x2');
-
-var y2 = $.request.parameters.get('y2');
-
-try {
-
-var query = 'CALL "amohas97.session.models::get_speed"(?,?,?,?,? )';
-
-$.trace.debug(query);
-
-var conn = $.db.getConnection();
-
-var cstmt = conn.prepareCall(query);
-
-1. cstmt.setString(1, x1);
-2. cstmt.setString(2, y1);
-3. cstmt.setString(3, x2);
-4. cstmt.setString(4, y2);
-5. cstmt.execute();
-
-body += cstmt.getDecimal(5) + "\n";
-
-} catch (e) {
-
-$.response.status = $.net.http.INTERNAL_SERVER_ERROR;
-
-$.response.setBody(e.message);
-
-return;
-
+  $.response.setBody(body);
+  $.response.status = $.net.http.OK;
 }
 
-$.response.setBody(body);
+function performRace1() {
+  var body = '';
+  var Movobj = $.request.parameters.get('Movobj');
 
-$.response.status = $.net.http.OK;
+  try {
+    var query = 'select "Defaults" FROM "WRK_SCH"."amohas97.session.data::sdyn" WHERE "Movobj" = ? ';
+    $.trace.debug(query);
+    var conn = $.db.getConnection();
+    var pstmt = conn.prepareStatement(query);
+    pstmt.setString(1, Movobj);
+    var rs = pstmt.executeQuery();
 
+    while (rs.next()) {
+      body += rs.getNString(1) + "\n";
+    }
+  } catch (e) {
+    $.response.status = $.net.http.INTERNAL_SERVER_ERROR;
+    $.response.setBody(e.message);
+    return;
+  }
+
+  $.response.setBody(body);
+  $.response.status = $.net.http.OK;
 }
-
-function performRace1(){
-
-var body = '';
-
-var Movobj = $.request.parameters.get('Movobj');
-
-try {
-
-var query =
-
-'select "Defaults" FROM "WRK_SCH"."amohas97.session.data::sdyn" WHERE "Movobj" = ? ';
-
-$.trace.debug(query);
-
-var conn = $.db.getConnection();
-
-var pstmt;
-
-var rs;
-
-pstmt = conn.prepareStatement(query);
-
-1. pstmt.setString(1, Movobj);
-
-rs = pstmt.executeQuery();
-
-while (rs.next()) {
-
-body += rs.getNString(1) + "\n";
-
-//var answer = '0';
-
-//body = answer.toString();
-
-}
-
-} catch (e) {
-
-$.response.status = $.net.http.INTERNAL_SERVER_ERROR;
-
-$.response.setBody(e.message);
-
-return;
-
-}
-
-//num2 - num1;
-
-$.response.setBody(body);
-
-$.response.status = $.net.http.OK;
-
-}
+```
 
 ## Demo
 
-> 🎬 **Demo:** [http://www.youtube.com/watch?v=oZou6tMIb14](http://www.youtube.com/watch?v=oZou6tMIb14)
+> **Demo:** [Watch on YouTube](http://www.youtube.com/watch?v=oZou6tMIb14)
 
 ## Key Takeaways
 
-- This post covers SAP HANA & Canvas -  Exp:1 with hands-on examples and step-by-step guidance.
+- This post covers SAP HANA & Canvas - Exp:1 with hands-on examples and step-by-step guidance.
 - Practical implementation patterns are demonstrated using real SAP tooling.
 - The concepts explored here form part of a broader SAP BTP + HANA learning series.
 

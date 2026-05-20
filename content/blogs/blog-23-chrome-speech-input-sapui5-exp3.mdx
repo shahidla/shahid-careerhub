@@ -1,60 +1,52 @@
 ---
 
-title: "Chrome Speech Input in SAPUI5/HANA Application  -  Exp:3"
+title: "Chrome Speech Input in SAPUI5/HANA Application - Exp:3"
 author: "Shahid"
 published_at: "2013-10-17"
 tags: ["chrome", "database", "HANA", "input", "SAP", "SAPUI5", "speech"]
 canonical: "https://community.sap.com/t5/technology-blog-posts-by-sap/chrome-speech-input-in-sapui5-hana-application-exp-3/ba-p/13027295"
-excerpt: "Using speech webkit for an Input field to accept the voice command for an event to trigger in SAPUI5 Application. Demo Video: https://www.youtube.com/watch?v=B3RvdfcLOW8"
+excerpt: "Using Chrome speech input for an SAPUI5 input field so voice commands can trigger events inside the application."
 ---
 
-> **Summary:** **Using speech webkit for an Input field to accept the voice command for an event to trigger in SAPUI5 Application.** **** ** **
+> **Summary:** This experiment uses Chrome speech input in an SAPUI5 application so spoken commands can trigger navigation and actions.
 
 ## Introduction
 
-**Using speech webkit for an Input field to accept the voice command for an event to trigger in SAPUI5 Application.**
+This example uses Chrome speech input for an SAPUI5 input field so voice commands can trigger events inside the application.
 
-****
-
-** **
-
-**Demo Video: **[https://www.youtube.com/watch?v=B3RvdfcLOW8](https://www.youtube.com/watch?v=B3RvdfcLOW8)
-
+```javascript
 var vlayout = new c.layout.MatrixLayout();
-
 var vpanel = new c.Panel().setText("Quick Links");
 
-- vpanel.addContent(new c.Button("myButton",{
-text: "Click here to Navigate thru Speech",
+vpanel.addContent(new c.Button("myButton", {
+  text: "Click here to Navigate thru Speech",
+  tooltip: "please click me",
+  press: function() {
+    $('#myButton').after('<input id="mic" onwebkitspeechchange="transcribe(this.value)" x-webkit-speech>');
 
-tooltip: "please click me",
+    function transcribe(words) {
+      document.getElementById("mic").value = words;
 
-press: function() {
+      if (words == null) {
+        alert("No keyword assigned - " + words);
+      } else if (words == "1") {
+        oShell.setSelectedWorksetItem("wi_home_guest");
+        oShell.setContent(getContent("wi_home_guest"));
+      }
+    }
+  }
+}));
+```
 
-$('#myButton').after('<input id="mic" onwebkitspeechchange="transcribe(this.value)" x-webkit-speech>');
-
-function transcribe(words) {
-
-1. document.getElementById("mic").value = words;
-if (words == null) {
-
-alert("No keyword assigned-" + words );
-
-} else if (words == "1") {
-
-- oShell.setSelectedWorksetItem("wi_home_guest");
-
-- oShell.setContent(getContent("wi_home_guest"));
-
-}
+![Speech input demo screenshot](/blogs/blog-23-chrome-speech-input-sapui5-exp3/image-1.jpeg)
 
 ## Demo
 
-> 🎬 **Demo:** [https://www.youtube.com/watch?v=B3RvdfcLOW8](https://www.youtube.com/watch?v=B3RvdfcLOW8)
+> **Demo:** [Watch on YouTube](https://www.youtube.com/watch?v=B3RvdfcLOW8)
 
 ## Key Takeaways
 
-- This post covers Chrome Speech Input in SAPUI5/HANA Application  -  Exp:3 with hands-on examples and step-by-step guidance.
+- This post covers Chrome Speech Input in SAPUI5/HANA Application - Exp:3 with hands-on examples and step-by-step guidance.
 - Practical implementation patterns are demonstrated using real SAP tooling.
 - The concepts explored here form part of a broader SAP BTP + HANA learning series.
 

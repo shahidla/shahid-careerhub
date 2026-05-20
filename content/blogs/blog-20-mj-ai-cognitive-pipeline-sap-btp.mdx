@@ -32,6 +32,8 @@ The entire pipeline runs on SAP BTP Cloud Foundry. SAP CAP handles the cognitive
 
 The video shows the full pipeline running on SAP BTP, from the first historical event in the HIStory speech through Earth Song and Man in the Mirror, ending with the AI’s closing reflection.
 
+> **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=zzM3rBsOQEs)
+
 GitHub: User - shahidla. Repository - MJ
 
 ## Design Flow
@@ -316,16 +318,6 @@ The AI does not know it is listening to Michael Jackson. It just knows what it h
 What makes it deployable at this level is the SAP BTP stack: SAP CAP as the service and orchestration layer, SAP HANA Cloud as the persistence and vector search backend, and Solace for real-time event delivery. All of it runs on Cloud Foundry with a standard cf push. No custom infrastructure. No external vector database. The platform handles the plumbing so the AI work stays in focus.
 
 
-## References
-- [SAP CAP Documentation](https://cap.cloud.sap/)
-- [ElevenLabs Scribe v2 Realtime](https://elevenlabs.io/)
-- [Anthropic Claude API](https://docs.anthropic.com/)
-- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings)
-- [Solace PubSub+](https://solace.com/)
-- [SAP HANA Cloud](https://www.sap.com/products/technology-platform/hana.html)
-- GitHub: User - shahidla. Repository - MJ
-
-
 * This blog post was drafted with the assistance of Claude (Anthropic). *
 
 ## Conclusion
@@ -344,10 +336,6 @@ The AI asked a question nobody scripted. That is the result worth keeping.
 
 This is a prototype created for learning and demonstration purposes, but it is deployed to SAP BTP Cloud Foundry and ran live against real audio. Functional gaps and bugs may exist. SAP guidelines, best practices, coding standards, authorisation requirements and performance considerations were not in scope. A real solution would require proper error handling, security checks, resilience measures and alignment with enterprise development standards.
 
-## Demo
-
-> 🎬 **Demo:** [Watch Demo on YouTube](https://www.youtube.com/watch?v=zzM3rBsOQEs)
-
 ## Key Takeaways
 
 - Michael Jackson: AI Cognitive Pipeline on SAP BTP, SAP CAP, ElevenLabs, Claude, HANA DB, Solace demonstrates practical integration of SAP technologies in a real-world scenario.
@@ -357,3 +345,10 @@ This is a prototype created for learning and demonstration purposes, but it is d
 ## References
 
 - [Original SAP Community Post](https://community.sap.com/t5/technology-blog-posts-by-sap/michael-jackson-ai-cognitive-pipeline-on-sap-btp-sap-cap-elevenlabs-claude/ba-p/14398266)
+- [SAP CAP Documentation](https://cap.cloud.sap/)
+- [ElevenLabs Scribe v2 Realtime](https://elevenlabs.io/)
+- [Anthropic Claude API](https://docs.anthropic.com/)
+- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings)
+- [Solace PubSub+](https://solace.com/)
+- [SAP HANA Cloud](https://www.sap.com/products/technology-platform/hana.html)
+- GitHub: User - shahidla. Repository - MJ

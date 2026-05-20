@@ -15,6 +15,24 @@ export type BlogMeta = {
 
 export type Blog = BlogMeta & { content: string }
 
+function normalizeText(value: string): string {
+  return value
+    .replace(/\r\n/g, '\n')
+    .replace(/â€™/g, "'")
+    .replace(/â€˜/g, "'")
+    .replace(/â€œ/g, '"')
+    .replace(/â€/g, '"')
+    .replace(/â€“/g, '-')
+    .replace(/â€”/g, '-')
+    .replace(/â€¦/g, '...')
+    .replace(/â†’/g, '->')
+    .replace(/Â·/g, ' | ')
+    .replace(/âœ“/g, '[ok]')
+    .replace(/ðŸŽ¬/g, 'Demo')
+    .replace(/â€\u008b/g, '')
+    .replace(/Â/g, ' ')
+}
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -56,54 +74,137 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; content
   return { data, content }
 }
 
-export function markdownToHtml(md: string): string {
+function renderInline(md: string): string {
   let html = escapeHtml(md)
-  html = html.replace(/^###### (.+)$/gm, '<h6>$1</h6>')
-  html = html.replace(/^##### (.+)$/gm, '<h5>$1</h5>')
-  html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>')
-  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>')
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>')
-  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>')
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
-  html = html.replace(/`(.+?)`/g, '<code>$1</code>')
+
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt: string, url: string) => {
     return `<img src="${safeUrl(url)}" alt="${alt}" />`
   })
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label: string, url: string) => {
-    return `<a href="${safeUrl(url)}">${label}</a>`
+    return `<a href="${safeUrl(url)}" target="${/^https?:/i.test(url) ? '_blank' : '_self'}" rel="${/^https?:/i.test(url) ? 'noopener noreferrer' : ''}">${label}</a>`
+  })
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>')
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>')
+
+  return html
+}
+
+export function markdownToHtml(md: string): string {
+  const codeBlocks: string[] = []
+  let normalized = normalizeText(md)
+
+  normalized = normalized.replace(/```([a-zA-Z0-9_-]+)?\n([\s\S]*?)```/g, (_, lang: string, code: string) => {
+    const safeCode = escapeHtml(code.trimEnd())
+    const className = lang ? ` class="language-${lang}"` : ''
+    const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`
+    codeBlocks.push(`<pre><code${className}>${safeCode}</code></pre>`)
+    return placeholder
   })
 
-  const lines = html.split('\n')
+  const lines = normalized.split('\n')
   const out: string[] = []
-  let inParagraph = false
+  let paragraph: string[] = []
+  let blockquote: string[] = []
+  let listType: 'ul' | 'ol' | null = null
 
-  for (const line of lines) {
-    const trimmed = line.trim()
-    if (trimmed === '') {
-      if (inParagraph) {
-        out.push('</p>')
-        inParagraph = false
-      }
+  const flushParagraph = () => {
+    if (paragraph.length === 0) return
+    out.push(`<p>${renderInline(paragraph.join(' '))}</p>`)
+    paragraph = []
+  }
+
+  const flushBlockquote = () => {
+    if (blockquote.length === 0) return
+    out.push(`<blockquote><p>${renderInline(blockquote.join(' '))}</p></blockquote>`)
+    blockquote = []
+  }
+
+  const flushList = () => {
+    if (!listType) return
+    out.push(`</${listType}>`)
+    listType = null
+  }
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim()
+
+    if (line === '') {
+      flushParagraph()
+      flushBlockquote()
+      flushList()
       continue
     }
 
-    if (/^<(h[1-6]|img|ul|ol|li|blockquote|pre|hr)/.test(trimmed)) {
-      if (inParagraph) {
-        out.push('</p>')
-        inParagraph = false
-      }
-      out.push(trimmed)
-    } else {
-      if (!inParagraph) {
-        out.push('<p>')
-        inParagraph = true
-      }
-      out.push(trimmed)
+    const codeMatch = line.match(/^__CODE_BLOCK_(\d+)__$/)
+    if (codeMatch) {
+      flushParagraph()
+      flushBlockquote()
+      flushList()
+      out.push(codeBlocks[Number(codeMatch[1])])
+      continue
     }
+
+    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/)
+    if (headingMatch) {
+      flushParagraph()
+      flushBlockquote()
+      flushList()
+      const level = headingMatch[1].length
+      out.push(`<h${level}>${renderInline(headingMatch[2].trim())}</h${level}>`)
+      continue
+    }
+
+    if (line.startsWith('> ')) {
+      flushParagraph()
+      flushList()
+      blockquote.push(line.slice(2).trim())
+      continue
+    }
+
+    const orderedMatch = line.match(/^\d+\.\s+(.+)$/)
+    if (orderedMatch) {
+      flushParagraph()
+      flushBlockquote()
+      if (listType !== 'ol') {
+        flushList()
+        listType = 'ol'
+        out.push('<ol>')
+      }
+      out.push(`<li>${renderInline(orderedMatch[1])}</li>`)
+      continue
+    }
+
+    const unorderedMatch = line.match(/^-\s+(.+)$/)
+    if (unorderedMatch) {
+      flushParagraph()
+      flushBlockquote()
+      if (listType !== 'ul') {
+        flushList()
+        listType = 'ul'
+        out.push('<ul>')
+      }
+      out.push(`<li>${renderInline(unorderedMatch[1])}</li>`)
+      continue
+    }
+
+    if (/^<img\b/.test(renderInline(line))) {
+      flushParagraph()
+      flushBlockquote()
+      flushList()
+      out.push(renderInline(line))
+      continue
+    }
+
+    flushBlockquote()
+    flushList()
+    paragraph.push(line)
   }
 
-  if (inParagraph) out.push('</p>')
+  flushParagraph()
+  flushBlockquote()
+  flushList()
+
   return out.join('\n')
 }
 
@@ -114,7 +215,13 @@ export function getAllBlogs(): BlogMeta[] {
     .map((file) => {
       const raw = fs.readFileSync(path.join(BLOGS_DIR, file), 'utf8')
       const { data } = parseFrontmatter(raw)
-      return { slug: file.replace(/\.mdx$/, ''), ...data } as BlogMeta
+      return {
+        slug: file.replace(/\.mdx$/, ''),
+        ...data,
+        title: normalizeText(String(data.title ?? '')),
+        author: normalizeText(String(data.author ?? '')),
+        excerpt: normalizeText(String(data.excerpt ?? '')),
+      } as BlogMeta
     })
     .sort((a, b) => b.published_at.localeCompare(a.published_at))
 }
@@ -129,5 +236,13 @@ export function getBlog(slug: string): Blog | null {
 
   const raw = fs.readFileSync(file, 'utf8')
   const { data, content } = parseFrontmatter(raw)
-  return { slug, ...data, content } as Blog
+
+  return {
+    slug,
+    ...data,
+    title: normalizeText(String(data.title ?? '')),
+    author: normalizeText(String(data.author ?? '')),
+    excerpt: normalizeText(String(data.excerpt ?? '')),
+    content: normalizeText(content),
+  } as Blog
 }

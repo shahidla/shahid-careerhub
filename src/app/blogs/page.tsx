@@ -101,9 +101,9 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
   const tagOptions = getTopTags(blogs)
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-12 space-y-14">
+    <main className="mx-auto max-w-5xl space-y-14 px-6 py-12">
       <section className="space-y-4">
-        <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest">Technical Writing</p>
+        <p className="text-sm font-semibold uppercase tracking-widest text-gray-500">Technical Writing</p>
         <div className="max-w-3xl space-y-3">
           <h1 className="text-4xl font-bold tracking-tight">Blog</h1>
           <p className="text-lg text-gray-600">
@@ -119,7 +119,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
         <section className="space-y-5">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest">Start Here</p>
+              <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">Start Here</p>
               <h2 className="text-2xl font-bold tracking-tight text-gray-900">AI + SAP highlights</h2>
             </div>
             <a href={buildFilterHref({ topic: 'ai-sap' })} className="text-sm font-medium text-blue-600 hover:underline">
@@ -230,7 +230,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                   {blog.title}
                 </a>
                 <div className="mt-1 text-sm text-gray-500">
-                  {blog.author} · {formatDate(blog.published_at)}
+                  {blog.author} | {formatDate(blog.published_at)}
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-gray-600">{blog.excerpt}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -246,10 +246,10 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                 </div>
                 <div className="mt-4 flex flex-wrap gap-4 text-sm">
                   <a href={`/blogs/${blog.slug}`} className="font-medium text-blue-600 hover:underline">
-                    Read post →
+                    Read post
                   </a>
                   <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600">
-                    Originally on SAP Community ↗
+                    Originally on SAP Community
                   </a>
                 </div>
               </article>
