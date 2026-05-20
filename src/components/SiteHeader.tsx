@@ -3,11 +3,13 @@
 import { usePathname } from 'next/navigation'
 
 const NAV = [
-  { href: '/',          label: 'Home' },
-  { href: '/resume',    label: 'Resume' },
-  { href: '/ai',        label: 'AI Portfolio' },
-  { href: '/blogs',     label: 'Blog' },
-  { href: '/dashboard', label: 'Dashboard Demo' },
+  { href: '/',               label: 'Home' },
+  { href: '/resume',         label: 'Resume' },
+  { href: '/ai',             label: 'AI Portfolio' },
+  { href: '/blogs',          label: 'Blog' },
+  { href: '/patent',         label: 'Patent' },
+  { href: '/certifications', label: 'Certifications' },
+  { href: '/dashboard',      label: 'Dashboard Demo' },
 ]
 
 export default function SiteHeader() {

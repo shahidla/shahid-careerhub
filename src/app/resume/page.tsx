@@ -262,7 +262,7 @@ export default async function ResumePage() {
               ))}
             </div>
             <div className="mt-5 flex items-center gap-3 text-sm border-t border-gray-100 pt-4">
-              <span className="text-gray-500">+ 69 completed OpenSAP courses covering SAP HANA, BTP, ABAP, AI/ML, and Fiori</span>
+              <span className="text-gray-500">+ 69 completed courses covering SAP HANA, BTP, ABAP, AI/ML, and Fiori</span>
               <a href="/certifications" className="text-blue-600 hover:underline font-medium shrink-0">View all {'->'}</a>
             </div>
           </section>

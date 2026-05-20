@@ -3,6 +3,7 @@ const FOOTER_LINKS = [
   { href: '/resume', label: 'Resume' },
   { href: '/ai', label: 'AI Portfolio' },
   { href: '/certifications', label: 'Certifications' },
+  { href: '/patent', label: 'Patent' },
   { href: '/blogs', label: 'Blog' },
   { href: '/dashboard', label: 'Dashboard Demo' },
   { href: '/learning', label: 'Learning' },
