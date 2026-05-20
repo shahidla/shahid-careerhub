@@ -38,10 +38,9 @@ export const config = {
     '/api/fetch-jobs',
     '/api/score-batch',
     '/api/jobs/:path*',
-    '/api/pipeline/run',
     '/api/rescore-jobs',
     '/api/generate-summaries',
     '/api/telegram/register',
-    '/api/email-digest',
+    // /api/pipeline/run and /api/email-digest excluded — called by Vercel cron with no auth header
   ],
 }
