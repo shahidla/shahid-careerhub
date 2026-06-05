@@ -79,10 +79,10 @@ export default async function CertificationsPage({ searchParams }: Certification
   return (
     <main className="mx-auto max-w-5xl space-y-12 px-6 py-12">
       <section className="space-y-4">
-        <p className="text-sm font-semibold uppercase tracking-widest text-gray-500">Credentials</p>
+        <p className="text-sm font-semibold uppercase tracking-widest text-accent-purple">Credentials</p>
         <div className="max-w-3xl space-y-3">
-          <h1 className="text-4xl font-bold tracking-tight">Certifications</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className="text-4xl font-display font-bold tracking-tight text-gray-100">Certifications</h1>
+          <p className="text-lg text-gray-400">
             {all.length} credentials across SAP, AI, engineering, and continuous learning.
           </p>
           <p className="text-sm text-gray-500">{getTrackDescription(activeTrack)}</p>
@@ -90,12 +90,12 @@ export default async function CertificationsPage({ searchParams }: Certification
       </section>
 
       <section className="space-y-4">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 animate-fade-in">
           {TRACKS.map((track) => (
             <a
               key={track.slug}
               href={getTrackHref(track.slug)}
-              className={`tag-sm ${activeTrack === track.slug ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+              className={`tag-sm ${activeTrack === track.slug ? '!bg-accent-purple/20 !text-accent-purple !border-accent-purple/30' : 'hover:bg-surface-200'}`}
             >
               {track.label} ({getTrackCount(track.slug, all)})
             </a>
@@ -107,13 +107,13 @@ export default async function CertificationsPage({ searchParams }: Certification
         {visible.map((certification) => {
           const cardClass =
             certification.issuer === 'SAP'
-              ? 'border-blue-100 hover:border-blue-300'
+              ? 'border-accent-blue/20 bg-accent-blue/[0.02] hover:border-accent-blue/40'
               : certification.is_ai
-                ? 'border-purple-100 hover:border-purple-300'
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-accent-purple/20 bg-accent-purple/[0.02] hover:border-accent-purple/40'
+                : 'border-surface-300/40 bg-surface-100/50 hover:border-surface-400'
 
           return (
-            <article key={certification.id} className={`rounded-2xl border bg-white p-5 transition-colors ${cardClass}`}>
+            <article key={certification.id} className={`rounded-2xl border p-5 transition-all duration-300 ${cardClass}`}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   {certification.credential_url ? (
@@ -121,19 +121,19 @@ export default async function CertificationsPage({ searchParams }: Certification
                       href={certification.credential_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-sm font-semibold leading-snug text-gray-900 hover:text-blue-700"
+                      className="block text-sm font-semibold leading-snug text-gray-100 hover:text-accent-blue transition-colors"
                     >
                       {certification.title}
                     </a>
                   ) : (
-                    <span className="block text-sm font-semibold leading-snug text-gray-900">{certification.title}</span>
+                    <span className="block text-sm font-semibold leading-snug text-gray-100">{certification.title}</span>
                   )}
                   <p className="mt-2 text-xs text-gray-500">{metaParts(certification).join(' · ')}</p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {certification.is_ai && <span className="tag-sm bg-purple-100 text-purple-700">AI</span>}
-                  {certification.issuer === 'SAP' && <span className="tag-sm bg-blue-100 text-blue-700">SAP</span>}
-                  {certification.issuer === 'OpenSAP' && <span className="tag-sm bg-gray-100 text-gray-700">OpenSAP</span>}
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  {certification.is_ai && <span className="tag-sm !bg-accent-purple/15 !text-accent-purple !border-accent-purple/20">AI</span>}
+                  {certification.issuer === 'SAP' && <span className="tag-sm !bg-accent-blue/15 !text-accent-blue !border-accent-blue/20">SAP</span>}
+                  {certification.issuer === 'OpenSAP' && <span className="tag-sm !bg-surface-200 !text-gray-300">OpenSAP</span>}
                 </div>
               </div>
             </article>

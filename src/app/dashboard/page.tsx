@@ -18,12 +18,12 @@ export default async function DashboardPage() {
   const interviewingCount = jobs.filter((job) => job.status === 'interviewing').length
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6 py-10">
-        <div className="mb-8 border border-blue-200 bg-blue-50 rounded-xl p-5">
-          <p className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-1">Live Prototype</p>
-          <h1 className="text-xl font-bold text-gray-900">AI Job Dashboard Demo</h1>
-          <p className="mt-2 text-sm text-gray-600 max-w-2xl">
+    <div className="min-h-screen py-10">
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="mb-8 glass-card border-accent-blue/20 bg-accent-blue/[0.02] p-6 animate-fade-in">
+          <p className="text-xs font-semibold text-accent-blue uppercase tracking-widest mb-1.5">Live Prototype</p>
+          <h1 className="text-xl font-display font-bold text-gray-100">AI Job Dashboard Demo</h1>
+          <p className="mt-2 text-sm text-gray-400 max-w-2xl leading-relaxed">
             This is a live prototype showing how job feeds, AI-assisted scoring, and match
             reasoning can be used to identify relevant SAP + AI opportunities.
           </p>
@@ -31,8 +31,8 @@ export default async function DashboardPage() {
 
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Job Feed</h2>
-            <div className="flex gap-4 mt-1 text-sm text-gray-500">
+            <h2 className="text-2xl font-display font-bold text-gray-100">Job Feed</h2>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-gray-500">
               <span>{jobs.length} jobs found</span>
               {newCount > 0 && <span>{newCount} new to review</span>}
               {savedCount > 0 && <span>{savedCount} saved</span>}

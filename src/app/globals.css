@@ -2,83 +2,179 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Google Fonts ─── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Base Layer ─── */
 @layer base {
+  * {
+    @apply border-surface-300/50;
+  }
+
   body {
-    @apply bg-stone-50 text-gray-900;
+    @apply bg-surface text-gray-200 font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent-purple/30 text-white;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-surface;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-400 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
   }
 }
 
+/* ─── Component Layer ─── */
 @layer components {
+
+  /* ── Section heading ── */
   .section-heading {
-    @apply border-b border-gray-200 pb-2 text-xl font-bold text-gray-900;
+    @apply border-b border-surface-300/60 pb-3 text-xl font-bold text-gray-100 tracking-tight;
   }
 
+  /* ── Tags ── */
   .tag {
-    @apply inline-block rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-700;
+    @apply inline-block rounded-full bg-surface-200 px-3 py-1 text-xs text-gray-300 border border-surface-300/50
+           transition-all duration-200 hover:border-accent-purple/40 hover:text-gray-200;
   }
 
   .tag-sm {
-    @apply inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600;
+    @apply inline-block rounded-md bg-surface-200 px-2 py-0.5 text-xs text-gray-400
+           border border-surface-300/30 transition-colors duration-200;
   }
 
+  /* ── Gradient text ── */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-blue via-accent-purple to-accent-cyan
+           bg-300% animate-gradient-x;
+  }
+
+  .gradient-text-static {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-blue via-accent-purple to-accent-cyan;
+  }
+
+  /* ── Glass card ── */
+  .glass-card {
+    @apply bg-surface-100/80 backdrop-blur-xl border border-surface-300/50 rounded-2xl
+           transition-all duration-300 hover:border-surface-400/80 hover:bg-surface-100;
+  }
+
+  .glass-card-glow {
+    @apply glass-card hover:shadow-[0_0_30px_rgba(139,92,246,0.12)];
+  }
+
+  /* ── Glow border ── */
+  .glow-border {
+    @apply relative overflow-hidden rounded-2xl;
+  }
+  .glow-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(139,92,246,0.3), rgba(6,182,212,0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* ── Primary button ── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-accent-purple hover:bg-purple-500 text-white
+           font-medium px-5 py-2.5 rounded-xl transition-all duration-200
+           shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40
+           hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 bg-surface-200 hover:bg-surface-300 text-gray-200
+           font-medium px-5 py-2.5 rounded-xl transition-all duration-200
+           border border-surface-400/50 hover:border-surface-400
+           hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border border-accent-blue/40 text-accent-blue
+           hover:bg-accent-blue/10 font-medium px-5 py-2.5 rounded-xl
+           transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  /* ── Blog prose (dark) ── */
   .blog-prose {
-    @apply rounded-3xl border border-gray-200 bg-white p-8 shadow-sm md:p-10;
+    @apply rounded-3xl border border-surface-300/50 bg-surface-100 p-8 shadow-sm md:p-10;
   }
 
   .blog-prose h1 {
-    @apply mt-10 mb-4 text-3xl font-bold text-gray-900;
+    @apply mt-10 mb-4 text-3xl font-bold text-gray-100;
   }
 
   .blog-prose h2 {
-    @apply mt-12 mb-4 border-b border-gray-200 pb-3 text-2xl font-bold text-gray-900;
+    @apply mt-12 mb-4 border-b border-surface-300/60 pb-3 text-2xl font-bold text-gray-100;
   }
 
   .blog-prose h3 {
-    @apply mt-8 mb-3 text-xl font-semibold text-gray-900;
+    @apply mt-8 mb-3 text-xl font-semibold text-gray-200;
   }
 
   .blog-prose h4 {
-    @apply mt-6 mb-2 text-lg font-semibold text-gray-800;
+    @apply mt-6 mb-2 text-lg font-semibold text-gray-200;
   }
 
   .blog-prose p {
-    @apply mb-4 text-[15px] leading-8 text-gray-700;
+    @apply mb-4 text-[15px] leading-8 text-gray-300;
   }
 
   .blog-prose a {
-    @apply font-medium text-blue-700 underline decoration-blue-200 underline-offset-4 transition-colors hover:text-blue-800;
+    @apply font-medium text-accent-blue underline decoration-accent-blue/30 underline-offset-4
+           transition-colors hover:text-blue-400;
   }
 
   .blog-prose strong {
-    @apply font-semibold text-gray-900;
+    @apply font-semibold text-gray-100;
   }
 
   .blog-prose em {
-    @apply italic text-gray-700;
+    @apply italic text-gray-300;
   }
 
   .blog-prose code {
-    @apply rounded bg-stone-100 px-1.5 py-0.5 font-mono text-sm text-gray-800;
+    @apply rounded bg-surface-200 px-1.5 py-0.5 font-mono text-sm text-gray-200
+           border border-surface-300/40;
   }
 
   .blog-prose pre {
-    @apply my-6 overflow-x-auto rounded-2xl bg-slate-950 p-5 text-sm text-slate-100 shadow-sm;
+    @apply my-6 overflow-x-auto rounded-2xl bg-surface-50 p-5 text-sm text-slate-100
+           border border-surface-300/30;
   }
 
   .blog-prose pre code {
-    @apply bg-transparent p-0 text-inherit;
+    @apply bg-transparent border-none p-0 text-inherit;
   }
 
   .blog-prose img {
-    @apply my-8 w-full rounded-2xl border border-gray-200 bg-white object-cover shadow-sm;
+    @apply my-8 w-full rounded-2xl border border-surface-300/40 bg-surface-50 object-cover;
   }
 
   .blog-prose ul {
-    @apply mb-5 list-disc space-y-2 pl-6 text-gray-700;
+    @apply mb-5 list-disc space-y-2 pl-6 text-gray-300;
   }
 
   .blog-prose ol {
-    @apply mb-5 list-decimal space-y-2 pl-6 text-gray-700;
+    @apply mb-5 list-decimal space-y-2 pl-6 text-gray-300;
   }
 
   .blog-prose li {
@@ -86,10 +182,37 @@
   }
 
   .blog-prose blockquote {
-    @apply my-6 rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-gray-700 shadow-sm;
+    @apply my-6 rounded-2xl border border-accent-purple/20 bg-accent-purple/5 px-5 py-4 text-gray-300;
   }
 
   .blog-prose blockquote p {
     @apply mb-0;
+  }
+}
+
+/* ─── Utility Layer ─── */
+@layer utilities {
+  /* Stagger children animations */
+  .stagger-children > * {
+    @apply opacity-0 animate-fade-in-up;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Noise texture overlay */
+  .noise-bg {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* Gradient mesh background */
+  .mesh-gradient {
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(139,92,246,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(59,130,246,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(6,182,212,0.04) 0%, transparent 50%);
   }
 }

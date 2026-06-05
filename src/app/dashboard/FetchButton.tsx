@@ -70,19 +70,19 @@ export default function FetchButton() {
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div className="flex flex-col items-end gap-1.5">
       <div className="flex gap-2">
         <button
           onClick={handleRescore}
           disabled={loading || rescoring}
-          className="text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-600 font-medium px-4 py-2 rounded-lg transition-colors"
+          className="text-sm bg-surface-200 hover:bg-surface-300 disabled:opacity-50 text-gray-300 border border-surface-300/50 font-medium px-4 py-2 rounded-lg transition-colors"
         >
           {rescoring ? 'Re-scoring...' : 'Re-score all'}
         </button>
         <button
           onClick={handleFetch}
           disabled={loading || rescoring}
-          className="text-sm bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+          className="text-sm bg-accent-blue hover:bg-blue-500 disabled:bg-surface-300 text-white font-medium px-4 py-2 rounded-lg transition-colors"
         >
           {loading ? 'Fetching...' : 'Fetch now'}
         </button>

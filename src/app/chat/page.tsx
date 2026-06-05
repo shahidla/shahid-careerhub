@@ -79,23 +79,23 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="border-b border-gray-200 px-6 py-3 flex items-center gap-4 text-sm sticky top-0 bg-white z-20">
-        <a href="/" className="text-gray-400 hover:text-gray-700">Home</a>
-        <a href="/resume" className="text-blue-600 hover:text-blue-800">SAP Profile {'->'}</a>
-        <a href="/ai" className="text-purple-600 hover:text-purple-800">AI Portfolio {'->'}</a>
-        <span className="ml-auto text-gray-900 font-medium">Resume Chat</span>
+    <div className="flex flex-col min-h-[calc(100vh-49px)]">
+      <header className="border-b border-surface-300/30 px-6 py-3 flex items-center gap-4 text-sm sticky top-[49px] bg-surface/80 backdrop-blur-xl z-20">
+        <a href="/" className="text-gray-400 hover:text-gray-200 transition-colors">Home</a>
+        <a href="/resume" className="text-accent-blue hover:text-blue-400 transition-colors">SAP Profile {'->'}</a>
+        <a href="/ai" className="text-accent-purple hover:text-purple-400 transition-colors">AI Portfolio {'->'}</a>
+        <span className="ml-auto text-gray-100 font-medium">Resume Chat</span>
       </header>
 
-      <div className="border-b border-gray-100 px-6 py-4 bg-gray-50">
+      <div className="border-b border-surface-300/20 px-6 py-4 bg-surface-50">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">Talking to</p>
-          <p className="text-base font-bold text-gray-900">Shahid M Syed - SAP Development Architect + AI Engineer</p>
-          <p className="text-sm text-gray-500 mt-0.5">19 years SAP | S/4HANA | ABAP on HANA | BTP | MCP | RAG | Agents</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">Talking to</p>
+          <p className="text-base font-bold text-gray-100">Shahid M Syed · SAP Development Architect + AI Engineer</p>
+          <p className="text-sm text-gray-400 mt-0.5">19 years SAP · S/4HANA · ABAP on HANA · BTP · MCP · RAG · Agents</p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-6">
+      <div className="flex-1 overflow-y-auto px-6 py-8">
         <div className="max-w-2xl mx-auto space-y-4">
           {messages.length === 0 && (
             <div className="space-y-6">
@@ -105,12 +105,12 @@ export default function ChatPage() {
                 </p>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Try asking</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Try asking</p>
                 {STARTERS.map((starter) => (
                   <button
                     key={starter}
                     onClick={() => send(starter)}
-                    className="block w-full text-left text-sm text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-lg px-4 py-2.5 transition-colors"
+                    className="block w-full text-left text-sm text-accent-blue bg-accent-blue/5 hover:bg-accent-blue/10 border border-accent-blue/20 rounded-lg px-4 py-2.5 transition-colors"
                   >
                     {starter}
                   </button>
@@ -121,7 +121,7 @@ export default function ChatPage() {
                     inputRef.current?.focus()
                     inputRef.current?.select()
                   }}
-                  className="block w-full text-left text-sm text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-100 rounded-lg px-4 py-2.5 transition-colors"
+                  className="block w-full text-left text-sm text-accent-purple bg-accent-purple/5 hover:bg-accent-purple/10 border border-accent-purple/20 rounded-lg px-4 py-2.5 transition-colors"
                 >
                   Paste a job description - get match score + strengths and gaps
                 </button>
@@ -134,8 +134,8 @@ export default function ChatPage() {
               <div
                 className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                   message.role === 'user'
-                    ? 'bg-blue-600 text-white rounded-br-sm'
-                    : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                    ? 'bg-accent-blue text-white rounded-br-sm shadow-md shadow-accent-blue/10'
+                    : 'bg-surface-100 border border-surface-300/40 text-gray-200 rounded-bl-sm'
                 }`}
               >
                 {message.content}
@@ -145,11 +145,11 @@ export default function ChatPage() {
 
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-gray-100 rounded-2xl rounded-bl-sm px-4 py-3">
+              <div className="bg-surface-100 border border-surface-300/40 rounded-2xl rounded-bl-sm px-4 py-3">
                 <span className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </span>
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 px-6 py-4 bg-white">
+      <div className="border-t border-surface-300/30 px-6 py-4 bg-surface-50 mt-auto">
         <div className="max-w-2xl mx-auto">
           <div className="flex gap-3 items-end">
             <textarea
@@ -169,19 +169,19 @@ export default function ChatPage() {
               onKeyDown={handleKeyDown}
               placeholder="Ask about experience, skills, or paste a job description..."
               rows={2}
-              className="flex-1 resize-none border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 resize-none bg-surface-100 border border-surface-300/50 rounded-xl px-4 py-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-purple focus:border-transparent"
             />
             <button
               onClick={() => send(input)}
               disabled={!input.trim() || loading}
-              className="shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white text-sm font-medium px-4 py-3 rounded-xl transition-colors"
+              className="shrink-0 bg-accent-blue hover:bg-blue-500 disabled:bg-surface-300 disabled:text-gray-500 text-white text-sm font-medium px-5 py-3 rounded-xl transition-all duration-200"
             >
               Send
             </button>
           </div>
-          <p className="mt-3 text-xs text-gray-400 text-center">
+          <p className="mt-3 text-xs text-gray-500 text-center">
             Built with Claude API, RAG, pgvector, and Next.js as part of the{' '}
-            <a href="/ai" className="text-purple-500 hover:underline">AI Career Hub</a>
+            <a href="/ai" className="text-accent-purple hover:underline">AI Career Hub</a>
           </p>
         </div>
       </div>

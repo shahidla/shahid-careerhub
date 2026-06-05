@@ -9,22 +9,22 @@ const NAV = [
   { href: '/blogs',          label: 'Blog' },
   { href: '/patent',         label: 'Patent' },
   { href: '/certifications', label: 'Certifications' },
-  { href: '/dashboard',      label: 'Dashboard Demo' },
+  { href: '/dashboard',      label: 'Dashboard' },
 ]
 
 export default function SiteHeader() {
   const pathname = usePathname()
 
   return (
-    <header className="border-b border-gray-200 bg-white sticky top-0 z-20">
+    <header className="border-b border-surface-300/40 bg-surface/80 backdrop-blur-xl sticky top-0 z-20">
       <nav
         className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-6 text-sm"
         aria-label="Primary navigation"
       >
-        <a href="/" className="font-semibold text-gray-900 hover:text-blue-600 shrink-0">
-          Shahid M Syed
+        <a href="/" className="font-display font-bold text-gray-100 hover:text-accent-purple transition-colors shrink-0 text-base tracking-tight">
+          <span className="gradient-text-static">S</span>hahid
         </a>
-        <ul className="flex flex-wrap items-center gap-1 list-none m-0 p-0">
+        <ul className="flex flex-wrap items-center gap-0.5 list-none m-0 p-0">
           {NAV.map(({ href, label }) => {
             const active = href === '/' ? pathname === '/' : pathname.startsWith(href)
             return (
@@ -32,10 +32,10 @@ export default function SiteHeader() {
                 <a
                   href={href}
                   aria-current={active ? 'page' : undefined}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg transition-all duration-200 ${
                     active
-                      ? 'bg-gray-100 text-gray-900 font-medium'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'bg-surface-200 text-gray-100 font-medium shadow-sm shadow-accent-purple/10 border border-surface-300/60'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-surface-200/50'
                   }`}
                 >
                   {label}

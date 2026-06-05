@@ -42,10 +42,14 @@ export default async function AiPage() {
     getBlogs(true),
   ])
 
+  const doneCount = AI_BUILT.filter((r) => r.done).length
+  const totalCount = AI_BUILT.length
+
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
-      <nav aria-label="On this page" className="flex flex-wrap gap-2 text-xs border border-gray-200 rounded-lg px-4 py-3 bg-white">
-        <span className="text-gray-400 font-semibold uppercase tracking-widest mr-2 self-center">On this page</span>
+      {/* On-page nav */}
+      <nav aria-label="On this page" className="flex flex-wrap gap-2 text-xs glass-card px-4 py-3">
+        <span className="text-gray-500 font-semibold uppercase tracking-widest mr-2 self-center">On this page</span>
         {[
           { href: '#building', label: 'Currently Building' },
           { href: '#projects', label: 'AI Projects' },
@@ -54,53 +58,59 @@ export default async function AiPage() {
           { href: '#writing', label: 'Writing' },
           { href: '#built', label: 'AI Concepts Built' },
         ].map(({ href, label }) => (
-          <a key={href} href={href} className="text-purple-600 hover:text-purple-800 hover:underline px-1">{label}</a>
+          <a key={href} href={href} className="text-accent-purple hover:text-purple-400 hover:underline px-1 transition-colors">{label}</a>
         ))}
       </nav>
 
-      <section>
-        <p className="text-sm font-semibold text-purple-600 uppercase tracking-widest mb-2">AI Engineering Portfolio</p>
-        <h1 className="text-4xl font-bold tracking-tight">{profile.name}</h1>
-        <p className="mt-3 text-lg text-gray-600 max-w-2xl">
-          SAP Development Architect - now building AI systems hands-on.
+      {/* Hero */}
+      <section className="relative">
+        <div className="absolute inset-0 -z-10 mesh-gradient opacity-60" />
+        <p className="text-sm font-semibold text-accent-purple uppercase tracking-[0.2em] mb-2 animate-fade-in">AI Engineering Portfolio</p>
+        <h1 className="text-4xl font-display font-bold tracking-tight animate-fade-in-up">
+          <span className="gradient-text">{profile.name}</span>
+        </h1>
+        <p className="mt-3 text-lg text-gray-400 max-w-2xl leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          SAP Development Architect — now building AI systems hands-on.
           RAG pipelines, agentic workflows, MCP servers, embeddings, and LLM integration.
         </p>
         <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
-          <a href={`mailto:${profile.contact.email}`} className="hover:text-gray-900">{profile.contact.email}</a>
-          <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900">LinkedIn</a>
-          <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900">GitHub</a>
+          <a href={`mailto:${profile.contact.email}`} className="hover:text-accent-blue transition-colors">{profile.contact.email}</a>
+          <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">LinkedIn</a>
+          <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">GitHub</a>
         </div>
       </section>
 
+      {/* Currently Building */}
       <section id="building">
         <h2 className="section-heading">Currently Building</h2>
-        <div className="mt-4 border border-purple-200 rounded-xl p-5 bg-purple-50">
+        <div className="mt-4 glass-card p-6 border-accent-purple/20 animate-glow-pulse">
           <div className="flex flex-wrap justify-between gap-2">
             <div>
-              <h3 className="font-semibold text-gray-900">AI Career Hub</h3>
-              <p className="text-sm text-gray-600 mt-0.5">Next.js 14 | Supabase pgvector | Claude API | Vercel</p>
+              <h3 className="font-bold text-gray-100 text-lg">AI Career Hub</h3>
+              <p className="text-sm text-gray-400 mt-0.5">Next.js 14 · Supabase pgvector · Claude API · Vercel</p>
             </div>
-            <a href="https://github.com/shahidla/shahid-careerhub" target="_blank" rel="noopener noreferrer" className="text-sm text-purple-700 hover:underline font-medium self-start">
-              GitHub {'->'}
+            <a href="https://github.com/shahidla/shahid-careerhub" target="_blank" rel="noopener noreferrer" className="text-sm text-accent-purple hover:underline font-medium self-start">
+              GitHub →
             </a>
           </div>
-          <p className="mt-3 text-sm text-gray-700 leading-relaxed">
+          <p className="mt-3 text-sm text-gray-400 leading-relaxed">
             A live AI engineering prototype: job search aggregator, resume RAG chatbot,
             AI resume tooling, multi-agent orchestration, and MCP integration.
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {['RAG', 'Embeddings', 'pgvector', 'Agents', 'MCP', 'Tool use', 'LangGraph', 'Prompt caching', 'Langfuse', 'Claude API'].map((tag) => (
-              <span key={tag} className="tag-sm bg-purple-100 text-purple-700">{tag}</span>
+              <span key={tag} className="tag-sm !bg-accent-purple/10 !text-accent-purple !border-accent-purple/20">{tag}</span>
             ))}
           </div>
         </div>
       </section>
 
+      {/* AI Projects */}
       <section id="projects">
         <h2 className="section-heading">AI Projects</h2>
         <div className="mt-4 space-y-6">
           {projects.map((project) => (
-            <div key={project.id} className="border-l-2 border-purple-200 pl-4">
+            <div key={project.id} className="border-l-2 border-accent-purple/30 pl-4 hover:border-accent-purple/60 transition-colors duration-300">
               <div className="flex flex-wrap justify-between gap-1">
                 <div>
                   {project.url ? (
@@ -108,21 +118,21 @@ export default async function AiPage() {
                       href={project.url.startsWith('http') ? project.url : `/${project.url}`}
                       target={project.url.startsWith('http') ? '_blank' : undefined}
                       rel="noopener noreferrer"
-                      className="font-semibold text-purple-700 hover:underline"
+                      className="font-semibold text-accent-purple hover:underline"
                     >
                       {project.name}
                     </a>
                   ) : (
-                    <span className="font-semibold text-gray-900">{project.name}</span>
+                    <span className="font-semibold text-gray-100">{project.name}</span>
                   )}
-                  <span className="text-gray-500 text-sm"> | {project.client}</span>
+                  <span className="text-gray-500 text-sm"> · {project.client}</span>
                 </div>
               </div>
-              <p className="mt-1 text-sm font-medium text-purple-800">{project.impact}</p>
-              <p className="mt-1 text-sm text-gray-700 leading-relaxed">{project.description}</p>
+              <p className="mt-1 text-sm font-medium text-accent-purple/80">{project.impact}</p>
+              <p className="mt-1 text-sm text-gray-400 leading-relaxed">{project.description}</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {project.technologies.map((tech) => (
-                  <span key={tech} className="tag-sm bg-purple-100 text-purple-700">{tech}</span>
+                  <span key={tech} className="tag-sm !bg-accent-purple/10 !text-accent-purple !border-accent-purple/20">{tech}</span>
                 ))}
               </div>
             </div>
@@ -130,15 +140,16 @@ export default async function AiPage() {
         </div>
       </section>
 
+      {/* AI Skills */}
       <section id="skills">
         <h2 className="section-heading">AI Skills</h2>
         <div className="mt-4 space-y-4">
           {skills.map((skill) => (
             <div key={skill.id}>
-              <h3 className="text-sm font-semibold text-gray-800 mb-1">{skill.category}</h3>
+              <h3 className="text-sm font-semibold text-gray-300 mb-1.5">{skill.category}</h3>
               <div className="flex flex-wrap gap-2">
                 {skill.items.map((item) => (
-                  <span key={item} className="tag bg-purple-50 text-purple-700">{item}</span>
+                  <span key={item} className="tag !bg-accent-purple/5 !text-accent-purple !border-accent-purple/20">{item}</span>
                 ))}
               </div>
             </div>
@@ -146,46 +157,48 @@ export default async function AiPage() {
         </div>
       </section>
 
+      {/* AI Certifications */}
       <section id="certs">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <h2 className="section-heading">AI Certifications</h2>
-          <a href="/certifications?track=ai" className="text-sm font-medium text-purple-700 hover:underline">
-            View full credential index {'->'}
+          <a href="/certifications?track=ai" className="text-sm font-medium text-accent-purple hover:underline">
+            View full credential index →
           </a>
         </div>
         <div className="mt-4 grid sm:grid-cols-2 gap-3">
           {certifications.map((cert) => (
-            <div key={cert.id} className="border border-purple-200 rounded-lg p-3 bg-purple-50">
+            <div key={cert.id} className="glass-card p-3 border-accent-purple/15">
               {cert.credential_url ? (
-                <a href={cert.credential_url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-purple-700 hover:underline leading-snug block">
+                <a href={cert.credential_url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-accent-purple hover:underline leading-snug block">
                   {cert.title}
                 </a>
               ) : (
-                <span className="text-sm font-medium text-gray-900 leading-snug block">{cert.title}</span>
+                <span className="text-sm font-medium text-gray-200 leading-snug block">{cert.title}</span>
               )}
               <span className="text-xs text-gray-500">
                 {cert.issuer}
-                {cert.code ? ` | ${cert.code}` : ''}
-                {cert.year ? ` | ${cert.year}` : ''}
+                {cert.code ? ` · ${cert.code}` : ''}
+                {cert.year ? ` · ${cert.year}` : ''}
               </span>
             </div>
           ))}
         </div>
       </section>
 
+      {/* AI Writing */}
       <section id="writing">
-        <h2 className="section-heading">AI Writing - SAP Community</h2>
+        <h2 className="section-heading">AI Writing — SAP Community</h2>
         <ul className="mt-4 space-y-3">
           {blogs.map((blog) => (
             <li key={blog.id} className="flex gap-3 items-start">
-              <span className="text-purple-500 mt-1 shrink-0">-</span>
+              <span className="text-accent-purple mt-1 shrink-0">▸</span>
               <div>
-                <a href={blog.url} target="_blank" rel="noopener noreferrer" className="text-sm text-purple-700 hover:underline font-medium">
+                <a href={blog.url} target="_blank" rel="noopener noreferrer" className="text-sm text-accent-purple hover:underline font-medium">
                   {blog.title}
                 </a>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {blog.tags.map((tag) => (
-                    <span key={tag} className="tag-sm bg-purple-100 text-purple-700">{tag}</span>
+                    <span key={tag} className="tag-sm !bg-accent-purple/10 !text-accent-purple !border-accent-purple/20">{tag}</span>
                   ))}
                 </div>
               </div>
@@ -194,31 +207,52 @@ export default async function AiPage() {
         </ul>
       </section>
 
+      {/* AI Concepts Built */}
       <section id="built">
         <h2 className="section-heading">AI Concepts Built</h2>
-        <p className="mt-2 text-sm text-gray-500">Implemented hands-on in the AI Career Hub - each concept shipped, not just planned.</p>
-        <div className="mt-4 space-y-2">
+        <p className="mt-2 text-sm text-gray-500">Implemented hands-on in the AI Career Hub — each concept shipped, not just planned.</p>
+
+        {/* Progress bar */}
+        <div className="mt-4 mb-6">
+          <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+            <span>{doneCount} of {totalCount} concepts shipped</span>
+            <span className="text-accent-emerald font-medium">{Math.round((doneCount / totalCount) * 100)}%</span>
+          </div>
+          <div className="h-1.5 bg-surface-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-accent-purple to-accent-cyan rounded-full transition-all duration-700"
+              style={{ width: `${(doneCount / totalCount) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
           {AI_BUILT.map((row) => (
-            <div key={row.concept} className="flex gap-3 items-start text-sm">
-              <span className={`shrink-0 mt-0.5 font-bold ${row.done ? 'text-green-500' : 'text-gray-300'}`}>
-                {row.done ? 'Done' : 'Planned'}
+            <div key={row.concept} className="flex gap-3 items-start text-sm group">
+              <span className={`shrink-0 mt-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${
+                row.done
+                  ? 'bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20'
+                  : 'bg-surface-200 text-gray-500 border border-surface-300/50'
+              }`}>
+                {row.done ? '✓' : '○'}
               </span>
               <div>
-                <span className={`font-semibold ${row.done ? 'text-gray-900' : 'text-gray-400'}`}>{row.concept}</span>
-                <span className={`ml-2 ${row.done ? 'text-gray-600' : 'text-gray-400'}`}>- {row.detail}</span>
+                <span className={`font-semibold ${row.done ? 'text-gray-200' : 'text-gray-500'}`}>{row.concept}</span>
+                <span className={`ml-2 ${row.done ? 'text-gray-400' : 'text-gray-600'}`}>— {row.detail}</span>
               </div>
             </div>
           ))}
         </div>
       </section>
 
+      {/* Connect */}
       <section>
         <h2 className="section-heading">Connect</h2>
-        <div className="mt-4 flex flex-wrap gap-4 text-sm">
-          <a href={`mailto:${profile.contact.email}`} className="text-purple-700 hover:underline">{profile.contact.email}</a>
-          <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">LinkedIn</a>
-          <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">GitHub</a>
-          <a href={profile.contact.sapCommunity} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">SAP Community</a>
+        <div className="mt-4 flex flex-wrap gap-5 text-sm">
+          <a href={`mailto:${profile.contact.email}`} className="text-accent-purple hover:underline">{profile.contact.email}</a>
+          <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-accent-purple hover:underline">LinkedIn</a>
+          <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="text-accent-purple hover:underline">GitHub</a>
+          <a href={profile.contact.sapCommunity} target="_blank" rel="noopener noreferrer" className="text-accent-purple hover:underline">SAP Community</a>
         </div>
       </section>
     </main>

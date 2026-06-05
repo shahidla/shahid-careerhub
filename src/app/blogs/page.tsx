@@ -30,6 +30,7 @@ function normalizeTag(tag: string): string {
   return tag.trim().toLowerCase()
 }
 
+// Fixed format date to be safe on client and server
 function formatDate(value: string): string {
   return new Date(value).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -61,6 +62,7 @@ function getTopicMatches(blog: BlogMeta): string[] {
   return matches
 }
 
+// Collect the tags that occur most frequently
 function getTopTags(blogs: BlogMeta[]): string[] {
   const counts = new Map<string, number>()
 
@@ -103,51 +105,51 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
   return (
     <main className="mx-auto max-w-5xl space-y-14 px-6 py-12">
       <section className="space-y-4">
-        <p className="text-sm font-semibold uppercase tracking-widest text-gray-500">Technical Writing</p>
+        <p className="text-sm font-semibold uppercase tracking-widest text-accent-purple">Technical Writing</p>
         <div className="max-w-3xl space-y-3">
-          <h1 className="text-4xl font-bold tracking-tight">Blog</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className="text-4xl font-display font-bold tracking-tight text-gray-100">Blog</h1>
+          <p className="text-lg text-gray-400">
             Articles on SAP, AI engineering, integration, and hands-on product experiments, originally published on SAP Community.
           </p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-500">
             {filteredBlogs.length} of {blogs.length} posts shown
           </p>
         </div>
       </section>
 
       {featuredBlogs.length > 0 ? (
-        <section className="space-y-5">
+        <section className="space-y-5 animate-fade-in">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">Start Here</p>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-900">AI + SAP highlights</h2>
+              <p className="text-sm font-semibold uppercase tracking-widest text-accent-blue">Start Here</p>
+              <h2 className="text-2xl font-display font-bold tracking-tight text-gray-100">AI + SAP Highlights</h2>
             </div>
-            <a href={buildFilterHref({ topic: 'ai-sap' })} className="text-sm font-medium text-blue-600 hover:underline">
+            <a href={buildFilterHref({ topic: 'ai-sap' })} className="text-sm font-medium text-accent-blue hover:underline">
               View all AI + SAP posts
             </a>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
             {featuredBlogs.map((blog) => (
-              <article key={blog.slug} className="rounded-2xl border border-blue-100 bg-blue-50/60 p-5">
+              <article key={blog.slug} className="glass-card p-5 border-accent-blue/20 bg-accent-blue/[0.03] hover:border-accent-blue/40">
                 <div className="flex flex-wrap gap-2">
                   {getTopicMatches(blog)
                     .slice(0, 2)
                     .map((topic) => {
                       const label = TOPICS.find((item) => item.slug === topic)?.label ?? topic
                       return (
-                        <span key={topic} className="tag-sm bg-blue-100 text-blue-700">
+                        <span key={topic} className="tag-sm !bg-accent-blue/10 !text-accent-blue !border-accent-blue/20">
                           {label}
                         </span>
                       )
                     })}
                 </div>
-                <h3 className="mt-3 text-lg font-semibold leading-snug text-gray-900">
-                  <a href={`/blogs/${blog.slug}`} className="hover:text-blue-700">
+                <h3 className="mt-3 text-lg font-semibold leading-snug text-gray-100">
+                  <a href={`/blogs/${blog.slug}`} className="hover:text-accent-blue transition-colors">
                     {blog.title}
                   </a>
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600">{blog.excerpt}</p>
+                <p className="mt-2 text-sm leading-relaxed text-gray-400">{blog.excerpt}</p>
                 <div className="mt-4 text-xs text-gray-500">{formatDate(blog.published_at)}</div>
               </article>
             ))}
@@ -157,11 +159,11 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
 
       <section className="space-y-6">
         <div className="space-y-3">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Browse by topic</h2>
+          <h2 className="text-xl font-display font-bold tracking-tight text-gray-100">Browse by topic</h2>
           <div className="flex flex-wrap gap-2">
             <a
               href={buildFilterHref({ tag: activeTag })}
-              className={`tag-sm ${!activeTopic ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+              className={`tag-sm ${!activeTopic ? '!bg-accent-purple/20 !text-accent-purple !border-accent-purple/30' : 'hover:bg-surface-200'}`}
             >
               All topics
             </a>
@@ -169,7 +171,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
               <a
                 key={topic.slug}
                 href={buildFilterHref({ topic: topic.slug, tag: activeTag })}
-                className={`tag-sm ${activeTopic === topic.slug ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                className={`tag-sm ${activeTopic === topic.slug ? '!bg-accent-purple/20 !text-accent-purple !border-accent-purple/30' : 'hover:bg-surface-200'}`}
               >
                 {topic.label}
               </a>
@@ -182,7 +184,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
           <div className="flex flex-wrap gap-2">
             <a
               href={buildFilterHref({ topic: activeTopic })}
-              className={`tag-sm ${!activeTag ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+              className={`tag-sm ${!activeTag ? '!bg-accent-purple/20 !text-accent-purple !border-accent-purple/30' : 'hover:bg-surface-200'}`}
             >
               All tags
             </a>
@@ -190,7 +192,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
               <a
                 key={tag}
                 href={buildFilterHref({ topic: activeTopic, tag: normalizeTag(tag) })}
-                className={`tag-sm ${activeTag === normalizeTag(tag) ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                className={`tag-sm ${activeTag === normalizeTag(tag) ? '!bg-accent-purple/20 !text-accent-purple !border-accent-purple/30' : 'hover:bg-surface-200'}`}
               >
                 {tag}
               </a>
@@ -201,17 +203,17 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
 
       <section>
         {filteredBlogs.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center">
-            <h2 className="text-xl font-semibold text-gray-900">No posts match this filter yet.</h2>
-            <p className="mt-2 text-sm text-gray-600">Try another topic or clear the tag filter to see the full archive.</p>
-            <a href="/blogs" className="mt-4 inline-block text-sm font-medium text-blue-600 hover:underline">
+          <div className="rounded-2xl border border-dashed border-surface-300/40 bg-surface-100/50 p-8 text-center">
+            <h2 className="text-xl font-semibold text-gray-100">No posts match this filter yet.</h2>
+            <p className="mt-2 text-sm text-gray-400">Try another topic or clear the tag filter to see the full archive.</p>
+            <a href="/blogs" className="mt-4 inline-block text-sm font-medium text-accent-blue hover:underline">
               Clear filters
             </a>
           </div>
         ) : (
           <div className="space-y-5">
             {filteredBlogs.map((blog) => (
-              <article key={blog.slug} className="rounded-2xl border border-gray-200 bg-white p-6 transition-colors hover:border-gray-300">
+              <article key={blog.slug} className="glass-card p-6">
                 <div className="flex flex-wrap gap-2">
                   {getTopicMatches(blog).map((topic) => {
                     const label = TOPICS.find((item) => item.slug === topic)?.label ?? topic
@@ -219,36 +221,36 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                       <a
                         key={topic}
                         href={buildFilterHref({ topic, tag: activeTag })}
-                        className={`tag-sm ${activeTopic === topic ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
+                        className={`tag-sm ${activeTopic === topic ? '!bg-accent-blue/10 !text-accent-blue !border-accent-blue/20' : 'hover:bg-surface-200'}`}
                       >
                         {label}
                       </a>
                     )
                   })}
                 </div>
-                <a href={`/blogs/${blog.slug}`} className="mt-3 block text-lg font-semibold leading-snug text-gray-900 hover:text-blue-700">
+                <a href={`/blogs/${blog.slug}`} className="mt-3 block text-lg font-semibold leading-snug text-gray-100 hover:text-accent-blue transition-colors">
                   {blog.title}
                 </a>
                 <div className="mt-1 text-sm text-gray-500">
                   {blog.author} | {formatDate(blog.published_at)}
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600">{blog.excerpt}</p>
+                <p className="mt-2 text-sm leading-relaxed text-gray-400">{blog.excerpt}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {blog.tags.map((tag) => (
                     <a
                       key={tag}
                       href={buildFilterHref({ topic: activeTopic, tag: normalizeTag(tag) })}
-                      className={`tag-sm ${activeTag === normalizeTag(tag) ? 'bg-gray-900 text-white' : ''}`}
+                      className={`tag-sm ${activeTag === normalizeTag(tag) ? '!bg-accent-purple/20 !text-accent-purple !border-accent-purple/30' : ''}`}
                     >
                       {tag}
                     </a>
                   ))}
                 </div>
                 <div className="mt-4 flex flex-wrap gap-4 text-sm">
-                  <a href={`/blogs/${blog.slug}`} className="font-medium text-blue-600 hover:underline">
+                  <a href={`/blogs/${blog.slug}`} className="font-medium text-accent-blue hover:text-blue-400 transition-colors">
                     Read post
                   </a>
-                  <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600">
+                  <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-300 transition-colors">
                     Originally on SAP Community
                   </a>
                 </div>
@@ -260,3 +262,4 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
     </main>
   )
 }
+

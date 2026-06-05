@@ -19,33 +19,38 @@ const SOCIAL_LINKS = [
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-gray-200 bg-white mt-20">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="flex flex-wrap justify-between gap-8">
+    <footer className="border-t border-surface-300/30 bg-surface-50 mt-20 relative">
+      {/* Gradient divider */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-purple/40 to-transparent" />
+
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="flex flex-wrap justify-between gap-10">
           <div>
-            <p className="font-semibold text-gray-900">Shahid M Syed</p>
-            <p className="text-sm text-gray-500 mt-1">SAP Development Architect | AI Engineer</p>
+            <p className="font-display font-bold text-gray-100 text-lg tracking-tight">
+              <span className="gradient-text-static">S</span>hahid M Syed
+            </p>
+            <p className="text-sm text-gray-500 mt-1.5">SAP Development Architect · AI Engineer</p>
           </div>
           <nav aria-label="Footer navigation">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Pages</p>
-            <ul className="flex flex-wrap gap-x-6 gap-y-2 list-none m-0 p-0">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Pages</p>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 list-none m-0 p-0">
               {FOOTER_LINKS.map(({ href, label }) => (
                 <li key={href}>
-                  <a href={href} className="text-sm text-gray-500 hover:text-gray-900">{label}</a>
+                  <a href={href} className="text-sm text-gray-500 hover:text-gray-200 transition-colors duration-200">{label}</a>
                 </li>
               ))}
             </ul>
           </nav>
           <nav aria-label="Social links">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Connect</p>
-            <ul className="flex flex-wrap gap-x-6 gap-y-2 list-none m-0 p-0">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Connect</p>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 list-none m-0 p-0">
               {SOCIAL_LINKS.map(({ href, label }) => (
                 <li key={href}>
                   <a
                     href={href}
                     target={href.startsWith('http') ? '_blank' : undefined}
                     rel="noopener noreferrer"
-                    className="text-sm text-gray-500 hover:text-gray-900"
+                    className="text-sm text-gray-500 hover:text-accent-purple transition-colors duration-200"
                   >
                     {label}
                   </a>
@@ -54,7 +59,10 @@ export default function SiteFooter() {
             </ul>
           </nav>
         </div>
-        <p className="mt-8 text-xs text-gray-400">© {new Date().getFullYear()} Shahid M Syed</p>
+        <div className="mt-10 pt-6 border-t border-surface-300/20 flex items-center justify-between">
+          <p className="text-xs text-gray-600">© {new Date().getFullYear()} Shahid M Syed</p>
+          <p className="text-xs text-gray-700">Built with Next.js · Powered by AI</p>
+        </div>
       </div>
     </footer>
   )

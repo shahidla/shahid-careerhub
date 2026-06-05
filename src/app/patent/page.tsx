@@ -11,21 +11,21 @@ export default function PatentPage() {
     <main className="max-w-3xl mx-auto px-6 py-12 space-y-12">
 
       <section className="space-y-4">
-        <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest">Intellectual Property</p>
-        <h1 className="text-4xl font-bold tracking-tight">Granted Patent</h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-sm font-semibold text-accent-purple uppercase tracking-widest animate-fade-in">Intellectual Property</p>
+        <h1 className="text-4xl font-display font-bold tracking-tight text-gray-100 animate-fade-in-up">Granted Patent</h1>
+        <p className="text-lg text-gray-400 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           US patent granted for a real-time speech and predictive analytics accessibility application built on SAP HANA.
         </p>
       </section>
 
-      <section className="border border-blue-100 rounded-2xl p-8 bg-blue-50/40 space-y-6">
+      <section className="glass-card p-8 border-accent-blue/20 bg-accent-blue/[0.02] hover:border-accent-blue/40 space-y-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-blue-500 uppercase tracking-widest">Patent Number</p>
+          <p className="text-xs font-semibold text-accent-blue uppercase tracking-widest">Patent Number</p>
           <a
             href="https://patents.google.com/patent/US10304013B2/en"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-2xl font-bold text-gray-900 hover:text-blue-700"
+            className="text-2xl font-display font-bold text-gray-100 hover:text-accent-blue transition-colors"
           >
             US10304013B2
           </a>
@@ -33,7 +33,7 @@ export default function PatentPage() {
 
         <div className="space-y-2">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Title</p>
-          <p className="text-gray-900 font-medium">
+          <p className="text-gray-100 font-medium leading-relaxed">
             Real-Time Speech Processing and Predictive Analytics for Accessibility
           </p>
         </div>
@@ -41,19 +41,19 @@ export default function PatentPage() {
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="space-y-1">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Inventor</p>
-            <p className="text-gray-900">Shahid Mohammed Syed</p>
+            <p className="text-gray-200">Shahid Mohammed Syed</p>
           </div>
           <div className="space-y-1">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Assignee</p>
-            <p className="text-gray-900">SAP SE</p>
+            <p className="text-gray-200">SAP SE</p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Status</p>
-            <span className="inline-block text-xs font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded">Granted</span>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Status</p>
+            <span className="inline-block text-xs font-semibold bg-accent-emerald/20 text-accent-emerald px-2 py-0.5 rounded border border-accent-emerald/30">Granted</span>
           </div>
           <div className="space-y-1">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Grant Date</p>
-            <p className="text-gray-900">29 May 2018</p>
+            <p className="text-gray-200">29 May 2018</p>
           </div>
         </div>
 
@@ -61,15 +61,15 @@ export default function PatentPage() {
           href="https://patents.google.com/patent/US10304013B2/en"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block text-sm font-medium text-blue-600 hover:underline"
+          className="inline-flex items-center text-sm font-medium text-accent-blue hover:text-blue-400 transition-colors"
         >
           View on Google Patents →
         </a>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">What it does</h2>
-        <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">What it does</h2>
+        <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
           <p>
             The patent covers a system that enables people with physical disabilities to interact with complex enterprise
             software — specifically SAP HANA — using only their voice, with no mouse or keyboard required.
@@ -87,8 +87,8 @@ export default function PatentPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Origin</h2>
-        <p className="text-sm text-gray-700 leading-relaxed">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">Origin</h2>
+        <p className="text-sm text-gray-300 leading-relaxed">
           Built at the SAP <em>What the Hack 2.0!</em> hackathon at SAP Labs India. The project was a finalist at the event
           and was subsequently filed as a patent by SAP SE, with Shahid named as inventor.
           Related work from this period also won the{' '}
@@ -97,10 +97,10 @@ export default function PatentPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Technologies</h2>
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">Technologies</h2>
         <div className="flex flex-wrap gap-2">
           {['SAP HANA', 'Predictive Analytics', 'Speech Recognition', 'Accessibility', 'Machine Learning', 'SAP UI5'].map((t) => (
-            <span key={t} className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{t}</span>
+            <span key={t} className="tag">{t}</span>
           ))}
         </div>
       </section>
