@@ -1,7 +1,7 @@
 # AI Career Hub — Project Context
 
 Shared context for any AI assistant (Claude, Codex, etc.) working on this project.
-Last updated: 2026-05-20 (session 19)
+Last updated: 2026-05-20 (session 20)
 
 ---
 
@@ -198,7 +198,7 @@ C:/Dev/upwork/
 | `/` | ✅ Live | Hero, 3 feature cards, quick links. Clean career landing page. |
 | `/resume` | ✅ Live | Full SAP profile from Supabase. Sticky side nav, AI Work section, blog highlights (top 5), "View all 24 posts" link, learning callout. |
 | `/ai` | ✅ Live | AI portfolio. "On this page" section nav. Projects, skills, certs, blogs, roadmap. |
-| `/blogs` | ✅ Live | 24 MDX posts hosted on-site. "Start Here — AI+SAP" featured section + "All Posts". |
+| `/blogs` | ✅ Live | 24 MDX posts hosted on-site. Topic filter pills (AI+SAP, Integration, BTP/CAP/Kyma, ABAP/HANA, UX/Automation) with counts above "Start Here" featured section. |
 | `/blogs/[slug]` | ✅ Live | 24 individual blog pages rendered from MDX. Canonical link to SAP Community. |
 | `/learning` | ✅ Live | 42 completed OpenSAP courses (8 confirmations + 34 achievements). |
 | `/chat` | ✅ Live | RAG chatbot (Claude primary + OpenAI fallback, Cohere rerank, streaming, password protected). |
@@ -489,7 +489,7 @@ This is the master dev task list. Always update this when a task is done. This s
 - AI Skills taxonomy updated (was "AI Exploration", now "AI Engineering")
 - /ai roadmap replaced with "AI Concepts Built" checklist
 - Blog count, email, cert count all live from DB
-- O1-A: Blog filter UI on /blogs — topic filters (AI+SAP, Integration, BTP/CAP/Kyma, ABAP/HANA, UX/Automation) + top-10 tag filters (session 18, Codex)
+- O1-A: Blog filter UI on /blogs — topic filter pills with counts above "Start Here" section (session 20) ✅
 - O1-B: /certifications page — all 69, filterable by track (All / AI / SAP / OpenSAP / Third-party); linked from /resume and /learning (session 18, Codex)
 - O1-F HIGH: DyFlex role → 'Senior SAP Technical Consultant', CBA role → 'Development Architect', Stockland + 'Analysis for Office' — SQL run in Supabase (session 18)
 - Security hardening — middleware auth, /access login page, httpOnly cookie, internal API Bearer headers (session 18, Codex)
@@ -504,13 +504,14 @@ This is the master dev task list. Always update this when a task is done. This s
 - projects.period column added — free-text date ranges (session 19)
 - All 24 MDX blog posts migrated from SAP Community via Codex (session 19)
 - 24/24 blogs verified via scripts/verify-blogs.mjs (session 19)
+- O1-C: Re-embedded resume chunks — 110 chunks now live (session 19b)
+- O1-E: Projects confirmed matching PDF exactly (session 19b)
+- O1-F MED: Analysis for Office added to Stockland project technologies (session 19b)
+- O1-F DECISIONS: All resolved (session 19b) — TechEd speaker confirmed + links to blog-18; Stockland covered via period field; SAP Labs sub-projects bundled in experience + individual project rows; MCP folded into CBA project; Patent has own /patent page, no projects row needed
+- O1-A: /blogs topic filter pills redesigned — single pill row above "Start Here", no heading, counts on each pill, "View all AI+SAP posts" link removed (session 20)
 
 #### Pending ⬜
-- O1-C: Re-embed resume chunks after skills update (chatbot uses stale AI skills data)
 - O1-D: Profile completeness score widget on dashboard
-- O1-E: Confirm projects in Supabase match CV exactly
-- O1-F MED: Stockland project technologies — add 'Analysis for Office' (SQL not yet run)
-- O1-F DECISIONS NEEDED: TechEd speaker in proof_points (verify/remove); Stockland second stint Apr–Nov 2018 (add or skip?); SAP Labs 4 sub-projects bundle vs split; MCP standalone vs fold into CBA; Patent as project row?
 
 ---
 
@@ -843,7 +844,7 @@ This is the master dev task list. Always update this when a task is done. This s
 78. ✅ Schema.org JSON-LD on `/resume`; SEO metadata on all public pages
 79. ✅ `getCanonicalToSlugMap()` — bridges Supabase SAP Community URLs to local MDX slugs for cross-linking
 80. ✅ Dashboard "Demo" label + explanatory intro — "Live Prototype" banner with "AI Job Dashboard Demo" heading and explanatory paragraph
-81. ⬜ Blog categories / filter UI on `/blogs`
+81. ✅ Blog categories / filter UI on `/blogs` — topic pills with counts above Start Here (session 20)
 
 ### Phase 14 — Content & Data
 82. ✅ AI Skills taxonomy — updated in Supabase (see item 104)

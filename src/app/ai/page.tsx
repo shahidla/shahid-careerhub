@@ -5,6 +5,7 @@ import {
   getSkills,
   getBlogs,
 } from '@/lib/db'
+import { getCanonicalToSlugMap } from '@/lib/blogs'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,6 +45,7 @@ export default async function AiPage() {
 
   const doneCount = AI_BUILT.filter((r) => r.done).length
   const totalCount = AI_BUILT.length
+  const canonicalToSlug = getCanonicalToSlugMap()
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
@@ -189,21 +191,29 @@ export default async function AiPage() {
       <section id="writing">
         <h2 className="section-heading">AI Writing — SAP Community</h2>
         <ul className="mt-4 space-y-3">
-          {blogs.map((blog) => (
-            <li key={blog.id} className="flex gap-3 items-start">
-              <span className="text-accent-purple mt-1 shrink-0">▸</span>
-              <div>
-                <a href={blog.url} target="_blank" rel="noopener noreferrer" className="text-sm text-accent-purple hover:underline font-medium">
-                  {blog.title}
-                </a>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {blog.tags.map((tag) => (
-                    <span key={tag} className="tag-sm !bg-accent-purple/10 !text-accent-purple !border-accent-purple/20">{tag}</span>
-                  ))}
+          {blogs.map((blog) => {
+            const slug = canonicalToSlug[blog.url]
+            return (
+              <li key={blog.id} className="flex gap-3 items-start">
+                <span className="text-accent-purple mt-1 shrink-0">▸</span>
+                <div>
+                  <a
+                    href={slug ? `/blogs/${slug}` : blog.url}
+                    target={slug ? undefined : '_blank'}
+                    rel={slug ? undefined : 'noopener noreferrer'}
+                    className="text-sm text-accent-purple hover:text-purple-400 transition-colors font-medium"
+                  >
+                    {blog.title}
+                  </a>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {blog.tags.map((tag) => (
+                      <span key={tag} className="tag-sm !bg-accent-purple/10 !text-accent-purple !border-accent-purple/20">{tag}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
       </section>
 
