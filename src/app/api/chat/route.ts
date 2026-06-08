@@ -246,7 +246,7 @@ async function streamOpenAI(messages: Message[], systemPrompt: string, traceId: 
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4.1-nano',
       max_tokens: 1024,
       stream: true,
       stream_options: { include_usage: true },
@@ -284,9 +284,9 @@ async function streamOpenAI(messages: Message[], systemPrompt: string, traceId: 
         } catch { /* skip malformed lines */ }
       }
     }
-    push('\n\n_via GPT-4o mini_')
+    push('\n\n_via GPT-4.1 nano_')
     createGeneration({
-      traceId, name: 'chat', model: 'gpt-4o-mini',
+      traceId, name: 'chat', model: 'gpt-4.1-nano',
       input: messages, output: fullOutput,
       startTime, endTime: new Date().toISOString(),
       promptTokens: inputTokens, completionTokens: outputTokens,
@@ -330,23 +330,23 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    if (ANTHROPIC_ENABLED && ANTHROPIC_KEY) {
-      return await streamAnthropic(messages, systemPrompt, traceId)
+    if (OPENAI_ENABLED && OPENAI_KEY) {
+      return await streamOpenAI(messages, systemPrompt, traceId)
     }
-    if (!OPENAI_ENABLED || !OPENAI_KEY) throw new Error('No enabled provider')
-    return await streamOpenAI(messages, systemPrompt, traceId)
+    if (!ANTHROPIC_ENABLED || !ANTHROPIC_KEY) throw new Error('No enabled provider')
+    return await streamAnthropic(messages, systemPrompt, traceId)
   } catch (err) {
-    console.error('Primary provider failed, falling back to OpenAI:', err)
-    if (!OPENAI_ENABLED || !OPENAI_KEY) {
+    console.error('Primary provider failed, falling back to Anthropic:', err)
+    if (!ANTHROPIC_ENABLED || !ANTHROPIC_KEY) {
       return NextResponse.json(
         { content: 'Something went wrong. Please try again.' },
         { status: 200 },
       )
     }
     try {
-      return await streamOpenAI(messages, systemPrompt, traceId)
+      return await streamAnthropic(messages, systemPrompt, traceId)
     } catch (err2) {
-      console.error('OpenAI also failed:', err2)
+      console.error('Anthropic also failed:', err2)
       return NextResponse.json(
         { content: 'Something went wrong. Please try again.' },
         { status: 200 },

@@ -27,6 +27,26 @@ Impact: ${project.impact}
 Technologies: ${project.technologies.join(', ')}
 AI project: ${project.is_ai ? 'Yes' : 'No'}`
 
+  if (OPENAI_KEY) {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${OPENAI_KEY}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-nano',
+        max_tokens: 256,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      return data.choices[0].message.content.trim()
+    }
+    console.error('OpenAI failed, falling back to Anthropic:', await res.text())
+  }
+
   if (ANTHROPIC_KEY) {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -41,29 +61,9 @@ AI project: ${project.is_ai ? 'Yes' : 'No'}`
         messages: [{ role: 'user', content: prompt }],
       }),
     })
-    if (res.ok) {
-      const data = await res.json()
-      return data.content[0].text.trim()
-    }
-    console.error('Anthropic failed, falling back to OpenAI:', await res.text())
-  }
-
-  if (OPENAI_KEY) {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${OPENAI_KEY}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        max_tokens: 256,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    })
-    if (!res.ok) throw new Error(`OpenAI failed: ${await res.text()}`)
+    if (!res.ok) throw new Error(`Anthropic failed: ${await res.text()}`)
     const data = await res.json()
-    return data.choices[0].message.content.trim()
+    return data.content[0].text.trim()
   }
 
   throw new Error('No LLM API key configured')

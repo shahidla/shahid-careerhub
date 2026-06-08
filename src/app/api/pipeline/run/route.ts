@@ -23,7 +23,7 @@ type Job = {
 async function getTopJobs(): Promise<Job[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return []
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/jobs?select=title,company,location,url,match_score,match_reasoning,source&match_score=gte.60&status=eq.new&order=match_score.desc&limit=10`,
+    `${SUPABASE_URL}/rest/v1/jobs?select=title,company,location,url,match_score,match_reasoning,source&match_score=gte.60&status=eq.new&order=fetched_at.desc,match_score.desc&limit=10`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   )
   if (!res.ok) return []

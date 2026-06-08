@@ -196,7 +196,7 @@ ${resume.slice(0, 4000)}`
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.1-nano',
         max_tokens: 4096,
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
         response_format: { type: 'json_object' },
@@ -211,18 +211,18 @@ ${resume.slice(0, 4000)}`
   let usedModel = ''
   const startTime = new Date().toISOString()
 
-  if (ANTHROPIC_ENABLED && ANTHROPIC_KEY) {
+  if (OPENAI_ENABLED && OPENAI_KEY) {
     try {
-      raw = await callLLM(ANTHROPIC_KEY, 'anthropic')
-      usedModel = 'claude-haiku-4-5-20251001'
+      raw = await callLLM(OPENAI_KEY, 'openai')
+      usedModel = 'gpt-4.1-nano'
     } catch {
-      console.error('Anthropic failed, falling back to OpenAI')
+      console.error('OpenAI failed, falling back to Anthropic')
     }
   }
 
-  if (!raw && OPENAI_ENABLED && OPENAI_KEY) {
-    raw = await callLLM(OPENAI_KEY, 'openai')
-    usedModel = 'gpt-4o-mini'
+  if (!raw && ANTHROPIC_ENABLED && ANTHROPIC_KEY) {
+    raw = await callLLM(ANTHROPIC_KEY, 'anthropic')
+    usedModel = 'claude-haiku-4-5-20251001'
   }
 
   if (!raw) throw new Error('No LLM API key configured or all providers disabled')

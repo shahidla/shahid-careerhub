@@ -142,7 +142,10 @@ function JobCard({ job, index }: { job: Job; index: number }) {
       )}
 
       <div className="mt-4 flex items-center justify-between border-t border-surface-300/20 pt-3">
-        <span className="text-xs text-gray-500">{timeAgo(getJobDate(job))}</span>
+        <span className="text-xs text-gray-500">
+          Fetched {timeAgo(job.fetched_at)}
+          {job.posted_at && <span className="text-gray-600"> · Posted {timeAgo(job.posted_at)}</span>}
+        </span>
         <div className="flex gap-1.5">
           {status === 'new' && (
             <>

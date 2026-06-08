@@ -276,7 +276,7 @@ ${jobList}`
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 4096, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
+        body: JSON.stringify({ model: 'gpt-4.1-nano', max_tokens: 4096, messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' } }),
       })
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
@@ -285,11 +285,11 @@ ${jobList}`
   }
 
   let raw = ''
-  if (ANTHROPIC_KEY) {
-    try { raw = await callLLM(ANTHROPIC_KEY, 'anthropic') } catch { console.error('Anthropic batch score failed, falling back to OpenAI') }
+  if (OPENAI_KEY) {
+    try { raw = await callLLM(OPENAI_KEY, 'openai') } catch { console.error('OpenAI batch score failed, falling back to Anthropic') }
   }
-  if (!raw && OPENAI_KEY) {
-    raw = await callLLM(OPENAI_KEY, 'openai')
+  if (!raw && ANTHROPIC_KEY) {
+    raw = await callLLM(ANTHROPIC_KEY, 'anthropic')
   }
   if (!raw) throw new Error('No LLM API key configured')
 
