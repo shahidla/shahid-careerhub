@@ -18,12 +18,13 @@ type Job = {
   match_score: number | null
   match_reasoning: string | null
   source: string
+  fetched_at: string
 }
 
-async function getTopJobs(): Promise<Job[]> {
+async function getFetchedJobs(since: string): Promise<Job[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return []
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/jobs?select=title,company,location,url,match_score,match_reasoning,source&match_score=gte.60&status=eq.new&order=fetched_at.desc,match_score.desc&limit=10`,
+    `${SUPABASE_URL}/rest/v1/jobs?select=title,company,location,url,match_score,match_reasoning,source,fetched_at&fetched_at=gte.${since}&order=fetched_at.desc,match_score.desc`,
     { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
   )
   if (!res.ok) return []
@@ -73,20 +74,21 @@ async function run() {
   }
 }
 
-async function notifyTelegram(fetched: number, scored: number) {
+async function notifyTelegram(fetched: number, scored: number, since: string) {
   if (!TELEGRAM_TOKEN || !TELEGRAM_CHAT_ID) return
 
-  const jobs = await getTopJobs()
+  const jobs = await getFetchedJobs(since)
   let text = `Daily pipeline complete\nFetched: ${fetched} | Scored: ${scored}\n`
 
   if (jobs.length === 0) {
-    text += '\nNo high-match jobs today (score >= 60).'
+    text += '\nNo new jobs fetched today.'
   } else {
-    text += `\nTop ${jobs.length} high-match jobs:\n`
+    text += `\n${jobs.length} new job${jobs.length === 1 ? '' : 's'} fetched:\n`
     jobs.forEach((job, index) => {
-      const score = job.match_score ?? 0
+      const score = job.match_score != null ? `${job.match_score}` : 'unscored'
+      const date = new Date(job.fetched_at).toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' })
       const reasoning = job.match_reasoning ? `\n   ${job.match_reasoning.slice(0, 120)}` : ''
-      text += `\n${index + 1}. ${job.title} - ${score}\n   ${job.company}${reasoning}\n   ${job.url}\n`
+      text += `\n${index + 1}. ${job.title} - ${score}\n   ${job.company} · ${date}${reasoning}\n   ${job.url}\n`
     })
     text += '\nView dashboard: https://shahid-careerhub.vercel.app/dashboard'
   }
@@ -109,8 +111,9 @@ export async function POST() {
 }
 
 export async function GET() {
+  const runStartTime = new Date().toISOString()
   const result = await run()
   if ('error' in result) return NextResponse.json(result, { status: 500 })
-  await notifyTelegram(result.fetched, result.scored)
+  await notifyTelegram(result.fetched, result.scored, runStartTime)
   return NextResponse.json(result)
 }
