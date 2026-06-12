@@ -61,7 +61,7 @@ export default function PatentPage() {
           href="https://patents.google.com/patent/US10304013B2/en"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center text-sm font-medium text-accent-blue hover:text-blue-400 transition-colors"
+          className="inline-flex items-center text-sm font-medium text-accent-blue hover:text-accent-blue/80 transition-colors"
         >
           View on Google Patents →
         </a>

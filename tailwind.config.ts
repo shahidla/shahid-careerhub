@@ -21,10 +21,10 @@ module.exports = {
           400: '#2f2f40',
         },
         accent: {
-          blue: '#3b82f6',
-          purple: '#8b5cf6',
-          cyan: '#06b6d4',
-          emerald: '#10b981',
+          blue: '#60a5fa',
+          purple: '#818cf8',
+          cyan: '#5eead4',
+          emerald: '#34d399',
         },
       },
       animation: {

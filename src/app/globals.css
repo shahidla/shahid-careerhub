@@ -86,7 +86,7 @@
     content: '';
     @apply absolute inset-0 rounded-2xl;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(139,92,246,0.3), rgba(6,182,212,0.2));
+    background: linear-gradient(135deg, rgba(96,165,250,0.24), rgba(129,140,248,0.22), rgba(94,234,212,0.18));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -94,9 +94,9 @@
 
   /* ── Primary button ── */
   .btn-primary {
-    @apply inline-flex items-center gap-2 bg-accent-purple hover:bg-purple-500 text-white
+    @apply inline-flex items-center gap-2 bg-accent-purple hover:bg-accent-purple/80 text-white
            font-medium px-5 py-2.5 rounded-xl transition-all duration-200
-           shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40
+           shadow-lg shadow-[0_0_24px_rgba(129,140,248,0.18)] hover:shadow-[0_0_28px_rgba(129,140,248,0.26)]
            hover:-translate-y-0.5 active:translate-y-0;
   }
 
@@ -140,7 +140,7 @@
 
   .blog-prose a {
     @apply font-medium text-accent-blue underline decoration-accent-blue/30 underline-offset-4
-           transition-colors hover:text-blue-400;
+           transition-colors hover:text-accent-blue/80;
   }
 
   .blog-prose strong {

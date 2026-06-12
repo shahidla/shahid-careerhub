@@ -190,7 +190,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                   ))}
                 </div>
                 <div className="mt-4 flex flex-wrap gap-4 text-sm">
-                  <a href={`/blogs/${blog.slug}`} className="font-medium text-accent-blue hover:text-blue-400 transition-colors">
+                  <a href={`/blogs/${blog.slug}`} className="font-medium text-accent-blue hover:text-accent-blue/80 transition-colors">
                     Read post
                   </a>
                   <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-300 transition-colors">

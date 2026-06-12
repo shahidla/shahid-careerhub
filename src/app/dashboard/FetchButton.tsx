@@ -82,7 +82,7 @@ export default function FetchButton() {
         <button
           onClick={handleFetch}
           disabled={loading || rescoring}
-          className="text-sm bg-accent-blue hover:bg-blue-500 disabled:bg-surface-300 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+          className="text-sm bg-accent-blue hover:bg-accent-blue/80 disabled:bg-surface-300 text-white font-medium px-4 py-2 rounded-lg transition-colors"
         >
           {loading ? 'Fetching...' : 'Fetch now'}
         </button>

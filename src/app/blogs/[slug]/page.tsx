@@ -81,7 +81,7 @@ export default function BlogPage({ params }: Props) {
             href={blog.canonical}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-sm font-medium text-accent-blue hover:text-blue-400 transition-colors"
+            className="inline-flex items-center text-sm font-medium text-accent-blue hover:text-accent-blue/80 transition-colors"
           >
             View original on SAP Community
           </a>
@@ -95,7 +95,7 @@ export default function BlogPage({ params }: Props) {
           <a href="/blogs" className="font-medium text-gray-500 hover:text-gray-200 transition-colors">
             Back to all blogs
           </a>
-          <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:text-blue-400 transition-colors">
+          <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:text-accent-blue/80 transition-colors">
             View original on SAP Community
           </a>
         </div>

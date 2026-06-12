@@ -27,7 +27,7 @@ export default async function LearningPage() {
           {total} completed courses and certifications covering SAP HANA, BTP, ABAP, AI/ML, Fiori, Kyma, cloud-native development, and more.
         </p>
         <div className="mt-4">
-          <a href="/certifications" className="text-sm font-medium text-accent-blue hover:text-blue-400 transition-colors">
+          <a href="/certifications" className="text-sm font-medium text-accent-blue hover:text-accent-blue/80 transition-colors">
             Prefer the recruiter-friendly view? Open the full certifications index →
           </a>
         </div>

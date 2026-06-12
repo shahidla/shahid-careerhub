@@ -60,7 +60,7 @@ export default async function AiPage() {
           { href: '#writing', label: 'Writing' },
           { href: '#built', label: 'AI Concepts Built' },
         ].map(({ href, label }) => (
-          <a key={href} href={href} className="text-accent-purple hover:text-purple-400 hover:underline px-1 transition-colors">{label}</a>
+          <a key={href} href={href} className="text-accent-purple hover:text-accent-purple/80 hover:underline px-1 transition-colors">{label}</a>
         ))}
       </nav>
 
@@ -201,7 +201,7 @@ export default async function AiPage() {
                     href={slug ? `/blogs/${slug}` : blog.url}
                     target={slug ? undefined : '_blank'}
                     rel={slug ? undefined : 'noopener noreferrer'}
-                    className="text-sm text-accent-purple hover:text-purple-400 transition-colors font-medium"
+                    className="text-sm text-accent-purple hover:text-accent-purple/80 transition-colors font-medium"
                   >
                     {blog.title}
                   </a>

@@ -77,7 +77,7 @@ export default async function ResumePage() {
       <header className="border-b border-surface-300/30 px-6 py-3 flex items-center gap-6 text-sm sticky top-[49px] bg-surface/80 backdrop-blur-xl z-10">
         <span className="text-gray-200 font-medium">SAP Profile</span>
         <div className="ml-auto flex items-center gap-4">
-          <a href="/chat" className="bg-accent-blue hover:bg-blue-500 text-white text-xs font-medium px-4 py-1.5 rounded-full transition-all duration-200 shadow-lg shadow-blue-500/20">
+          <a href="/chat" className="bg-accent-blue hover:bg-accent-blue/80 text-white text-xs font-medium px-4 py-1.5 rounded-full transition-all duration-200 shadow-lg shadow-accent-blue/20">
             Chat with my resume
           </a>
         </div>
@@ -97,7 +97,7 @@ export default async function ResumePage() {
               ))}
             </ul>
             <div className="mt-8 pt-6 border-t border-surface-300/20 space-y-2.5">
-              <a href="/chat" className="block text-xs font-medium text-accent-purple hover:text-purple-400 transition-colors">Chat with my resume</a>
+              <a href="/chat" className="block text-xs font-medium text-accent-purple hover:text-accent-purple/80 transition-colors">Chat with my resume</a>
               <a href={`mailto:${profile.contact.email}`} className="block text-xs text-gray-500 hover:text-gray-300 truncate transition-colors">{profile.contact.email}</a>
               <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-500 hover:text-gray-300 transition-colors">LinkedIn</a>
               <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="block text-xs text-gray-500 hover:text-gray-300 transition-colors">GitHub</a>

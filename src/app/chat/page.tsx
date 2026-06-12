@@ -82,8 +82,8 @@ export default function ChatPage() {
     <div className="flex flex-col min-h-[calc(100vh-49px)]">
       <header className="border-b border-surface-300/30 px-6 py-3 flex items-center gap-4 text-sm sticky top-[49px] bg-surface/80 backdrop-blur-xl z-20">
         <a href="/" className="text-gray-400 hover:text-gray-200 transition-colors">Home</a>
-        <a href="/resume" className="text-accent-blue hover:text-blue-400 transition-colors">SAP Profile {'->'}</a>
-        <a href="/ai" className="text-accent-purple hover:text-purple-400 transition-colors">AI Portfolio {'->'}</a>
+        <a href="/resume" className="text-accent-blue hover:text-accent-blue/80 transition-colors">SAP Profile {'->'}</a>
+        <a href="/ai" className="text-accent-purple hover:text-accent-purple/80 transition-colors">AI Portfolio {'->'}</a>
         <span className="ml-auto text-gray-100 font-medium">Resume Chat</span>
       </header>
 
@@ -174,7 +174,7 @@ export default function ChatPage() {
             <button
               onClick={() => send(input)}
               disabled={!input.trim() || loading}
-              className="shrink-0 bg-accent-blue hover:bg-blue-500 disabled:bg-surface-300 disabled:text-gray-500 text-white text-sm font-medium px-5 py-3 rounded-xl transition-all duration-200"
+              className="shrink-0 bg-accent-blue hover:bg-accent-blue/80 disabled:bg-surface-300 disabled:text-gray-500 text-white text-sm font-medium px-5 py-3 rounded-xl transition-all duration-200"
             >
               Send
             </button>

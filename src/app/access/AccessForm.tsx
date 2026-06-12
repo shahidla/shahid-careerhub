@@ -46,7 +46,7 @@ export default function AccessForm({ nextPath }: { nextPath: string }) {
           setError(null)
         }}
         placeholder="Access password"
-        className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent-blue ${
           error ? 'border-red-300' : 'border-gray-200'
         }`}
         autoFocus
@@ -55,7 +55,7 @@ export default function AccessForm({ nextPath }: { nextPath: string }) {
       <button
         type="submit"
         disabled={!password || loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white text-sm font-medium px-4 py-3 rounded-xl transition-colors"
+        className="w-full bg-accent-blue hover:bg-accent-blue/80 disabled:bg-surface-300 text-white text-sm font-medium px-4 py-3 rounded-xl transition-colors"
       >
         {loading ? 'Checking...' : 'Continue'}
       </button>
