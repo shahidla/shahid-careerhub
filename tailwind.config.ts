@@ -19,6 +19,7 @@ module.exports = {
           200: '#eff6ff',
           300: '#e2e8f0',
           400: '#cbd5e1',
+          500: '#94a3b8',
         },
         text: {
           DEFAULT: '#0f172a',
