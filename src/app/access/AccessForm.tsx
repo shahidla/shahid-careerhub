@@ -47,7 +47,7 @@ export default function AccessForm({ nextPath }: { nextPath: string }) {
         }}
         placeholder="Access password"
         className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent-blue ${
-          error ? 'border-red-300' : 'border-gray-200'
+          error ? 'border-red-300' : 'border-surface-300/50'
         }`}
         autoFocus
       />

@@ -12,8 +12,8 @@ export default function PatentPage() {
 
       <section className="space-y-4">
         <p className="text-sm font-semibold text-accent-purple uppercase tracking-widest animate-fade-in">Intellectual Property</p>
-        <h1 className="text-4xl font-display font-bold tracking-tight text-gray-100 animate-fade-in-up">Granted Patent</h1>
-        <p className="text-lg text-gray-400 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+        <h1 className="text-4xl font-display font-bold tracking-tight text-text animate-fade-in-up">Granted Patent</h1>
+        <p className="text-lg text-text-subtle animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           US patent granted for a real-time speech and predictive analytics accessibility application built on SAP HANA.
         </p>
       </section>
@@ -25,35 +25,35 @@ export default function PatentPage() {
             href="https://patents.google.com/patent/US10304013B2/en"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-2xl font-display font-bold text-gray-100 hover:text-accent-blue transition-colors"
+            className="text-2xl font-display font-bold text-text hover:text-accent-blue transition-colors"
           >
             US10304013B2
           </a>
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Title</p>
-          <p className="text-gray-100 font-medium leading-relaxed">
+          <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest">Title</p>
+          <p className="text-text font-medium leading-relaxed">
             Real-Time Speech Processing and Predictive Analytics for Accessibility
           </p>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Inventor</p>
-            <p className="text-gray-200">Shahid Mohammed Syed</p>
+            <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest">Inventor</p>
+            <p className="text-text-muted">Shahid Mohammed Syed</p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Assignee</p>
-            <p className="text-gray-200">SAP SE</p>
+            <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest">Assignee</p>
+            <p className="text-text-muted">SAP SE</p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Status</p>
+            <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest mb-1.5">Status</p>
             <span className="inline-block text-xs font-semibold bg-accent-emerald/20 text-accent-emerald px-2 py-0.5 rounded border border-accent-emerald/30">Granted</span>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Grant Date</p>
-            <p className="text-gray-200">29 May 2018</p>
+            <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest">Grant Date</p>
+            <p className="text-text-muted">29 May 2018</p>
           </div>
         </div>
 
@@ -68,8 +68,8 @@ export default function PatentPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">What it does</h2>
-        <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
+        <h2 className="text-xs font-semibold text-text-subtle uppercase tracking-[0.15em]">What it does</h2>
+        <div className="space-y-3 text-sm text-text-subtle leading-relaxed">
           <p>
             The patent covers a system that enables people with physical disabilities to interact with complex enterprise
             software — specifically SAP HANA — using only their voice, with no mouse or keyboard required.
@@ -87,8 +87,8 @@ export default function PatentPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">Origin</h2>
-        <p className="text-sm text-gray-300 leading-relaxed">
+        <h2 className="text-xs font-semibold text-text-subtle uppercase tracking-[0.15em]">Origin</h2>
+        <p className="text-sm text-text-subtle leading-relaxed">
           Built at the SAP <em>What the Hack 2.0!</em> hackathon at SAP Labs India. The project was a finalist at the event
           and was subsequently filed as a patent by SAP SE, with Shahid named as inventor.
           Related work from this period also won the{' '}
@@ -97,7 +97,7 @@ export default function PatentPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.15em]">Technologies</h2>
+        <h2 className="text-xs font-semibold text-text-subtle uppercase tracking-[0.15em]">Technologies</h2>
         <div className="flex flex-wrap gap-2">
           {['SAP HANA', 'Predictive Analytics', 'Speech Recognition', 'Accessibility', 'Machine Learning', 'SAP UI5'].map((t) => (
             <span key={t} className="tag">{t}</span>

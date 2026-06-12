@@ -22,8 +22,8 @@ export default async function DashboardPage() {
       <div className="max-w-4xl mx-auto px-6">
         <div className="mb-8 glass-card border-accent-blue/20 bg-accent-blue/[0.02] p-6 animate-fade-in">
           <p className="text-xs font-semibold text-accent-blue uppercase tracking-widest mb-1.5">Live Prototype</p>
-          <h1 className="text-xl font-display font-bold text-gray-100">AI Job Dashboard Demo</h1>
-          <p className="mt-2 text-sm text-gray-400 max-w-2xl leading-relaxed">
+          <h1 className="text-xl font-display font-bold text-text">AI Job Dashboard Demo</h1>
+          <p className="mt-2 text-sm text-text-subtle max-w-2xl leading-relaxed">
             This is a live prototype showing how job feeds, AI-assisted scoring, and match
             reasoning can be used to identify relevant SAP + AI opportunities.
           </p>
@@ -31,8 +31,8 @@ export default async function DashboardPage() {
 
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-display font-bold text-gray-100">Job Feed</h2>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-gray-500">
+            <h2 className="text-2xl font-display font-bold text-text">Job Feed</h2>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-text-subtle">
               <span>{jobs.length} jobs found</span>
               {newCount > 0 && <span>{newCount} new to review</span>}
               {savedCount > 0 && <span>{savedCount} saved</span>}

@@ -75,7 +75,7 @@ export default function FetchButton() {
         <button
           onClick={handleRescore}
           disabled={loading || rescoring}
-          className="text-sm bg-surface-200 hover:bg-surface-300 disabled:opacity-50 text-gray-300 border border-surface-300/50 font-medium px-4 py-2 rounded-lg transition-colors"
+          className="text-sm bg-surface-200 hover:bg-surface-300 disabled:opacity-50 text-text-subtle border border-surface-300/50 font-medium px-4 py-2 rounded-lg transition-colors"
         >
           {rescoring ? 'Re-scoring...' : 'Re-score all'}
         </button>
@@ -87,7 +87,7 @@ export default function FetchButton() {
           {loading ? 'Fetching...' : 'Fetch now'}
         </button>
       </div>
-      {status && <span className="text-xs text-gray-500">{status}</span>}
+      {status && <span className="text-xs text-text-subtle">{status}</span>}
     </div>
   )
 }

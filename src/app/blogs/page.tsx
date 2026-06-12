@@ -80,8 +80,8 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
       <section className="space-y-4 animate-fade-in">
         <p className="text-sm font-semibold uppercase tracking-widest text-accent-purple">Technical Writing</p>
         <div className="max-w-3xl space-y-3">
-          <h1 className="text-4xl font-display font-bold tracking-tight text-gray-100">Blog</h1>
-          <p className="text-lg text-gray-400">
+          <h1 className="text-4xl font-display font-bold tracking-tight text-text">Blog</h1>
+          <p className="text-lg text-text-subtle">
             Articles on SAP, AI engineering, integration, and hands-on product experiments, originally published on SAP Community.
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-sm font-semibold uppercase tracking-widest text-accent-blue">Start Here</p>
-              <h2 className="text-2xl font-display font-bold tracking-tight text-gray-100">AI + SAP Highlights</h2>
+              <h2 className="text-2xl font-display font-bold tracking-tight text-text">AI + SAP Highlights</h2>
             </div>
             <a href={buildFilterHref({ topic: 'ai-sap' })} className="text-sm font-medium text-accent-blue hover:underline">
               View all AI + SAP posts
@@ -137,13 +137,13 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                       )
                     })}
                 </div>
-                <h3 className="mt-3 text-lg font-semibold leading-snug text-gray-100">
+                <h3 className="mt-3 text-lg font-semibold leading-snug text-text">
                   <a href={`/blogs/${blog.slug}`} className="hover:text-accent-blue transition-colors">
                     {blog.title}
                   </a>
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-gray-400">{blog.excerpt}</p>
-                <div className="mt-4 text-xs text-gray-500">{formatDate(blog.published_at)}</div>
+                <p className="mt-2 text-sm leading-relaxed text-text-subtle">{blog.excerpt}</p>
+                <div className="mt-4 text-xs text-text-subtle">{formatDate(blog.published_at)}</div>
               </article>
             ))}
           </div>
@@ -153,8 +153,8 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
       <section className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
         {filteredBlogs.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-surface-300/40 bg-surface-100/50 p-8 text-center">
-            <h2 className="text-xl font-semibold text-gray-100">No posts match this filter yet.</h2>
-            <p className="mt-2 text-sm text-gray-400">Try another topic or clear the filters to see the full archive.</p>
+            <h2 className="text-xl font-semibold text-text">No posts match this filter yet.</h2>
+            <p className="mt-2 text-sm text-text-subtle">Try another topic or clear the filters to see the full archive.</p>
             <a href="/blogs" className="mt-4 inline-block text-sm font-medium text-accent-blue hover:underline">
               Clear filters
             </a>
@@ -177,13 +177,13 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                     )
                   })}
                 </div>
-                <a href={`/blogs/${blog.slug}`} className="mt-3 block text-lg font-semibold leading-snug text-gray-100 hover:text-accent-blue transition-colors">
+                <a href={`/blogs/${blog.slug}`} className="mt-3 block text-lg font-semibold leading-snug text-text hover:text-accent-blue transition-colors">
                   {blog.title}
                 </a>
-                <div className="mt-1 text-sm text-gray-500">
+                <div className="mt-1 text-sm text-text-subtle">
                   {blog.author} | {formatDate(blog.published_at)}
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-gray-400">{blog.excerpt}</p>
+                <p className="mt-2 text-sm leading-relaxed text-text-subtle">{blog.excerpt}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {blog.tags.map((tag) => (
                     <span key={tag} className="tag-sm">{tag}</span>
@@ -193,7 +193,7 @@ export default function BlogsPage({ searchParams }: BlogsPageProps) {
                   <a href={`/blogs/${blog.slug}`} className="font-medium text-accent-blue hover:text-accent-blue/80 transition-colors">
                     Read post
                   </a>
-                  <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-300 transition-colors">
+                  <a href={blog.canonical} target="_blank" rel="noopener noreferrer" className="text-text-subtle hover:text-text-subtle transition-colors">
                     Originally on SAP Community
                   </a>
                 </div>

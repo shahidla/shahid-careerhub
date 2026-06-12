@@ -81,11 +81,11 @@ export default async function CertificationsPage({ searchParams }: Certification
       <section className="space-y-4">
         <p className="text-sm font-semibold uppercase tracking-widest text-accent-purple">Credentials</p>
         <div className="max-w-3xl space-y-3">
-          <h1 className="text-4xl font-display font-bold tracking-tight text-gray-100">Certifications</h1>
-          <p className="text-lg text-gray-400">
+          <h1 className="text-4xl font-display font-bold tracking-tight text-text">Certifications</h1>
+          <p className="text-lg text-text-subtle">
             {all.length} credentials across SAP, AI, engineering, and continuous learning.
           </p>
-          <p className="text-sm text-gray-500">{getTrackDescription(activeTrack)}</p>
+          <p className="text-sm text-text-subtle">{getTrackDescription(activeTrack)}</p>
         </div>
       </section>
 
@@ -121,19 +121,19 @@ export default async function CertificationsPage({ searchParams }: Certification
                       href={certification.credential_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-sm font-semibold leading-snug text-gray-100 hover:text-accent-blue transition-colors"
+                      className="block text-sm font-semibold leading-snug text-text hover:text-accent-blue transition-colors"
                     >
                       {certification.title}
                     </a>
                   ) : (
-                    <span className="block text-sm font-semibold leading-snug text-gray-100">{certification.title}</span>
+                    <span className="block text-sm font-semibold leading-snug text-text">{certification.title}</span>
                   )}
-                  <p className="mt-2 text-xs text-gray-500">{metaParts(certification).join(' · ')}</p>
+                  <p className="mt-2 text-xs text-text-subtle">{metaParts(certification).join(' · ')}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 shrink-0">
                   {certification.is_ai && <span className="tag-sm !bg-accent-purple/15 !text-accent-purple !border-accent-purple/20">AI</span>}
                   {certification.issuer === 'SAP' && <span className="tag-sm !bg-accent-blue/15 !text-accent-blue !border-accent-blue/20">SAP</span>}
-                  {certification.issuer === 'OpenSAP' && <span className="tag-sm !bg-surface-200 !text-gray-300">OpenSAP</span>}
+                  {certification.issuer === 'OpenSAP' && <span className="tag-sm !bg-surface-200 !text-text-subtle">OpenSAP</span>}
                 </div>
               </div>
             </article>

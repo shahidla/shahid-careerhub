@@ -36,8 +36,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-surface text-gray-200 min-h-screen flex flex-col noise-bg">
+    <html lang="en">
+      <body className="bg-surface text-text min-h-screen flex flex-col noise-bg">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent-purple focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"

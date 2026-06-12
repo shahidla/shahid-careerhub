@@ -22,7 +22,7 @@ export default async function HomePage() {
         <h1 className="text-5xl md:text-6xl font-display font-extrabold tracking-tight leading-[1.1] animate-fade-in-up">
           <span className="gradient-text">Shahid M Syed</span>
         </h1>
-        <p className="mt-5 text-xl text-gray-400 max-w-2xl leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+        <p className="mt-5 text-xl text-text-subtle max-w-2xl leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
           SAP Development Architect with 19 years experience — now building
           AI systems with <span className="text-accent-purple">RAG</span>,{' '}
           <span className="text-accent-blue">agents</span>,{' '}
@@ -60,10 +60,10 @@ export default async function HomePage() {
             </div>
             <p className="text-xs font-semibold text-accent-blue uppercase tracking-widest">SAP Experience</p>
           </div>
-          <h2 className="text-base font-bold text-gray-100 group-hover:text-accent-blue transition-colors">
+          <h2 className="text-base font-bold text-text group-hover:text-accent-blue transition-colors">
             19 Years · Architect
           </h2>
-          <p className="mt-2 text-sm text-gray-400 leading-relaxed">
+          <p className="mt-2 text-sm text-text-subtle leading-relaxed">
             S/4HANA, ABAP, BTP, Fiori, Kyma — full development lifecycle.
           </p>
         </a>
@@ -77,10 +77,10 @@ export default async function HomePage() {
             </div>
             <p className="text-xs font-semibold text-accent-purple uppercase tracking-widest">AI Engineering</p>
           </div>
-          <h2 className="text-base font-bold text-gray-100 group-hover:text-accent-purple transition-colors">
+          <h2 className="text-base font-bold text-text group-hover:text-accent-purple transition-colors">
             RAG · Agents · MCP
           </h2>
-          <p className="mt-2 text-sm text-gray-400 leading-relaxed">
+          <p className="mt-2 text-sm text-text-subtle leading-relaxed">
             Hands-on AI systems — embeddings, pipelines, LLM integration on SAP BTP.
           </p>
         </a>
@@ -94,10 +94,10 @@ export default async function HomePage() {
             </div>
             <p className="text-xs font-semibold text-accent-cyan uppercase tracking-widest">Technical Writing</p>
           </div>
-          <h2 className="text-base font-bold text-gray-100 group-hover:text-accent-cyan transition-colors">
+          <h2 className="text-base font-bold text-text group-hover:text-accent-cyan transition-colors">
             {blogs.length} SAP Community Posts
           </h2>
-          <p className="mt-2 text-sm text-gray-400 leading-relaxed">
+          <p className="mt-2 text-sm text-text-subtle leading-relaxed">
             Event-driven architecture, AI workflows, BTP, HANA — published on SAP Community.
           </p>
         </a>
@@ -106,21 +106,21 @@ export default async function HomePage() {
       {/* ─── Quick Links ─── */}
       <section className="border-t border-surface-300/30 pt-10 relative">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-blue/20 to-transparent" />
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-[0.2em] mb-5">Explore</h2>
+        <h2 className="text-xs font-semibold text-text-subtle uppercase tracking-[0.2em] mb-5">Explore</h2>
         <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
-          <a href="/dashboard" className="text-gray-400 hover:text-accent-purple transition-colors duration-200 group">
+          <a href="/dashboard" className="text-text-subtle hover:text-accent-purple transition-colors duration-200 group">
             Dashboard Demo <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
-          <a href="/learning" className="text-gray-400 hover:text-accent-blue transition-colors duration-200 group">
+          <a href="/learning" className="text-text-subtle hover:text-accent-blue transition-colors duration-200 group">
             Learning &amp; Courses <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
-          <a href="https://www.linkedin.com/in/shahidmsyed/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent-cyan transition-colors duration-200 group">
+          <a href="https://www.linkedin.com/in/shahidmsyed/" target="_blank" rel="noopener noreferrer" className="text-text-subtle hover:text-accent-cyan transition-colors duration-200 group">
             LinkedIn <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
-          <a href="https://github.com/shahidla" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent-emerald transition-colors duration-200 group">
+          <a href="https://github.com/shahidla" target="_blank" rel="noopener noreferrer" className="text-text-subtle hover:text-accent-emerald transition-colors duration-200 group">
             GitHub <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
-          <a href={`mailto:${profile.contact.email}`} className="text-gray-400 hover:text-gray-200 transition-colors duration-200 group">
+          <a href={`mailto:${profile.contact.email}`} className="text-text-subtle hover:text-text-muted transition-colors duration-200 group">
             Email <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
         </div>

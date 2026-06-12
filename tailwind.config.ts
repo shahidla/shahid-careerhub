@@ -13,12 +13,17 @@ module.exports = {
       },
       colors: {
         surface: {
-          DEFAULT: '#0a0a0f',
-          50: '#111118',
-          100: '#16161f',
-          200: '#1e1e2a',
-          300: '#262635',
-          400: '#2f2f40',
+          DEFAULT: '#f8fafc',
+          50: '#ffffff',
+          100: '#f8fafc',
+          200: '#eff6ff',
+          300: '#e2e8f0',
+          400: '#cbd5e1',
+        },
+        text: {
+          DEFAULT: '#0f172a',
+          muted: '#475569',
+          subtle: '#64748b',
         },
         accent: {
           blue: '#60a5fa',

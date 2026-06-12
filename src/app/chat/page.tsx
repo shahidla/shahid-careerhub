@@ -81,17 +81,17 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-49px)]">
       <header className="border-b border-surface-300/30 px-6 py-3 flex items-center gap-4 text-sm sticky top-[49px] bg-surface/80 backdrop-blur-xl z-20">
-        <a href="/" className="text-gray-400 hover:text-gray-200 transition-colors">Home</a>
+        <a href="/" className="text-text-subtle hover:text-text-muted transition-colors">Home</a>
         <a href="/resume" className="text-accent-blue hover:text-accent-blue/80 transition-colors">SAP Profile {'->'}</a>
         <a href="/ai" className="text-accent-purple hover:text-accent-purple/80 transition-colors">AI Portfolio {'->'}</a>
-        <span className="ml-auto text-gray-100 font-medium">Resume Chat</span>
+        <span className="ml-auto text-text font-medium">Resume Chat</span>
       </header>
 
       <div className="border-b border-surface-300/20 px-6 py-4 bg-surface-50">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">Talking to</p>
-          <p className="text-base font-bold text-gray-100">Shahid M Syed · SAP Development Architect + AI Engineer</p>
-          <p className="text-sm text-gray-400 mt-0.5">19 years SAP · S/4HANA · ABAP on HANA · BTP · MCP · RAG · Agents</p>
+          <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest mb-1">Talking to</p>
+          <p className="text-base font-bold text-text">Shahid M Syed · SAP Development Architect + AI Engineer</p>
+          <p className="text-sm text-text-subtle mt-0.5">19 years SAP · S/4HANA · ABAP on HANA · BTP · MCP · RAG · Agents</p>
         </div>
       </div>
 
@@ -100,12 +100,12 @@ export default function ChatPage() {
           {messages.length === 0 && (
             <div className="space-y-6">
               <div className="text-center py-8">
-                <p className="text-gray-400 text-sm">
+                <p className="text-text-subtle text-sm">
                   Ask anything about Shahid&apos;s experience, skills, or paste a job description to get a match score.
                 </p>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Try asking</p>
+                <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest">Try asking</p>
                 {STARTERS.map((starter) => (
                   <button
                     key={starter}
@@ -135,7 +135,7 @@ export default function ChatPage() {
                 className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                   message.role === 'user'
                     ? 'bg-accent-blue text-white rounded-br-sm shadow-md shadow-accent-blue/10'
-                    : 'bg-surface-100 border border-surface-300/40 text-gray-200 rounded-bl-sm'
+                    : 'bg-surface-100 border border-surface-300/40 text-text-muted rounded-bl-sm'
                 }`}
               >
                 {message.content}
@@ -147,9 +147,9 @@ export default function ChatPage() {
             <div className="flex justify-start">
               <div className="bg-surface-100 border border-surface-300/40 rounded-2xl rounded-bl-sm px-4 py-3">
                 <span className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="w-1.5 h-1.5 bg-surface-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 bg-surface-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1.5 h-1.5 bg-surface-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </span>
               </div>
             </div>
@@ -169,17 +169,17 @@ export default function ChatPage() {
               onKeyDown={handleKeyDown}
               placeholder="Ask about experience, skills, or paste a job description..."
               rows={2}
-              className="flex-1 resize-none bg-surface-100 border border-surface-300/50 rounded-xl px-4 py-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-purple focus:border-transparent"
+              className="flex-1 resize-none bg-surface-100 border border-surface-300/50 rounded-xl px-4 py-3 text-sm text-text placeholder-text-subtle focus:outline-none focus:ring-2 focus:ring-accent-purple focus:border-transparent"
             />
             <button
               onClick={() => send(input)}
               disabled={!input.trim() || loading}
-              className="shrink-0 bg-accent-blue hover:bg-accent-blue/80 disabled:bg-surface-300 disabled:text-gray-500 text-white text-sm font-medium px-5 py-3 rounded-xl transition-all duration-200"
+              className="shrink-0 bg-accent-blue hover:bg-accent-blue/80 disabled:bg-surface-300 disabled:text-text-subtle text-white text-sm font-medium px-5 py-3 rounded-xl transition-all duration-200"
             >
               Send
             </button>
           </div>
-          <p className="mt-3 text-xs text-gray-500 text-center">
+          <p className="mt-3 text-xs text-text-subtle text-center">
             Built with Claude API, RAG, pgvector, and Next.js as part of the{' '}
             <a href="/ai" className="text-accent-purple hover:underline">AI Career Hub</a>
           </p>

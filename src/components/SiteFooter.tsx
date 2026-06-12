@@ -26,23 +26,23 @@ export default function SiteFooter() {
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex flex-wrap justify-between gap-10">
           <div>
-            <p className="font-display font-bold text-gray-100 text-lg tracking-tight">
+            <p className="font-display font-bold text-text text-lg tracking-tight">
               <span className="gradient-text-static">S</span>hahid M Syed
             </p>
-            <p className="text-sm text-gray-500 mt-1.5">SAP Development Architect · AI Engineer</p>
+            <p className="text-sm text-text-subtle mt-1.5">SAP Development Architect · AI Engineer</p>
           </div>
           <nav aria-label="Footer navigation">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Pages</p>
+            <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest mb-3">Pages</p>
             <ul className="flex flex-wrap gap-x-5 gap-y-2 list-none m-0 p-0">
               {FOOTER_LINKS.map(({ href, label }) => (
                 <li key={href}>
-                  <a href={href} className="text-sm text-gray-500 hover:text-gray-200 transition-colors duration-200">{label}</a>
+                  <a href={href} className="text-sm text-text-subtle hover:text-text-muted transition-colors duration-200">{label}</a>
                 </li>
               ))}
             </ul>
           </nav>
           <nav aria-label="Social links">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Connect</p>
+            <p className="text-xs font-semibold text-text-subtle uppercase tracking-widest mb-3">Connect</p>
             <ul className="flex flex-wrap gap-x-5 gap-y-2 list-none m-0 p-0">
               {SOCIAL_LINKS.map(({ href, label }) => (
                 <li key={href}>
@@ -50,7 +50,7 @@ export default function SiteFooter() {
                     href={href}
                     target={href.startsWith('http') ? '_blank' : undefined}
                     rel="noopener noreferrer"
-                    className="text-sm text-gray-500 hover:text-accent-purple transition-colors duration-200"
+                    className="text-sm text-text-subtle hover:text-accent-purple transition-colors duration-200"
                   >
                     {label}
                   </a>
@@ -60,8 +60,8 @@ export default function SiteFooter() {
           </nav>
         </div>
         <div className="mt-10 pt-6 border-t border-surface-300/20 flex items-center justify-between">
-          <p className="text-xs text-gray-600">© {new Date().getFullYear()} Shahid M Syed</p>
-          <p className="text-xs text-gray-700">Built with Next.js · Powered by AI</p>
+          <p className="text-xs text-text-subtle">© {new Date().getFullYear()} Shahid M Syed</p>
+          <p className="text-xs text-text-subtle">Built with Next.js · Powered by AI</p>
         </div>
       </div>
     </footer>

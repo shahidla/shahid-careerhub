@@ -51,7 +51,7 @@ export default async function AiPage() {
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-14">
       {/* On-page nav */}
       <nav aria-label="On this page" className="flex flex-wrap gap-2 text-xs glass-card px-4 py-3">
-        <span className="text-gray-500 font-semibold uppercase tracking-widest mr-2 self-center">On this page</span>
+        <span className="text-text-subtle font-semibold uppercase tracking-widest mr-2 self-center">On this page</span>
         {[
           { href: '#building', label: 'Currently Building' },
           { href: '#projects', label: 'AI Projects' },
@@ -71,11 +71,11 @@ export default async function AiPage() {
         <h1 className="text-4xl font-display font-bold tracking-tight animate-fade-in-up">
           <span className="gradient-text">{profile.name}</span>
         </h1>
-        <p className="mt-3 text-lg text-gray-400 max-w-2xl leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+        <p className="mt-3 text-lg text-text-subtle max-w-2xl leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           SAP Development Architect — now building AI systems hands-on.
           RAG pipelines, agentic workflows, MCP servers, embeddings, and LLM integration.
         </p>
-        <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
+        <div className="mt-4 flex flex-wrap gap-4 text-sm text-text-subtle">
           <a href={`mailto:${profile.contact.email}`} className="hover:text-accent-blue transition-colors">{profile.contact.email}</a>
           <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">LinkedIn</a>
           <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">GitHub</a>
@@ -88,14 +88,14 @@ export default async function AiPage() {
         <div className="mt-4 glass-card p-6 border-accent-purple/20 animate-glow-pulse">
           <div className="flex flex-wrap justify-between gap-2">
             <div>
-              <h3 className="font-bold text-gray-100 text-lg">AI Career Hub</h3>
-              <p className="text-sm text-gray-400 mt-0.5">Next.js 14 · Supabase pgvector · Claude API · Vercel</p>
+              <h3 className="font-bold text-text text-lg">AI Career Hub</h3>
+              <p className="text-sm text-text-subtle mt-0.5">Next.js 14 · Supabase pgvector · Claude API · Vercel</p>
             </div>
             <a href="https://github.com/shahidla/shahid-careerhub" target="_blank" rel="noopener noreferrer" className="text-sm text-accent-purple hover:underline font-medium self-start">
               GitHub →
             </a>
           </div>
-          <p className="mt-3 text-sm text-gray-400 leading-relaxed">
+          <p className="mt-3 text-sm text-text-subtle leading-relaxed">
             A live AI engineering prototype: job search aggregator, resume RAG chatbot,
             AI resume tooling, multi-agent orchestration, and MCP integration.
           </p>
@@ -125,13 +125,13 @@ export default async function AiPage() {
                       {project.name}
                     </a>
                   ) : (
-                    <span className="font-semibold text-gray-100">{project.name}</span>
+                    <span className="font-semibold text-text">{project.name}</span>
                   )}
-                  <span className="text-gray-500 text-sm"> · {project.client}</span>
+                  <span className="text-text-subtle text-sm"> · {project.client}</span>
                 </div>
               </div>
               <p className="mt-1 text-sm font-medium text-accent-purple/80">{project.impact}</p>
-              <p className="mt-1 text-sm text-gray-400 leading-relaxed">{project.description}</p>
+              <p className="mt-1 text-sm text-text-subtle leading-relaxed">{project.description}</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {project.technologies.map((tech) => (
                   <span key={tech} className="tag-sm !bg-accent-purple/10 !text-accent-purple !border-accent-purple/20">{tech}</span>
@@ -148,7 +148,7 @@ export default async function AiPage() {
         <div className="mt-4 space-y-4">
           {skills.map((skill) => (
             <div key={skill.id}>
-              <h3 className="text-sm font-semibold text-gray-300 mb-1.5">{skill.category}</h3>
+              <h3 className="text-sm font-semibold text-text-subtle mb-1.5">{skill.category}</h3>
               <div className="flex flex-wrap gap-2">
                 {skill.items.map((item) => (
                   <span key={item} className="tag !bg-accent-purple/5 !text-accent-purple !border-accent-purple/20">{item}</span>
@@ -175,9 +175,9 @@ export default async function AiPage() {
                   {cert.title}
                 </a>
               ) : (
-                <span className="text-sm font-medium text-gray-200 leading-snug block">{cert.title}</span>
+                <span className="text-sm font-medium text-text-muted leading-snug block">{cert.title}</span>
               )}
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-text-subtle">
                 {cert.issuer}
                 {cert.code ? ` · ${cert.code}` : ''}
                 {cert.year ? ` · ${cert.year}` : ''}
@@ -220,11 +220,11 @@ export default async function AiPage() {
       {/* AI Concepts Built */}
       <section id="built">
         <h2 className="section-heading">AI Concepts Built</h2>
-        <p className="mt-2 text-sm text-gray-500">Implemented hands-on in the AI Career Hub — each concept shipped, not just planned.</p>
+        <p className="mt-2 text-sm text-text-subtle">Implemented hands-on in the AI Career Hub — each concept shipped, not just planned.</p>
 
         {/* Progress bar */}
         <div className="mt-4 mb-6">
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+          <div className="flex items-center justify-between text-xs text-text-subtle mb-2">
             <span>{doneCount} of {totalCount} concepts shipped</span>
             <span className="text-accent-emerald font-medium">{Math.round((doneCount / totalCount) * 100)}%</span>
           </div>
@@ -242,13 +242,13 @@ export default async function AiPage() {
               <span className={`shrink-0 mt-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${
                 row.done
                   ? 'bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20'
-                  : 'bg-surface-200 text-gray-500 border border-surface-300/50'
+                  : 'bg-surface-200 text-text-subtle border border-surface-300/50'
               }`}>
                 {row.done ? '✓' : '○'}
               </span>
               <div>
-                <span className={`font-semibold ${row.done ? 'text-gray-200' : 'text-gray-500'}`}>{row.concept}</span>
-                <span className={`ml-2 ${row.done ? 'text-gray-400' : 'text-gray-600'}`}>— {row.detail}</span>
+                <span className={`font-semibold ${row.done ? 'text-text-muted' : 'text-text-subtle'}`}>{row.concept}</span>
+                <span className={`ml-2 ${row.done ? 'text-text-subtle' : 'text-text-subtle'}`}>— {row.detail}</span>
               </div>
             </div>
           ))}

@@ -12,7 +12,7 @@
   }
 
   body {
-    @apply bg-surface text-gray-200 font-sans antialiased;
+    @apply bg-surface text-text font-sans antialiased;
   }
 
   ::selection {
@@ -35,7 +35,7 @@
     @apply bg-surface-400 rounded-full;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-500;
+    @apply bg-surface-500;
   }
 }
 
@@ -44,17 +44,17 @@
 
   /* ── Section heading ── */
   .section-heading {
-    @apply border-b border-surface-300/60 pb-3 text-xl font-bold text-gray-100 tracking-tight;
+    @apply border-b border-surface-300/60 pb-3 text-xl font-bold text-text tracking-tight;
   }
 
   /* ── Tags ── */
   .tag {
-    @apply inline-block rounded-full bg-surface-200 px-3 py-1 text-xs text-gray-300 border border-surface-300/50
-           transition-all duration-200 hover:border-accent-purple/40 hover:text-gray-200;
+    @apply inline-block rounded-full bg-surface-200 px-3 py-1 text-xs text-text-subtle border border-surface-300/50
+           transition-all duration-200 hover:border-accent-purple/40 hover:text-text;
   }
 
   .tag-sm {
-    @apply inline-block rounded-md bg-surface-200 px-2 py-0.5 text-xs text-gray-400
+    @apply inline-block rounded-md bg-surface-200 px-2 py-0.5 text-xs text-text-muted
            border border-surface-300/30 transition-colors duration-200;
   }
 
@@ -101,7 +101,7 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 bg-surface-200 hover:bg-surface-300 text-gray-200
+    @apply inline-flex items-center gap-2 bg-surface-200 hover:bg-surface-300 text-text
            font-medium px-5 py-2.5 rounded-xl transition-all duration-200
            border border-surface-400/50 hover:border-surface-400
            hover:-translate-y-0.5 active:translate-y-0;
@@ -115,27 +115,27 @@
 
   /* ── Blog prose (dark) ── */
   .blog-prose {
-    @apply rounded-3xl border border-surface-300/50 bg-surface-100 p-8 shadow-sm md:p-10;
+    @apply rounded-3xl border border-surface-300/50 bg-white/90 p-8 shadow-sm md:p-10;
   }
 
   .blog-prose h1 {
-    @apply mt-10 mb-4 text-3xl font-bold text-gray-100;
+    @apply mt-10 mb-4 text-3xl font-bold text-text;
   }
 
   .blog-prose h2 {
-    @apply mt-12 mb-4 border-b border-surface-300/60 pb-3 text-2xl font-bold text-gray-100;
+    @apply mt-12 mb-4 border-b border-surface-300/60 pb-3 text-2xl font-bold text-text;
   }
 
   .blog-prose h3 {
-    @apply mt-8 mb-3 text-xl font-semibold text-gray-200;
+    @apply mt-8 mb-3 text-xl font-semibold text-text;
   }
 
   .blog-prose h4 {
-    @apply mt-6 mb-2 text-lg font-semibold text-gray-200;
+    @apply mt-6 mb-2 text-lg font-semibold text-text;
   }
 
   .blog-prose p {
-    @apply mb-4 text-[15px] leading-8 text-gray-300;
+    @apply mb-4 text-[15px] leading-8 text-text-muted;
   }
 
   .blog-prose a {
@@ -144,20 +144,20 @@
   }
 
   .blog-prose strong {
-    @apply font-semibold text-gray-100;
+    @apply font-semibold text-text;
   }
 
   .blog-prose em {
-    @apply italic text-gray-300;
+    @apply italic text-text-muted;
   }
 
   .blog-prose code {
-    @apply rounded bg-surface-200 px-1.5 py-0.5 font-mono text-sm text-gray-200
+    @apply rounded bg-surface-200 px-1.5 py-0.5 font-mono text-sm text-text-muted
            border border-surface-300/40;
   }
 
   .blog-prose pre {
-    @apply my-6 overflow-x-auto rounded-2xl bg-surface-50 p-5 text-sm text-slate-100
+    @apply my-6 overflow-x-auto rounded-2xl bg-surface-50 p-5 text-sm text-text
            border border-surface-300/30;
   }
 
@@ -170,11 +170,11 @@
   }
 
   .blog-prose ul {
-    @apply mb-5 list-disc space-y-2 pl-6 text-gray-300;
+    @apply mb-5 list-disc space-y-2 pl-6 text-text-subtle;
   }
 
   .blog-prose ol {
-    @apply mb-5 list-decimal space-y-2 pl-6 text-gray-300;
+    @apply mb-5 list-decimal space-y-2 pl-6 text-text-subtle;
   }
 
   .blog-prose li {
@@ -182,7 +182,7 @@
   }
 
   .blog-prose blockquote {
-    @apply my-6 rounded-2xl border border-accent-purple/20 bg-accent-purple/5 px-5 py-4 text-gray-300;
+    @apply my-6 rounded-2xl border border-accent-purple/20 bg-accent-purple/5 px-5 py-4 text-text-muted;
   }
 
   .blog-prose blockquote p {
